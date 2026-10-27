@@ -14,6 +14,16 @@ Whenever the user works on the course or calls the `mega-challenge` tools, work 
 - Inputs and outputs of the Challenge (messages, schemas, request bodies, drafts) as plain files.
 - Receipts and challenge ids needed by `resume-challenge` go in `receipts.json`, so a new session can pick the Challenge up.
 
+## Hand-offs to a new session
+
+A new session sees only the text it is handed, not where each part came from. Before work moves to a new session (a resume prompt, a filed record, a message to another session):
+
+- Label each part with its source: which recording, file, channel or request it came from, and the order the parts were filed in. Example: "part 1 = video (UTC), part 2 = audio (local +2h)".
+- When the course checks a text word for word (a record), keep that text unchanged and put the labels next to it: in the lesson's `receipts.json` under `sources`, and in the hand-off prompt if the course lets you add to it.
+- Ask the user before the hand-off if a part's source is not known for sure. Do not leave the new session to guess.
+
+S01E02 is where this came from: the record held two unlabelled summaries, so the new session guessed the order and the first claim was refused.
+
 ## Lessons
 
 | Code | Title | Folder | State |
