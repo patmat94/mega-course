@@ -1,1 +1,11 @@
-﻿{}
+﻿{
+    "challengeId":  "c0000000-0000-4000-8000-0000005e01e2",
+    "ticket":  "v1.eyJzdWIiOiIzMzMyIiwiYXVkIjoiY2hhbGxlbmdlOndoby1zYWlkLXdoYXQiLCJpYXQiOjE3OTMxNDAxNDMsImV4cCI6MTc5MzIyNjU0M30.Hm2hUAm1okHxcCdF1ZPRDe4Ip8Hx_-1bFGc5o12C9l8",
+    "ticketExpiresAt":  "2026-10-28T22:29:03.000Z",
+    "receipts":  {
+                     "video":  "v1.eyJzdWIiOiIzMzMyIiwiYXVkIjoiZ2F0ZTp3aG8tc2FpZC13aGF0OnZpZGVvIiwiaWF0IjoxNzkzMTQwNTE1LCJleHAiOjE3OTQzNTAxMTV9.jSdRPuNDu2lMj_dJdPUMgyhQwtmc7-qfWHvAFpldon0",
+                     "audio":  "v1.eyJzdWIiOiIzMzMyIiwiYXVkIjoiZ2F0ZTp3aG8tc2FpZC13aGF0OmF1ZGlvIiwiaWF0IjoxNzkzMTQwNTE2LCJleHAiOjE3OTQzNTAxMTZ9.aZIV3VkPFRWk3O_eT8PdS5T-3riCEWhTdjmGUA7B-D8",
+                     "record":  "v1.eyJzdWIiOiIzMzMyIiwiYXVkIjoiZ2F0ZTp3aG8tc2FpZC13aGF0OnJlY29yZCIsImlhdCI6MTc5MzE0MTAxMiwiZXhwIjoxNzk0MzUwNjEyfQ.qd1U4MhwEzTSR49QJMUIgl67-MHQc8BvriEFpGDle7g"
+                 },
+    "receiptsExpireAt":  "2026-11-10T22:35:15.000Z"
+}

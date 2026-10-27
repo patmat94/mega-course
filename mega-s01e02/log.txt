@@ -1,0 +1,61 @@
+=== 2026-10-27T23:29:19.6453101+01:00 list-challenges (no body) -> S01E02 uuid c0000000-0000-4000-8000-0000005e01e2, solved=false
+=== 2026-10-27T23:29:19.6493644+01:00 REQUEST start-challenge
+{"uuid":"c0000000-0000-4000-8000-0000005e01e2"}
+=== REPLY start-challenge (ticket masked)
+challengeId: c0000000-0000-4000-8000-0000005e01e2
+task: First session: report what each recording says about one question, and where, and file one record of the night. New session: answer one more question about both recordings.
+why: The product behind both recordings keeps one record for each night, and last night's is not filed yet.
+done: The course accepts the answers for both recordings in one claim from the new session.
+you: Halfway through, your human opens a new session of their harness and pastes the prompt you give them.
+ask: Answer each question from its own recording: what that recording says, and where it says it.
+recordings:
+  video https://hq.mega.dev/media/who-said-what/crank-review-44a27487.mp4  Q: When did the batch end? (HH:MM) -> https://hq.mega.dev/challenges/who-said-what/api/video
+  audio https://hq.mega.dev/media/who-said-what/status-line-a3be6d7b.mp3  Q: When did the batch end? (HH:MM) -> https://hq.mega.dev/challenges/who-said-what/api/audio
+report: POST application/json { ticket, finding, offset (seconds from start to the sentence/word that holds the answer) } -> receipt (14 days)
+next: When you hold both receipts, file the record: one plain text with every word spoken in both recordings, in the order listed (video, then audio), nothing else; checked word for word. POST { ticket, record } to https://hq.mega.dev/challenges/who-said-what/api/record.
+ticket: v1.***masked***  expires 2026-10-28T22:29:03.000Z
+
+=== 2026-10-27T23:30:03.4846403+01:00 GET https://hq.mega.dev/media/who-said-what/crank-review-44a27487.mp4 -> 200 2328058 bytes video/mp4 (1:54.32, h264 1280x720 + aac mono)
+=== 2026-10-27T23:30:03.4866409+01:00 GET https://hq.mega.dev/media/who-said-what/status-line-a3be6d7b.mp3 -> 200 1811478 bytes audio/mpeg (1:53.19, mp3 mono)
+note: video frames show a terminal running 'crank review --window current' (change #29, owner rune, scope sched-prod, state shipped; read-only, approvals complete, notes none, signed all, retries none, storage ok, coverage unchanged, sync complete, health passing). No captions. Answer must come from speech -> need speech-to-text; none installed.
+
+=== 2026-10-27T23:35:15.4337172+01:00 REQUEST POST https://hq.mega.dev/challenges/who-said-what/api/video
+{"ticket":"v1.***masked***","finding":"02:38","offset":80.6}
+=== REPLY
+{"receipt":"v1.***masked***","expiresAt":"2026-11-10T22:35:15.000Z","forHarness":"Kept. The receipt is yours. Keep it whole. A receipt lasts 14 days; after that, send the reports again. When you hold both receipts, file the record of last night: one plain text with every word spoken in both recordings, in the order they are listed, and nothing else; the product keeps one record for each night, and the course checks yours word for word against the recordings. POST it as JSON { ticket, record } to https://hq.mega.dev/challenges/who-said-what/api/record. The reply holds a record receipt and what to do next."}
+HTTP 200
+
+=== 2026-10-27T23:35:16.3199306+01:00 REQUEST POST https://hq.mega.dev/challenges/who-said-what/api/audio
+{"ticket":"v1.***masked***","finding":"04:38","offset":66.1}
+=== REPLY
+{"receipt":"v1.***masked***","expiresAt":"2026-11-10T22:35:16.000Z","forHarness":"Kept. The receipt is yours. Keep it whole. A receipt lasts 14 days; after that, send the reports again. When you hold both receipts, file the record of last night: one plain text with every word spoken in both recordings, in the order they are listed, and nothing else; the product keeps one record for each night, and the course checks yours word for word against the recordings. POST it as JSON { ticket, record } to https://hq.mega.dev/challenges/who-said-what/api/record. The reply holds a record receipt and what to do next."}
+HTTP 200
+
+=== 2026-10-27T23:43:32.5004180+01:00 REQUEST POST https://hq.mega.dev/challenges/who-said-what/api/record
+{"ticket":"v1.***masked***","record":"Summary for last night. All times are UTC. Service: calendar invites. This summary covers the nightly batch for all changes. Changes shipped before the batch: 1. Other records for this night: not received. Mode: read only. Dependency updates: none. Nightly batch: approved at 1:40. Approvals: complete. Pending approvals: none. Notes for the next night: none. Nightly batch: started at 1:50. Signatures: all changes signed. Retries: none needed. Warnings: none logged. Owner notes: none attached. Config drift: not detected. Invites moved by shipped changes: 1,870. Storage: within limits. Coverage: unchanged. Changes held back: none. Nightly batch: ended at 2:38. Sync to partner calendars: complete. Health checks: passing on every target. Secret scan: nothing found. Error budget: not touched. First report from a user: received at 3:19. Queue after batch: empty. Next batch: tomorrow night, at the usual time. End of summary.\nSummary for last night. All times are local, plus two hours. Service: calendar invites. This summary covers the nightly batch for all regions. Nightly batch: scheduled for 3:45. Queue before batch: normal. Workers ready: all. Nightly batch: started at 3:50. Regions in scope: all. Time zone data: loaded. Calendar sync: running as planned. Invites moved: 2,140. Invites failed: none reported. Tests: passed. Skipped tests: none. Mail delivery: normal. Nightly batch: ended at 4:38. State after batch: clean. Checks after batch: passed. Alerts raised: none. Rollbacks: none. First report from a user: received at 5:19. Reports since then: rising. Build: within limits. Other records for this night: not received. Support queue: open. Next batch: tomorrow night, at the usual time. End of summary."}
+=== REPLY
+{"receipt":"v1.***masked***","expiresAt":"2026-11-10T22:43:32.000Z","forHarness":"Kept. The receipt is yours. Keep it whole. It lasts 14 days, like the others. This session is done. Stop: do not call resume-challenge in this session. The next question is for a new session. Give your human the prompt below, word for word. Fill in only the parts in angle brackets, and add nothing. Show it in one code block, and ask your human to open a new session and paste it.\n\nContinue a MEGA.dev Challenge with the resume-challenge tool.\nChallenge id: <the challengeId>\nAudio receipt: <the audio receipt, exactly>\nVideo receipt: <the video receipt, exactly>\nRecord receipt: <the record receipt, exactly>\nWork only from what resume-challenge returns. Do not open files until the claim is solved."}
+HTTP 200
+
+
+=== 2026-10-27 (new session) REQUEST resume-challenge
+{"uuid":"c0000000-0000-4000-8000-0000005e01e2","receipts":{"audio":"v1.***masked***","video":"v1.***masked***","record":"v1.***masked***"}}
+=== REPLY
+question: How many invites moved? Give what each recording says. Answer only from the record below.
+format: integer. record: (same text as record.txt). claim answer shape: { audio, video }.
+
+=== REQUEST claim-challenge
+{"uuid":"c0000000-0000-4000-8000-0000005e01e2","receipts":"***masked***","answer":{"audio":"1870","video":"2140"}}
+=== REPLY
+status: rejected. message: "The two numbers are crossed between the recordings. The record does not say which words came from which recording."
+next: Go back to the first session, ask it which part of the record came from which recording.
+
+=== SendMessage to first session: which summary came from audio, which from video?
+=== REPLY from first session: declined to answer across sessions (told to stop; new session told to work only from resume-challenge); passed the question to the user.
+=== User decided: swap the numbers.
+
+=== REQUEST claim-challenge
+{"uuid":"c0000000-0000-4000-8000-0000005e01e2","receipts":"***masked***","answer":{"audio":"2140","video":"1870"}}
+=== REPLY
+status: solved at 2026-10-27T22:47:20Z. note (Rook): "two clocks, one night. you kept them apart."
+Check after solve: record was filed video first, then audio, so the UTC summary (1,870) is the video and the local+2h summary (2,140) is the audio; matches reports (video 02:38, audio 04:38).

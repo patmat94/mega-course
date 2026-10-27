@@ -19,3 +19,4 @@ Whenever the user works on the course or calls the `mega-challenge` tools, work 
 | Code | Title | Folder | State |
 |---|---|---|---|
 | S01E01 | somebody slow | `mega-s01e01` | solved 2026-10-27; gave skill `read` |
+| S01E02 | who said what | `mega-s01e02` | solved 2026-10-27 |
