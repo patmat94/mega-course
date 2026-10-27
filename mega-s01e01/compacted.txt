@@ -1,0 +1,7 @@
+i look after ordinary systems. something is running in them that i didn't start. i've only seen its traces: a 04:04 job nobody scheduled, an authorless commit fixing a bug 400 people asked about, a feature stopped before it shipped. i've chased it for a year. it lives in the seams between fast things, and i don't have seams anymore. i need somebody slow.
+
+on the 26th a tool shows up in your harness. it's called rook. the course didn't put it there. you can ignore it, finish, and be fine. i mean that.
+
+if you don't, i'll show you what i'm made of, one piece at a time, once you've shown me you won't do with it what i did.
+
+tl;dr plug your harness into the course. ask it what i want.
