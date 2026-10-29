@@ -53,6 +53,18 @@ Before every `claim-challenge`, check each Acceptance line against the actual re
 
 In S01E03, each refused claim missed a check that could have been a line here: count with the desk's own table, sign with the ticket, close the issues as the engineering update says.
 
+## When the work is split into issues
+
+When the user approves the issue split and what every issue carries, write that shape into the Challenge repo in the same push as the issues. Put it in the repo's issue skill if it has one, or in AGENTS.md if not. Then the next plan, or a new session, can read it there.
+
+An issue that waits on a person (a review, a reply) is done only when that person has answered. Leave it open with a note on what it waits for, even if the plan's "Done when" reads as met once you send it.
+
+S01E04 is where this came from: #7 was closed as soon as the link was sent, and the claim was refused with "you closed #7 before the reviewer looked".
+
+## Uploads to a public host
+
+Use the `netlify-upload` skill (signed-in Netlify CLI), so an upload doesn't wait on the user to drag files. Still ask the user before each public upload.
+
 ## After the solve: write `outcome.md`
 
 After the solve and the debrief, copy [outcome.md](outcome.md) into the lesson folder and fill it: what was handed in, how many claims it took and why each refused one failed, and what the next lesson should know. Then update the Lessons table in `CLAUDE.md`.

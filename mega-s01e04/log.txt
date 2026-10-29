@@ -105,3 +105,9 @@ Repo: git mv plan.md docs/plans/done/2026-10-29-morning-digest.md (status done, 
 Debrief questions: C1 The wait; C2 The link; T1 Parallel issues, one model each; T2 One skills folder; T3 A skill for your upload tool; T4 The issue shape, written down. Toolbox rows: wait-routine, web-search, host-cli.
 --- REQUEST debrief (fields as sent: C1 hit/harness; C2 dodged/harness; T1 yes; T2 yes; T3 no; T4 no; toolbox wait-routine before, web-search before, host-cli missing; 2 snags, rightCall snag 2) ---
 --- REPLY: saved; link https://hq.mega.dev/challenges/before-i-looked#debrief. Sheet: "The course turned down 1 try before it accepted." WAKE record line: "14:06  adapter installed   name: shim". Rook line: "your harness saw it first. check it anyway."
+
+--- AFTER SOLVE 2026-10-29 ---
+rig repo: plan-to-issues skill gained "What every issue carries" (commit 12c1483, pushed).
+User: "Yes, set it up" -> npm install -g netlify-cli (27.16.0); netlify login authorized by user in browser.
+CLI test: netlify deploy --prod of preview/site-clean over site incredible-sherbet-1ca2e8 -> deploy 6ae3a1d18dfb1c2f50c494d2; live 200, identical, no marker. Older deploy permalinks -> 401.
+Wrote .claude/skills/netlify-upload/SKILL.md; new-lesson skill: split/wait rules + upload pointer.
