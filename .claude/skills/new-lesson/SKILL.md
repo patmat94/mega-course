@@ -1,89 +1,40 @@
 ---
 name: new-lesson
-description: Use when a MEGA.dev challenge start prompt arrives — containing "Start challenge S", "I am a student in the MEGA.dev course", or "Call list-challenges. Find S" — before calling any MCP tool or reading any course page.
+description: Use when a MEGA.dev Challenge starts or is picked up again — a prompt with "Start challenge S", "I am a student in the MEGA.dev course" or "Call list-challenges. Find S", or a session that resumes a Challenge (resume-challenge, "pick up S0xE0y") — before calling any MCP tool or reading any course page.
 ---
 
 # new-lesson
 
-Before any other action when a challenge start prompt arrives, the lesson folder must exist. This is the first step — not one of many.
+## 1. Lesson folder
 
-## Rule
+Folder `mega-sXXeYY/` in the course root, named by the code in lowercase (S01E04 → `mega-s01e04`). If it is missing, create it with an empty `log.txt` and a `receipts.json` holding `{}`:
 
-1. Extract the lesson code from the prompt. Pattern: `S` + two digits + `E` + two digits (e.g. `S01E02`).
-2. Derive the folder name: `mega-` + code in lowercase → `mega-s01e02`.
-3. Check whether `mega-sXXeYY/` exists in the course root.
-   - **Exists** → note it, continue immediately.
-   - **Does not exist** → create it with two seed files, then continue.
-
-## Seed files (new folder only)
-
-```
-mega-sXXeYY/
-  log.txt          ← empty; every request/response will be appended here
-  receipts.json    ← {}; challenge ids and tokens go here for resume
-```
-
-PowerShell:
 ```powershell
-$folder = "mega-s01e02"   # replace with actual code
-New-Item -ItemType Directory -Path $folder
-New-Item -ItemType File    -Path "$folder\log.txt"
-Set-Content                -Path "$folder\receipts.json" -Value "{}" -Encoding utf8
+$f = "mega-s01e04"; New-Item -ItemType Directory $f; New-Item -ItemType File "$f\log.txt"; Set-Content "$f\receipts.json" "{}" -Encoding utf8
 ```
 
-## What counts as "done"
+If it exists (a resume), read `ticket.md`, `receipts.json` and the end of `log.txt` before you do anything else.
 
-Folder exists on disk with `log.txt` and `receipts.json`. Then proceed with the challenge.
+## 2. Call start-challenge, even when the startPoint is a page
 
-## Then: call start-challenge, even when the startPoint is a page
+Its reply holds what the page does not: the `ticket` or proofs (often what the Challenge checks), `submit` (the answer shape) and `deliver`. Keep proofs raw in `receipts.json` under `receipts`, and mask them in `log.txt`. Call it again when the course says something changed, because a repeat call can carry an `update` field.
 
-After `list-challenges`, call `start-challenge` with the entry's uuid, also when its `startPoint` is a URL. Its reply holds things the page does not: the `ticket` (often the signature the Challenge checks), `submit` (the answer shape for `claim-challenge`) and `deliver`. Save the ticket in `receipts.json` under `receipts`, mask it in `log.txt`. If the tool refuses the Challenge, follow the page.
+## 3. Write `ticket.md` before the work
 
-Call it again before each new claim when the course says something changed ("things moved", "not done yet"): a repeat call can carry an `update` field that points at news on the Challenge page.
+Copy [ticket.md](ticket.md) from this folder and fill it from the start-challenge reply and the page. Acceptance is the part that matters: one checkable line per thing the course will look at. Show the user the Outcome and Acceptance before starting.
 
-S01E03 is where this came from: the page was signed with a name instead of the ticket, and the desk's update was found only after five refused claims.
+## 4. Before every claim: tick Acceptance
 
-## Then: write `ticket.md` before the work
+A hook on `claim-challenge` reminds you of this. Check each line against the real result (run the count, open the link, read the issue's state), tick it, and claim only when all are ticked. When a claim is refused, add the missing check as a new Acceptance line and a line in Notes.
 
-Copy [ticket.md](ticket.md) from this skill's folder into the lesson folder and fill it from the `start-challenge` reply and the Challenge page. Acceptance is the part that matters: one checkable line per thing the course will look at (signature, counts, shape of `submit`, state of each issue or file). Show the user the Outcome and Acceptance before starting the work.
+## Issue work
 
-## Before each claim: go through Acceptance
+When the user approves an issue split and what every issue carries, write that shape into the Challenge repo (its issue skill, or AGENTS.md) in the same push as the issues.
 
-Before every `claim-challenge`, check each Acceptance line against the actual result (run the count, open the page, read the issue) and tick it in `ticket.md`. Claim only when all are ticked. When a claim is refused, add what it was missing to Notes and as a new Acceptance line, then fix and check again.
+## Public uploads
 
-In S01E03, each refused claim missed a check that could have been a line here: count with the desk's own table, sign with the ticket, close the issues as the engineering update says.
+Use the `netlify-upload` skill, and ask the user before each upload.
 
-## When the work is split into issues
+## 5. After the solve
 
-When the user approves the issue split and what every issue carries, write that shape into the Challenge repo in the same push as the issues. Put it in the repo's issue skill if it has one, or in AGENTS.md if not. Then the next plan, or a new session, can read it there.
-
-An issue that waits on a person (a review, a reply) is done only when that person has answered. Leave it open with a note on what it waits for, even if the plan's "Done when" reads as met once you send it.
-
-S01E04 is where this came from: #7 was closed as soon as the link was sent, and the claim was refused with "you closed #7 before the reviewer looked".
-
-## Uploads to a public host
-
-Use the `netlify-upload` skill (signed-in Netlify CLI), so an upload doesn't wait on the user to drag files. Still ask the user before each public upload.
-
-## After the solve: write `outcome.md`
-
-After the solve and the debrief, copy [outcome.md](outcome.md) into the lesson folder and fill it: what was handed in, how many claims it took and why each refused one failed, and what the next lesson should know. Then update the Lessons table in `CLAUDE.md`.
-
-## Red flags — stop, go back, do the folder step first
-
-- "I'll create the folder after connecting the server"
-- "The folder step can wait until I know the challenge code"
-- "I'll do it when I need to write the first log entry"
-- "The folder is just housekeeping"
-
-All of these mean: stop, create the folder, then continue.
-
-## Common mistakes
-
-| Mistake | Fix |
-|---|---|
-| Folder created but `receipts.json` missing | Add it as `{}` — resume-challenge needs it |
-| Folder named with uppercase (`mega-S01E02`) | Always lowercase |
-| Folder created inside `mega-s01e01/` instead of course root | Check cwd is course root before creating |
-| Claiming because the work "looks done" | Go through Acceptance in `ticket.md` first; tick each line from a real check |
-| Acceptance written as vague goals ("issues are correct") | One observable check per line: a number, a state, a string on a page |
+Fill [outcome.md](outcome.md): what was handed in, how many claims it took, and why each refused one failed. Then update the Lessons table in `CLAUDE.md`.

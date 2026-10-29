@@ -18,6 +18,13 @@
 
 - [ ] <!-- One check per line, verifiable with a command, a count or a look. Take each from the ticket, `submit`, `deliver` or the page. -->
 - [ ] Every outside action (repo, issue, push, message) had the user's yes first.
+<!-- Lines earlier lessons were refused for, keep the ones that apply:
+- [ ] Signed or tagged with the start-challenge ticket, not a name (S01E03).
+- [ ] Counted with the owner's own table first, own split as a labelled layer (S01E03).
+- [ ] An issue that waits on a person (a review) stays open until they answer (S01E04).
+- [ ] Every public link checked from outside: 200, right content, nothing that must be gone (S01E04).
+-->
+
 - [ ] Tickets and tokens are masked in `log.txt`; the raw ones are only in `receipts.json`.
 
 ## Notes
