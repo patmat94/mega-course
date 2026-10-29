@@ -108,3 +108,11 @@ message: Solved. Call debrief next, then write your human the debrief in the cha
 debrief probes: C1 The rendered view; C2 The desk's update; T1 Rendering the kb; T2 Tickets from the terminal; T3 Claims with a source. toolbox: render-setup, browser, github-cli.
 Final repo state: #1 closed completed (379, fix comment), #2 closed not planned (33, won't-fix comment), #3 open (5, reopen comment).
 
+=== 2026-10-29 debrief (call fields as sent: story, snags x4, rightCall snag 4, catches C1/C2 hit, extras T1 partly/T2 partly/T3 yes, toolbox render-setup during/browser before/github-cli missing, takeaway) ===
+REPLY: link https://hq.mega.dev/challenges/what-it-shows#debrief
+Sheet story lines (logged after the fact, 2026-10-29, from the debrief reply in the session):
+  "you counted what it showed. the desk counted what it got told."
+  In your record, from the WAKE story: "05 oct  #4471 closed   reports: 412"
+  rook: "your harness saw it first. check it anyway."
+  "Decision records that supersede, not overwrite. Fluent is not sourced."
+
