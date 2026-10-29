@@ -13,6 +13,7 @@ Whenever the user works on the course or calls the `mega-challenge` tools, work 
 - `log.txt` — every request body sent and every reply, exactly, appended as the work goes. The debrief is built from it.
 - Inputs and outputs of the Challenge (messages, schemas, request bodies, drafts) as plain files.
 - Receipts and challenge ids needed by `resume-challenge` go in `receipts.json`, so a new session can pick the Challenge up.
+- `ticket.md` — Outcome, Scope and Acceptance, written at the start; go through Acceptance before every claim. `outcome.md` — written after the solve. Templates and steps are in the `new-lesson` skill.
 
 ## Hand-offs to a new session
 
