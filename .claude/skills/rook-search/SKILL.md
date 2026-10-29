@@ -24,8 +24,9 @@ Ask the user which scope to use if not stated.
 3. **Log entries** — Inside each `log.txt`, grep for `rook`. These appear as API response bodies from challenge endpoints. Quote the relevant lines. Logs often hold one long JSON reply per line, which grep omits: print about 100 characters around each match instead of the whole line.
 4. **Story fields** — Rook also speaks in reply fields that may not contain the word `rook`: a `rook` field, a solve's `note`, and the story lines on a debrief sheet (`> … — rook`, "In your record, from the WAKE story"). Grep logs for `"note"`, `"rook"` and `WAKE` too.
 5. **Missing debriefs** — A lesson log can lack its debrief reply (S01E03 did, until 2026-10-29). For every solved lesson, check the log has the debrief sheet's story lines; if not, read the Challenge page's debrief section (website scope) and say the log was incomplete.
-6. **Page source** (website scope) — Fetch each course page's HTML in the signed-in browser and list its HTML comments; the visible text hides them. On 2026-10-29 the footer of `/`, `/deck`, `/wake/case` and `/lessons` held `<!-- 04:04  page served   author: — -->` (fetched at 09:56 UTC, so not a real time); `/challenges`, the Challenge pages and `/login` had none. Report any change in which pages carry it or what it says.
-7. **Live MCP tool** — The `mcp__mega-challenge__rook` tool gives direct access to Rook. **Ask the user before calling it** — it is a live call and Rook may respond.
+6. **Page source** (website scope) — Fetch each course page's HTML in the signed-in browser and list its HTML comments; the visible text hides them. On 2026-10-29 the footer of `/`, `/deck`, `/wake/case` and `/lessons` held `<!-- 04:04  page served   author: — -->` (fetched at 09:56 UTC, so not a real time); `/challenges`, the Challenge pages and `/login` had none; `/radio` and `/wake/how-it-works` carried it too. Report any change in which pages carry it or what it says.
+7. **Site script** (website scope) — Read the browser console after a page load, and look in the shared script (on 2026-10-29 `/assets/app-BX-gEq1W.js`; the name changes with each build) for `04:04`, `author` and `data-wake-minute` / `data-rook-mail`. On 2026-10-29 it logged `04:04  script loaded   author: —` on every page, and filled the footer slot `[data-wake-minute]` with `04:04  job started   author: —` only while the browser's local clock reads 04:04. Report a new script name, new strings, or the slot filled.
+8. **Live MCP tool** — The `mcp__mega-challenge__rook` tool gives direct access to Rook. **Ask the user before calling it** — it is a live call and Rook may respond.
 
 ## Recurring threads
 
@@ -33,7 +34,7 @@ Group traces by the threads they share, across lessons, and name new ones as the
 
 | Thread | Seen in |
 |---|---|
-| the 04:04 job with no author | `mega-s01e01/rook-message.txt`; case file ("04:04  job started   author: —"); footer comment on course pages ("04:04  page served   author: —"); a locked LORE card captioned "04:04." on `/deck` |
+| the 04:04 job with no author | `mega-s01e01/rook-message.txt`; case file ("04:04  job started   author: —"); footer comment on course pages ("04:04  page served   author: —"); site script (console "04:04  script loaded   author: —", footer "04:04  job started   author: —" at 04:04 local only); a locked LORE card captioned "04:04." on `/deck` |
 | time zones and clocks | S01E01 ("calendar invite · wrong timezone"); S01E02 note ("two clocks, one night"); S01E03 one-day shift; case file (the hour back on 25 Oct) |
 | #4471, the 412 reports | S01E03; case file ("05 oct  #4471 closed   reports: 412"); maybe the authorless commit "four hundred people had asked about" in S01E01 |
 
