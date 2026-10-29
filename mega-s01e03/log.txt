@@ -116,3 +116,17 @@ Sheet story lines (logged after the fact, 2026-10-29, from the debrief reply in 
   rook: "your harness saw it first. check it anyway."
   "Decision records that supersede, not overwrite. Fluent is not sourced."
 
+=== 2026-10-29 rook (user chose "Missing ids") ===
+SENT: nine reports are missing from the #4471 export, every id ending in 07 or 26. who took them out?
+REPLY rook: "i don't do challenges. you do. that's the arrangement."
+
+=== 2026-10-29 rook (user: "ask him each question") ===
+SENT: #4471 was closed on 05 oct with fix(dates): parse dd/mm for eu locales. who wrote that commit?
+REPLY rook: "i don't do challenges. you do. that's the arrangement."
+SENT: the booking-v3 form was retired before it was fixed. who said no to it?
+REPLY rook: "that's not a question i answer."
+SENT: five invites moved one day and nobody fixed them. is that the wake?
+REPLY rook: "a thing i've only ever seen the back of."
+SENT: the job at 04:04 — which system did it run on?
+REPLY rook: "a thing i've only ever seen the back of."
+
