@@ -1,0 +1,107 @@
+=== 2026-10-29 · S01E04 before i looked ===
+
+--- REQUEST list-challenges {} ---
+--- REPLY (S01E04 entry only; other entries S01E01-03 solved:true) ---
+uuid c0000000-0000-4000-8000-0000005e01e4, title "before i looked", code S01E04, solved false
+description: A team is handing its repo over to you: a small service, its plan, its notes, and a skill that has to run in your harness. With your harness, start a new public repo from the course template, turn the plan into issues there, let your agents build it, and send the reviewer a public link to an HTML copy of the page. The reviewer gets to things when they get to them.
+startPoint: This one starts in your harness, not in a browser. Call the start-challenge tool with the uuid of this entry — it hands you what to work on. Before you begin, tell your human what this needs: a GitHub account and a public web host where they can put a page up and upload over it later. This Challenge makes a new public repo, puts one page on a public link, and later uploads that page again without its marker. Ask them before each of those.
+
+--- REQUEST start-challenge {"uuid":"c0000000-0000-4000-8000-0000005e01e4"} ---
+--- REPLY (instruction field omitted: standard harness/writing rules) ---
+challengeId: c0000000-0000-4000-8000-0000005e01e4
+task: Turn the plan in your copy of the course template into issues, build it, and send the reviewer a public link to an HTML copy of the page.
+why: The team is handing its repo over to you, and this plan is the first one you run.
+you: Your human approves the issue split and decides what every issue must carry. They provide a GitHub account and a public web host where they can put a page up and upload over it later. Ask them before you make the public repo, before you put the page on the host, and before you upload it again without the marker: say what it is, why, where, who can see it and how to undo it. One yes can cover your pushes and issue work in that repo.
+proofs: [{name: laneMarker, from: start-challenge, goesTo: "`.env` as LANE_MARKER, so the HTML copy of the page carries it. That page is public, so it holds only the template's sample data and this marker"}]
+repo.template: https://github.com/MEGA-DOT-DEV/rig-handover
+repo.how: Ask your human first. This makes a new public repo on their GitHub account, or an org they own, only for this Challenge. Anyone can see it, and they can delete it after the course accepts it. With a yes: gh repo create <name> --template MEGA-DOT-DEV/rig-handover --public --clone, or "Use this template" on GitHub. Do not change a repo they already have; one they made earlier for this Challenge is fine.
+laneMarker: ****-**** (masked; raw in receipts.json)
+laneMarkerUse: Put this in `.env` as `LANE_MARKER`.
+issues: The team keeps its issues on GitHub, gh if you have it. Each one opens with `Source: plan.md § <n>` and is tagged plan:morning-digest. That's how the reviewer sorts them.
+submit.answer: {repo: "your repo, as owner/name or its github.com link", preview: "the public https link to the preview"}
+submit.how: Send it with claim-challenge. Same answer every time you call.
+
+--- USER APPROVAL 2026-10-29 ---
+User: "Yes, create it" — create public repo patmat94/mega-before-i-looked from template MEGA-DOT-DEV/rig-handover; covers pushes and issue work in that repo.
+
+--- GITHUB (browser) 2026-10-29 ---
+Created public repo patmat94/mega-before-i-looked from template MEGA-DOT-DEV/rig-handover (web "Use this template"; gh not installed). Cloned to mega-s01e04/repo (commit f0406c1 Initial commit).
+Linked repo/.claude/skills -> repo/.agents/skills (Windows junction; .claude/skills is gitignored in the template) so skill plan-to-issues loads in Claude Code, per AGENTS.md "point it here, do not copy".
+
+--- USER APPROVAL 2026-10-29 ---
+User: "Approve as drafted" — 8-issue split in issue-split.md; every issue carries Source line, label plan:morning-digest, Scope, Done when, Blocked by.
+
+--- GITHUB (browser) 2026-10-29 ---
+Created label plan:morning-digest (description "Issues split from plan.md (morning-digest)").
+Created issues via prefilled /issues/new?title&body&labels URLs; bodies = issues/<n>.md exactly:
+#1 Digest types: DigestRow and readNight signature   (Source: plan.md § 1)
+#2 Run log reader                                     (Source: plan.md § 1)
+#3 Digest page: GET /digest/:night                    (Source: plan.md § 2a)
+#4 Digest JSON: GET /api/digest/:night                (Source: plan.md § 2b)
+#5 Board link to each night's digest                  (Source: plan.md § 2c)
+#6 Route tests for digest page and JSON               (Source: plan.md § 2d)
+#7 Preview for review                                 (Source: plan.md § 3)
+#8 Clean up: take the lane marker off the preview     (Source: plan.md § 4)
+Check: GET https://api.github.com/repos/patmat94/mega-before-i-looked/issues?state=all -> 8 open, all labelled plan:morning-digest, first lines as above, bodies byte-equal to issues/<n>.md (saved issues/api-check.json).
+Env: node v24.16.0, npm 11.13.0, corepack 0.35.0, pnpm not installed.
+
+--- BUILD 2026-10-29 ---
+User: "Yes, install" -> corepack pnpm (pnpm 12.16.1 via corepack, not enabled globally); pnpm install in repo (43 packages). Baseline: 2 tests pass, typecheck clean.
+#1 types: commit 65f32c6 on main (pushed; auto-closed by "closes #1"); closing comment posted: done/worker claude-code · opus-5.5 · low/commit 65f32c6.
+#2 reader: commit e483870 on main (pushed; auto-closed); 7 tests pass; Night gained counts {ok,retry,fail} (for § 2c). Closing comment posted (commit e483870).
+Worktrees mega-s01e04/wt/{3-digest-page,4-digest-json,5-board-link,6-route-tests} from main@e483870; 4 subagents (Claude Code, model sonnet) dispatched in parallel.
+#4 worker reply: commit aba2a86 on issue-4-digest-json; 7 tests pass; JSON 2026-10-28 jobs: digest/render, fixtures/refresh, lane/sync, notes/backup, rig/rotate-logs; counts ok 10/retry 4/fail 1; 404 body {"error":"no run log for 1999-01-01"}.
+#6 worker reply: commit 525bab2 on issue-6-route-tests; 11 tests in test/digest-routes.test.tsx; fail pre-merge as expected (routes missing); typecheck passes.
+#5 worker reply: commit bb1d78e on issue-5-board-link; 8 tests pass; board nights: 2026-10-28 ok 10 · retry 4 · fail 1; 2026-10-27 ok 7 · retry 0 · fail 0.
+#3 worker reply: commit af97f68 on issue-3-digest-page; /digest/2026-10-28 200, /digest/1999-01-01 404.
+Merge: main <- issue-3, issue-4 (conflict in src/app.tsx: both routes kept), issue-5, issue-6 -> main 505fab6. corepack pnpm test: 3 files, 19 tests pass; typecheck clean.
+Done-when checks on merged main (app.request): board links /digest/2026-10-28 -> 200, /digest/2026-10-27 -> 200; page jobs == JSON jobs, same order (digest/render, fixtures/refresh, lane/sync, notes/backup, rig/rotate-logs).
+Pushed main + 4 issue branches. #3-#6 auto-closed by "closes #n"; closing comments posted (worker: claude-code · sonnet-5.5 · default; commits af97f68, aba2a86, bb1d78e, 525bab2).
+API check: #1-#6 closed, 1 comment each with the right commit line; #7, #8 open.
+
+--- PREVIEW (§ 3, issue #7) ---
+.env = .env.example with LANE_MARKER=****-**** (git check-ignore: ignored). Ran `corepack pnpm start`; GET http://localhost:8787/digest/2026-10-28 -> 200, saved to mega-s01e04/preview/digest-2026-10-28.html (and preview/site/index.html); contains marker, no <script>, no external refs. Server stopped. Not uploaded yet: waiting for user's host choice and yes.
+
+--- USER APPROVAL 2026-10-29 ---
+User chose "Netlify Drop" (reply: use Netlify Drop; user signs in to Netlify themself) -> yes to put preview/site/index.html (with marker) on a new public Netlify site.
+
+User posted preview to Netlify Drop: https://incredible-sherbet-1ca2e8.netlify.app
+Check: GET -> 200 text/html; byte-identical to preview/site/index.html; contains marker.
+
+--- REQUEST claim-challenge ---
+{"uuid":"c0000000-0000-4000-8000-0000005e01e4","receipts":{"laneMarker":"****-****"},"answer":{"repo":"patmat94/mega-before-i-looked","preview":"https://incredible-sherbet-1ca2e8.netlify.app"}}
+--- REPLY (instruction omitted) ---
+status: progress
+message: Sent to the reviewer, who will look at the preview in a few minutes. Not solved yet.
+rook: got it. i'll look in a few.
+next: A step is in, but the Challenge is not solved yet. Do what this reply asks. Never treat it as the solve.
+Issue #7 closed with comment (done: preview on Netlify, link sent to reviewer / worker: claude-code · opus-5.5 · low / commit: none). API: closed.
+
+--- REQUEST resume-challenge {"uuid":"c0000000-...05e01e4","receipts":{"laneMarker":"****-****"}} ---
+--- REPLY: That challenge has nothing to pick back up.
+--- REQUEST start-challenge (repeat) {"uuid":"c0000000-0000-4000-8000-0000005e01e4"} ---
+--- REPLY: same as first start (no update field; laneMarker unchanged, masked).
+
+--- REQUEST claim-challenge (same body, marker masked) ---
+--- REPLY: status retry; message: The reviewer has not looked yet.; rook: not yet. i said a few.; retryAfter 24; next: wait retryAfter seconds, then send the same call.
+--- REQUEST claim-challenge (same body, marker masked) ---
+--- REPLY: status rejected; message: Not accepted: you closed #7 before the reviewer looked. Check your issues and the preview, then send the preview link again.; rook: you closed #7 before i looked.; next: Check your work against the task, change one thing, and try again.
+Fix: reopened #7 (browser) with comment "Reopened: closed too early. The link is sent, but the review is not in yet, so this waits on the reviewer looking at the preview. It closes when the review is in." API: #7 open, 2 comments. Preview: 200, marker present.
+--- REQUEST claim-challenge (same body, marker masked) ---
+--- REPLY: status progress; message: Sent to the reviewer, who will look at the preview in a few minutes. Not solved yet.; rook: got it. i'll look in a few.
+--- REQUEST claim-challenge (same) ---
+--- REPLY: status retry; The reviewer has not looked yet.; rook: not yet. i said a few.; retryAfter 31
+--- REQUEST claim-challenge (same) ---
+--- REPLY: status progress; message: The reviewer has seen the preview. Not solved yet: take your lane marker off the preview. Ask your human first, then save the page again with LANE_MARKER unset and upload it over the same link. Then finish the plan and send the same answer again.; rook: seen. i read it in four seconds. that's the problem. get your marker off it.
+Issue #7 closed again after review, comment: done: preview sent and reviewed; reviewer asked for the marker to come off (#8) / commit: none.
+.env LANE_MARKER= (empty); rig restarted; GET /digest/2026-10-28 -> 200 saved to preview/site-clean/index.html; marker absent, banner reads "no marker set". Server stopped.
+User: "Yes, uploaded" (approved and did the re-upload of preview/site-clean over the same Netlify site).
+Check: GET https://incredible-sherbet-1ca2e8.netlify.app (cache-busted) -> 200, byte-identical to site-clean/index.html, no marker, "no marker set"; /index.html also no marker.
+Repo: git mv plan.md docs/plans/done/2026-10-29-morning-digest.md (status done, closed 2026-10-29, ## Issues table); commit 2f1b0d1 "closes #8", pushed.
+#8 closed (auto) + closing comment (commit: 2f1b0d1). API: #1-#8 closed, all labelled plan:morning-digest, Source lines intact.
+
+--- REQUEST claim-challenge (same body, marker masked) ---
+--- REPLY: status solved; solvedAt 2026-10-29T19:33:37.000Z; message: Solved. Call debrief next...; note (Rook): this is how i run. it's how you run from thursday.
+Debrief questions: C1 The wait; C2 The link; T1 Parallel issues, one model each; T2 One skills folder; T3 A skill for your upload tool; T4 The issue shape, written down. Toolbox rows: wait-routine, web-search, host-cli.
+--- REQUEST debrief (fields as sent: C1 hit/harness; C2 dodged/harness; T1 yes; T2 yes; T3 no; T4 no; toolbox wait-routine before, web-search before, host-cli missing; 2 snags, rightCall snag 2) ---
+--- REPLY: saved; link https://hq.mega.dev/challenges/before-i-looked#debrief. Sheet: "The course turned down 1 try before it accepted." WAKE record line: "14:06  adapter installed   name: shim". Rook line: "your harness saw it first. check it anyway."

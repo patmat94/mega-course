@@ -1,0 +1,10 @@
+{
+ "1": "Digest types: DigestRow and readNight signature",
+ "2": "Run log reader",
+ "3": "Digest page: GET /digest/:night",
+ "4": "Digest JSON: GET /api/digest/:night",
+ "5": "Board link to each night's digest",
+ "6": "Route tests for digest page and JSON",
+ "7": "Preview for review",
+ "8": "Clean up: take the lane marker off the preview"
+}
