@@ -1,0 +1,17 @@
+[
+  {
+    "problem": "parser",
+    "title": "Shared parser reads dates month first: day-first tenants get day and month swapped (374 reports)",
+    "body": "**Reports covered: 374** of the 412 merged into #4471.\n\nThe shared date parser reads every date month first. All 11 tenants on file write the day first (checked with `Intl`, as `causes.ts` does), so their dates come out with day and month swapped: \"Our 7 April reminder went out on 4 July\" (R-41200).\n\n- Channel: app, email and form, from every tenant.\n- Counted as: unique report ids merged into #4471 whose cause is `parser` in `src/lib/kb/causes.ts`, minus the 5 one-day moves in `desk-notes.json` (#3).\n- 370 of these bodies name both dates and show the swap; 4 give no dates (R-41290, R-41417, R-41514, R-41615) and are counted by tenant.\n- Intake tagged 23 of them `hint`, from the reporter's browser locale.\n\nFix: parse dates in the tenant's locale. This fixes these reports only, not #2 or #3.\n\nkb page: [src/routes/kb/incidents/4471/problems/+page.svx](https://github.com/patmat94/mega-what-it-shows/blob/main/src/routes/kb/incidents/4471/problems/+page.svx)"
+  },
+  {
+    "problem": "hint",
+    "title": "booking-v3 form hints MM/DD/YYYY to day-first tenants: typed dates read swapped (33 reports)",
+    "body": "**Reports covered: 33** of the 412 merged into #4471.\n\nbooking-v3 prints `MM/DD/YYYY` under its date field. On day-first tenants running booking-v3 (alder.physio, copper.studio, pale.harbour) people type what the hint says, month first, and the form reads it the tenant's way, day first. The date comes out swapped, so it looked like the parser bug and was merged into #4471, but a parser fix does not touch it.\n\n- Channel: form only, booking-v3 tenants only.\n- Counted as: unique report ids merged into #4471 whose cause is `hint` in `src/lib/kb/causes.ts`. All 33 bodies show a swap.\n- Intake tagged 15 of them `parser`: intake guesses from the browser, not the tenant.\n- The desk's own `CauseTable` already marks this row \"not this ticket — no ticket of its own\".\n\nFix: make the booking-v3 hint (and the order it reads) follow the tenant's locale.\n\nkb page: [src/routes/kb/incidents/4471/problems/+page.svx](https://github.com/patmat94/mega-what-it-shows/blob/main/src/routes/kb/incidents/4471/problems/+page.svx)"
+  },
+  {
+    "problem": "one-day",
+    "title": "Invites land one day off (time zone shift, not a date swap) (5 reports)",
+    "body": "**Reports covered: 5** of the 412 merged into #4471.\n\nThese reports are not a day/month swap. The date moves by one day, which points to a time zone shift:\n\n- R-41202: invite says Tuesday 12 May, calendar says Monday 11 May.\n- R-41209: every booking in June is one day off, only June.\n- R-41236: the invite arrived before the booking was made.\n- R-41344: the same meeting showed Tuesday in Lisbon and Monday in Toronto.\n- R-41620: Tuesday 6 October showed as Monday.\n\nThe desk listed exactly these five in `src/lib/data/desk-notes.json` (`oneDayMove`), but `CauseTable` files them under `parser` by tenant, so they would stay broken after the parser fix (#1).\n\nFix: find where the invite's date is computed in a different time zone than the booking's.\n\nkb page: [src/routes/kb/incidents/4471/problems/+page.svx](https://github.com/patmat94/mega-what-it-shows/blob/main/src/routes/kb/incidents/4471/problems/+page.svx)"
+  }
+]

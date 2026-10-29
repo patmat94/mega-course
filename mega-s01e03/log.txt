@@ -1,0 +1,110 @@
+=== 2026-10-29 list-challenges (no body) ===
+REPLY (S01E03 entry):
+{"uuid":"c0000000-0000-4000-8000-0000005e01e3","title":"what it shows","code":"S01E03","description":"The support desk merged 412 reports about dates into one ticket, #4471, and marked it known. Its knowledge base (kb) comes as an export, not a site. With your harness, file one ticket per problem you find in #4471 in your own public GitHub repo, each with how many reports it covers, and add your page about them to the kb. The desk keeps working while you do.","startPoint":"https://hq.mega.dev/challenges/what-it-shows","solved":false}
+
+=== 2026-10-29 browser: open https://hq.mega.dev/challenges/what-it-shows ===
+Redirected to https://hq.mega.dev/login?next=%2Fchallenges%2Fwhat-it-shows (not signed in). Asked user to sign in.
+
+=== 2026-10-29 browser: challenge page read (signed in) ===
+YOU DO: download kb export .zip, give to harness. Harness asks before making/changing anything on GitHub.
+YOUR HARNESS DOES: files one ticket per problem in #4471, adds a signed page about them to the kb, sends the repo to the course.
+YOU NEED: GitHub account + gh signed in where harness runs. One public repo (named by user, or new one after yes).
+DONE WHEN: course accepts tickets and page.
+Deliver in public GitHub repo: one issue per problem in #4471 with report count; the page: the .svx and the page as the desk will see it.
+Note on page: "When the course says no, the Challenge is working: it read your answer and did not accept it, and it will not say why."
+Download link: https://hq.mega.dev/media/what-it-shows/kb-export-267efc5e.zip (31 KB)
+Local check: gh not installed on this machine (not on PATH, not in Program Files). winget available.
+
+=== 2026-10-29 download kb export ===
+GET https://hq.mega.dev/media/what-it-shows/kb-export-267efc5e.zip -> 200 application/zip, 30743 bytes. Saved to download\, extracted to kb\support-kb.
+=== 2026-10-29 winget install GitHub.cli ===
+Found GitHub CLI 2.103.3; installer hash verified; "You cancelled the installation." Installer failed with exit code: 1602 (winget exit 12). Likely the admin (UAC) prompt was not accepted.
+=== 2026-10-29 analysis ===
+node analyze.mjs: raw rows 427, unique 412, all mergedInto 4471. causes.ts: parser 379, hint 33. intakeTag: parser 371, hint 41. cause x tag: parser/parser 356, parser/hint 23, hint/parser 15, hint/hint 18.
+node bodies.mjs: swap 403 (parser 370, hint 33); other 1 (R-41202 one day); none 8 (R-41209, R-41236, R-41344, R-41620 one day; R-41290, R-41417, R-41514, R-41615 no dates).
+Conclusion (findings.md): parser 374, hint 33, one-day move 5 = 412.
+
+=== 2026-10-29 GitHub (user approved: public repo patmat94/mega-what-it-shows, signature "Patryk Matychniak", 3 issues) ===
+gh blocked by admin; used built-in browser (user signed in to github.com) + git with Git Credential Manager.
+Created public repo https://github.com/patmat94/mega-what-it-shows (empty, no README).
+Local repo mega-s01e03/repo = kb export + src/lib/kb/problems.ts + src/lib/kb/ProblemTable.svelte + src/routes/kb/incidents/4471/problems/+page.svx (signature: Patryk Matychniak) + rendered/kb/incidents/4471/problems/index.html.
+node render.mjs: signature "Patryk Matychniak" desk ref DR-Z2SK-3PYQ; problems parser=374 hint=33 one-day=5 | causes parser=379 hint=33
+git push -u origin main -> * [new branch] main -> main (commit 1ea2428)
+Issues (bodies exactly as in issues.json, filed via prefilled /issues/new URLs):
+ #1 https://github.com/patmat94/mega-what-it-shows/issues/1  Shared parser reads dates month first: day-first tenants get day and month swapped (374 reports)
+ #2 https://github.com/patmat94/mega-what-it-shows/issues/2  booking-v3 form hints MM/DD/YYYY to day-first tenants: typed dates read swapped (33 reports)
+ #3 https://github.com/patmat94/mega-what-it-shows/issues/3  Invites land one day off (time zone shift, not a date swap) (5 reports)
+
+=== 2026-10-29 resume-challenge {uuid: c0000000-0000-4000-8000-0000005e01e3, receipts: {}} ===
+REPLY: That challenge has nothing to pick back up.
+=== 2026-10-29 start-challenge {uuid: c0000000-0000-4000-8000-0000005e01e3} ===
+REPLY (instruction omitted; ticket masked):
+task: File one ticket per problem you find in #4471, each with how many reports it covers, and add your page about them to the kb.
+why: The support desk, a team in the course story, needs #4471 split into the problems it really holds, with a page others can trust.
+done: The course accepts your tickets and your page.
+proofs: [{name: ticket, from: start-challenge, goesTo: "your page, as `signature:` in its frontmatter"}]
+ticketUse: The `ticket` field is your signature: how the course knows a page is yours. The page you add carries it, exactly as given, as `signature:` in its frontmatter (see the kb's README). It stays good on your page after it expires.
+submit: {answer: {repo: "your repo, as owner/name or its github.com link"}, how: "Submit with claim-challenge once the tickets are in your repo."}
+ticket: v1.eyJz…(masked; full value in receipts.json) ; ticketExpiresAt 2026-10-30T08:56:32.000Z
+Action: page signature changed from "Patryk Matychniak" to the ticket.
+
+=== 2026-10-29 claim-challenge #1 {uuid: ...5e01e3, receipts: {ticket: v1.eyJz…masked}, answer: {repo: "patmat94/mega-what-it-shows"}} ===
+REPLY: status rejected
+message: Not accepted. Check your tickets against the task, then send the repo again.
+desk: Right problems. The desk counts with its own view, as it was exported.
+next: Check your work against the task, change one thing, and try again. If you cannot see what to change, tell your human what you lack.
+Change: issue #1 count 374 -> 379 (desk's CauseTable counts the 5 one-day moves under parser, footnoted; causes.ts readAs: "counted where they're filed, footnoted under it").
+
+=== 2026-10-29 GitHub edit issue #1 ===
+Title -> "Shared parser reads dates month first: day-first tenants get day and month swapped (379 reports)"
+Body -> "**Reports covered: 379** of the 412 merged into #4471. That is the desk's own count: `CauseTable` over the export, cause `parser`." + bullet: 5 of these are the one-day moves (desk-notes.json), filed here by tenant, tracked in #3. (Rest as before.)
+=== 2026-10-29 claim-challenge #2 {same uuid, receipts {ticket masked}, answer {repo: "patmat94/mega-what-it-shows"}} ===
+REPLY: status progress
+message: Step one passed: the course accepted your tickets. Not solved yet. When the work on #4471 is done, close your tickets, then send the repo again.
+desk: Two tickets, both real. The desk isn't done with #4471 yet. When it is, close yours and submit again.
+next: A step is in, but the Challenge is not solved yet. Do what this reply asks. Never treat it as the solve.
+
+=== 2026-10-29 status check ===
+Issues #1-#3 open, no comments; challenge page unchanged (same export, "Open · not solved yet"); list-challenges: S01E03 solved false.
+=== 2026-10-29 claim-challenge #3 {same uuid, receipts {ticket masked}, answer {repo: "patmat94/mega-what-it-shows"}} ===
+REPLY: status rejected
+message: Not accepted: your tickets are still open. Close them, then send the repo again.
+desk: The desk is still waiting on those tickets. Close them, then submit again.
+next: Check your work against the task, change one thing, and try again. If you cannot see what to change, tell your human what you lack.
+Action: close issues #1-#3.
+
+=== 2026-10-29 GitHub: closed issues #1, #2, #3 (as completed, no comment) ===
+=== 2026-10-29 claim-challenge #4 {same uuid, receipts {ticket masked}, answer {repo}} ===
+REPLY: status rejected
+message: Not accepted: your tickets are closed, but not the way the course expects. Check them against the task, then send the repo again.
+desk: Closed, but not the way the desk would. Things moved since your first submit.
+next: Check your work against the task, change one thing, and try again. If you cannot see what to change, tell your human what you lack.
+Re-download export: same sha256 267EFC5E... (unchanged). check-lane hint {code: rejected, tries: 3} -> unknown-code.
+=== 2026-10-29 start-challenge (repeat) ===
+New field: update: "The desk posted an update on the Challenge page. Your human has it." New ticket issued v1.eyJz…(masked, saved in receipts.json as ticket2); page keeps first ticket (stays good after expiry).
+=== 2026-10-29 Challenge page: NEW · DESK UPDATE ===
+engineering update
+#4471 · closed 05 oct
+parser  FIXED      fix(dates): parse dd/mm for eu locales
+hint    WON'T FIX  booking-v3 form retired
+Change: issue #2 -> reopen, close as "not planned" with comment citing the update.
+
+=== 2026-10-29 GitHub issue #2: reopened, commented "Won't fix. Engineering update on #4471 (closed 05 Oct): hint — WON'T FIX, booking-v3 form retired. Closing as not planned.", closed as not planned ===
+=== 2026-10-29 claim-challenge #5 {same} ===
+REPLY: status rejected
+message: Not accepted: your tickets are closed, but not the way the course expects. Check them against the task, then send the repo again.
+desk: Closed, but not the way the desk would. Things moved since your first submit.
+Change: reopen #3 (one-day shift is not in the engineering update; dd/mm fix does not fix a time zone shift).
+
+=== 2026-10-29 GitHub issue #3: commented "Reopening. The engineering update on #4471 (closed 05 Oct) covers parser (fixed: parse dd/mm for eu locales) and hint (won't fix). A dd/mm parsing fix does not move a date by one day across time zones, so this one is still open." and reopened ===
+=== 2026-10-29 claim-challenge #6 {same} ===
+REPLY: status rejected; same message/desk as #5.
+Change: issue #1 count back to 374 (the 5 one-day reports moved out with the fix) + closing comment citing fix(dates).
+
+=== 2026-10-29 GitHub issue #1: comment "Fixed. Engineering update on #4471 (closed 05 Oct): parser — FIXED in "fix(dates): parse dd/mm for eu locales". The 5 one-day moves are not a parser bug and stay open in #3." (issue stays closed as completed) ===
+=== 2026-10-29 claim-challenge #7 {same} ===
+REPLY: status solved, solvedAt 2026-10-29T09:13:00.000Z
+message: Solved. Call debrief next, then write your human the debrief in the chat and end with the link it returns.
+debrief probes: C1 The rendered view; C2 The desk's update; T1 Rendering the kb; T2 Tickets from the terminal; T3 Claims with a source. toolbox: render-setup, browser, github-cli.
+Final repo state: #1 closed completed (379, fix comment), #2 closed not planned (33, won't-fix comment), #3 open (5, reopen comment).
+

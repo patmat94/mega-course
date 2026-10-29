@@ -1,0 +1,25 @@
+{
+    "challengeId":  "c0000000-0000-4000-8000-0000005e01e3",
+    "code":  "S01E03",
+    "startPoint":  "https://hq.mega.dev/challenges/what-it-shows",
+    "receipts":  {
+                     "ticket":  "v1.eyJzdWIiOiIzMzMyIiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMyNjQxOTIsImV4cCI6MTc5MzM1MDU5Mn0.2Ig_WXknmdS2VCjL2yJmKNex6suyl5-cYWIxHNjS-ys"
+                 },
+    "ticketExpiresAt":  "2026-10-30T08:56:32.000Z",
+    "repo":  "patmat94/mega-what-it-shows",
+    "sources":  {
+                    "ticket":  "start-challenge reply, 2026-10-29; goes to the page as signature:",
+                    "kbExport":  "https://hq.mega.dev/media/what-it-shows/kb-export-267efc5e.zip, downloaded 2026-10-29"
+                },
+    "state":  "solved 2026-10-29T09:13:00Z; debrief saved at https://hq.mega.dev/challenges/what-it-shows#debrief",
+    "issues":  {
+                   "1":  "parser, 379",
+                   "2":  "hint, 33",
+                   "3":  "one-day, 5"
+               },
+    "ticket2":  {
+                    "value":  "v1.eyJzdWIiOiIzMzMyIiwiYXVkIjoiY2hhbGxlbmdlOndoYXQtaXQtc2hvd3MiLCJpYXQiOjE3OTMyNjQ5NTksImV4cCI6MTc5MzM1MTM1OX0.wgxEmiePNHluSFanuvTvkmMIfOfN5Ay0Tcb2SsRYE-0",
+                    "source":  "repeat start-challenge 2026-10-29; not used on the page",
+                    "expiresAt":  "2026-10-30T09:09:19.000Z"
+                }
+}
