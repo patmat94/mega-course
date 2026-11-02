@@ -15,6 +15,10 @@ $f = "mega-s01e04"; New-Item -ItemType Directory $f; New-Item -ItemType File "$f
 
 If it exists (a resume), read `ticket.md`, `receipts.json` and the end of `log.txt` before you do anything else.
 
+## 1b. After mega-start: verify lesson matches expected progression
+
+Before writing the brief, check the Lessons table in `CLAUDE.md`. Find the first row marked "not yet open" or without a solved date — that is the expected next lesson. If `mega-start` returned a different lesson (e.g. jumped to S02E01 while S01E05 is still pending), tell the user: "mega-start returned [X] but your next expected lesson is [Y] — which should the brief be based on?" Do not write the brief until the user confirms.
+
 ## 2. Call start-challenge, even when the startPoint is a page
 
 Its reply holds what the page does not: the `ticket` or proofs (often what the Challenge checks), `submit` (the answer shape) and `deliver`. Keep proofs raw in `receipts.json` under `receipts`, and mask them in `log.txt`. Call it again when the course says something changed, because a repeat call can carry an `update` field.
@@ -35,6 +39,6 @@ When the user approves an issue split and what every issue carries, write that s
 
 Use the `netlify-upload` skill, and ask the user before each upload.
 
-## 5. After the solve
+## 5. After a claim is accepted
 
-Fill [outcome.md](outcome.md): what was handed in, how many claims it took, and why each refused one failed. Then update the Lessons table in `CLAUDE.md`.
+Invoke the `lesson-close` skill. It owns everything that happens after the solve: outcome.md, CLAUDE.md, and memory.

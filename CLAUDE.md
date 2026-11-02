@@ -33,3 +33,4 @@ S01E02 is where this came from: the record held two unlabelled summaries, so the
 | S01E02 | who said what | `mega-s01e02` | solved 2026-10-27 |
 | S01E03 | what it shows | `mega-s01e03` | solved 2026-10-29; repo patmat94/mega-what-it-shows |
 | S01E04 | before i looked | `mega-s01e04` | solved 2026-10-29; repo patmat94/mega-before-i-looked; preview on Netlify |
+| S01E05 | — | — | opened and closed before 2026-11-02; no brief or challenge done (mega-start not called during that window) |
