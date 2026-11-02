@@ -18,6 +18,8 @@
 
 - [ ] <!-- One check per line, verifiable with a command, a count or a look. Take each from the ticket, `submit`, `deliver` or the page. -->
 - [ ] Every outside action (repo, issue, push, message) had the user's yes first.
+<!-- The claim gate denies a claim while any line here is unticked. Mark a line that can only be ticked after the claim with "(after claim)". -->
+
 <!-- Lines earlier lessons were refused for, keep the ones that apply:
 - [ ] Signed or tagged with the start-challenge ticket, not a name (S01E03).
 - [ ] Counted with the owner's own table first, own split as a labelled layer (S01E03).

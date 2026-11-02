@@ -21,7 +21,7 @@ Before writing the brief, check the Lessons table in `CLAUDE.md`. Find the first
 
 ## 2. Call start-challenge, even when the startPoint is a page
 
-Its reply holds what the page does not: the `ticket` or proofs (often what the Challenge checks), `submit` (the answer shape) and `deliver`. Keep proofs raw in `receipts.json` under `receipts`, and mask them in `log.txt`. Call it again when the course says something changed, because a repeat call can carry an `update` field.
+Its reply holds what the page does not: the `ticket` or proofs (often what the Challenge checks), `submit` (the answer shape) and `deliver`. Write its `challengeId` at the top level of `receipts.json` (the claim gate finds the lesson by it). Keep proofs raw in `receipts.json` under `receipts`, and mask them in `log.txt`. Call it again when the course says something changed, because a repeat call can carry an `update` field.
 
 ## 3. Write `ticket.md` before the work
 
@@ -29,7 +29,7 @@ Copy [ticket.md](ticket.md) from this folder and fill it from the start-challeng
 
 ## 4. Before every claim: tick Acceptance
 
-A hook on `claim-challenge` reminds you of this. Check each line against the real result (run the count, open the link, read the issue's state), tick it, and claim only when all are ticked. When a claim is refused, add the missing check as a new Acceptance line and a line in Notes.
+A hook on `claim-challenge` (`.claude/hooks/claim-gate.mjs`) denies the claim while any Acceptance line in the ticket.md of the folder whose `receipts.json` holds that `challengeId` is unticked. A line that can only be ticked once the claim answers (e.g. "claim-challenge returns solved") carries `(after claim)` and is skipped. Check each line against the real result (run the count, open the link, read the issue's state), tick it, and claim only when all are ticked. When a claim is refused, add the missing check as a new Acceptance line and a line in Notes.
 
 ## Issue work
 

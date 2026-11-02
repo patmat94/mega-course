@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '{\"systemMessage\":\"Claim check: ticket.md Acceptance\",\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"additionalContext\":\"Before this claim: open the lesson folder ticket.md and tick every Acceptance line from a real check (run the count, open the public link, read each issue state). If a line is not ticked, fix that first instead of claiming. After a refusal, add the missing check as a new Acceptance line.\"}}'"
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/claim-gate.mjs\""
           }
         ]
       }

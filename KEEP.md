@@ -9,7 +9,18 @@ Rook story findings go in `.claude/skills/rook-search/SKILL.md`, not here.
 ## Can run
 
 <!-- keep:can-run:start -->
-Not checked yet. The keep skill's scripts/keep-check.mjs fills this part. Never edit it by hand.
+```
+checked by keep-check.mjs on win32 x64
+found: node at ~\AppData\Local\Programs\nodejs\node.exe
+found: git at ~\AppData\Local\Programs\Git\mingw64\bin\git.exe
+found: npx at ~\AppData\Local\Programs\nodejs\npx.cmd
+found: npm at ~\AppData\Local\Programs\nodejs\npm.cmd
+found: corepack at ~\AppData\Local\Programs\nodejs\corepack.cmd
+not found: wrangler
+found: netlify at ~\AppData\Local\Programs\nodejs\netlify.cmd
+not found: gh
+found: curl at ~\AppData\Local\Programs\Git\mingw64\bin\curl.exe
+```
 <!-- keep:can-run:end -->
 
 ## Findings

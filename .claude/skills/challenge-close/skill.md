@@ -1,6 +1,6 @@
 ---
 name: challenge-close
-description: Use when a MEGA.dev challenge claim is accepted — to write outcome.md, update the Lessons table in CLAUDE.md, and update the course progress memory. Invoked by challenge-start after a successful claim, or directly when the user says the challenge is solved.
+description: Use when a MEGA.dev challenge claim is accepted — to write outcome.md, and update the Lessons table in CLAUDE.md (the one home for course progress). Invoked by challenge-start after a successful claim, or directly when the user says the challenge is solved.
 ---
 
 # challenge-close
@@ -25,6 +25,6 @@ solved YYYY-MM-DD; <one-line summary of what was delivered and any key notes>
 
 Keep it short — one line. Longer notes go in `outcome.md`.
 
-## 3. Update `memory/project_mega_course_progress.md`
+## 3. Memory holds no progress
 
-Add or update the line for this lesson under the solved entries. Update the `asof` field in the frontmatter to today's date.
+The Lessons table is the only home for course progress. Do not copy lesson states into memory. Save a memory only for a fact the repo does not record (a tool installed or signed in on this machine, a user preference).
