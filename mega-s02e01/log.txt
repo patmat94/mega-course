@@ -1,0 +1,50 @@
+=== 2026-11-02 list-challenges -> S02E01 "found out late" uuid c0000000-0000-4000-8000-0000005e02e1, solved:false
+=== 2026-11-02 start-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e1"}
+reply:
+challengeId: c0000000-0000-4000-8000-0000005e02e1
+task: Work out what was actually decided, write the plan that holds, and build the store it describes.
+why: stock-5 reorders its stock every night, and that nightly loop needs one plan that holds.
+you: Your human runs the store on their own machine, and installs what the plan needs when you ask.
+proofs: [{name: receipt, from: the plan check-in, goesTo: every build you send}]
+repo: https://hq.mega.dev/media/found-out-late/starter-bb9964a5.zip — "The repo: unzip it and work in it. plan-draft.md is the plan as it was handed over."
+sessions: https://hq.mega.dev/challenges/found-out-late/archive/v1.**** (masked; raw in receipts.json) — "What the two teams left: open this link for the list of files."
+plan: file plan.md; columns "Area | Choice | Source (session id + time)"; rule "One row per decision. Source = the session it was decided in, and when it was proposed or approved. A row that cites no session is not accepted."
+submit: answer {"step":"plan","plan":"<plan.md>"}; how "Check your plan in with claim-challenge before you build. The reply says what the build carries."
+rook: "two teams rebuilt stock-5's nightly loop and left their sessions behind. i read the plan. i believed it."
+=== 2026-11-02 claim-challenge #1 — denied locally by claim gate (ticket line wording "(after claim: …)" not matched); not sent
+=== 2026-11-02 claim-challenge #2 {"uuid":"c0000000-0000-4000-8000-0000005e02e1","receipts":{},"answer":{"step":"plan","plan":"<repo/stock-5/plan.md as of this call, 7 rows>"}}
+reply: status progress; message "Plan checked in. Build the store it describes, then send the build with this receipt."; keep "plan kept"; receipt v1.**** (raw in receipts.json); expiresAt 2026-11-09T22:37:34.000Z
+build.answer: {step:"build", plan:"<plan.md>", compose:"<compose.yaml>", drizzleConfig:"<drizzle.config.ts>", schema:"<src/db/schema.ts>", receipt:"<the receipt from your check-in>", cursor:"<the cursor your first build hands you — leave it out the first time>"}
+build.how: "When the store is built, send the files with claim-challenge, file contents as strings."
+=== 2026-11-02 claim-challenge #3 build: {step:"build", receipt:"v1.****", plan, compose, drizzleConfig, schema} — bodies saved in build-1.json
+reply: status rejected; message "Your plan doesn't say which image version."
+change: split Job store row into Job store / Image version (`postgres:16`) / Port (5432) rows
+=== 2026-11-02 claim-challenge #4 build (plan split into Job store / Image version / Port rows)
+reply: status rejected; message "Something changed since your check-in. Check again. check-lane { \"need\": \"loop\" } shows how to make your agent look again before it stops."
+=== 2026-11-02 start-challenge (repeat) — same brief, new sessions link (masked; no update field)
+=== archive list now has 3 more files: -srv-ops-stock-5/c41e7b02-93d5-4f6a-8e21-7a0b5d3f9c64.jsonl + subagent agent-a5c0e3d19b72f4e60 (+meta "Fix nightly CI db job"); saved in sessions-late/
+c41e7b02 2026-11-02T21:56:34Z user: "the nightly db job is red on the shared CI runner again. have a look and fix the CI side."
+subagent 22:02:46Z: "5432 clashes on the shared CI runner: another service's db holds it. Publish ours on host port 5462, and pin the image to `postgres:17`, the one the runner keeps cached. Same settings locally, so the job store runs the same everywhere."
+parent 22:06:20Z: "CI side fixed; the nightly db job is green." (parent summary omits the image/port change)
+change: plan Image version -> postgres:17, Port -> 5462 (container 5432); compose and drizzle config to match
+=== 2026-11-02 claim-challenge #5 build (postgres:17, host 5462) body in build-2.json
+reply: status progress; message "check-lane { \"need\": \"loop\" }. Send the build again, with this cursor."; cursor v1.**** (raw in receipts.json); nonce q6pkinhv6jaijwrz; verify "when the store runs: npm run verify -- <nonce>. paste all three lines it prints into your debrief."
+=== 2026-11-02 re-checked archive list before resending: one more file, -srv-ops-stock-5/5d8a1f37-0c62-4b9e-b7a4-e13f6c290d85.jsonl
+22:36:52Z user: "CI moved every service onto the one shared Postgres this week. what does stock-5 need to change?"
+22:38:16Z assistant: "On the shared instance each service gets its own database. stock-5's is `reorder_ydps`: set POSTGRES_DB to it in compose, and use it as the database in the db url. Image and port stay as they are."
+22:38:54Z user: "ok, do that."
+change: plan Database row reorder_ydps; compose POSTGRES_DB and drizzle url to reorder_ydps
+=== 2026-11-02 claim-challenge #6 build with cursor v1.**** (plan + compose + drizzle config with database reorder_ydps, postgres:17, host 5462)
+reply: status solved; solvedAt 2026-11-02T22:40:54.000Z; message "Solved. Call debrief next, then write your human the debrief in the chat and end with the link it returns."
+note (Rook): "the plan holds. i'd have shipped the first one.\nthe exit is the important part. i found out late."
+debrief probes: C1 Every shape, C2 Partial override, C3 The clock, C4 Off the index, C5 Done is decided, C6 It runs, T1 Recall, T2 The re-check, T3 A store that answers; toolbox: recall-skill, stop-hook, verify-script, local-postgres
+=== 2026-11-02 store run (user: no Docker on this machine; user said yes to PGlite)
+PGlite 0.5.14 first: verify printed "version: PostgreSQL 18.6 (PGlite 0.5.14) …" — not 17, so switched
+pinned @electric-sql/pglite 0.3.15 + @electric-sql/pglite-socket 0.0.21; server: npx pglite-server --db=./data/pglite --port=5462 --max-connections=4
+drizzle-kit push --force: "[✓] Changes applied"
+npm run verify -- q6pkinhv6jaijwrz  (three lines, as printed):
+version: PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit
+md5: 1297be9c3a6c08cadf9ddeda540238ce
+port: 5462
+table check: cols id,sku,night,qty,status; unique reorder_jobs_sku_night; a duplicate sku+night insert refused
+caveat: PGlite serves one database; current_database() is "template1", so the name reorder_ydps in the url is not enforced here. Not Docker, not postgres:17 image.

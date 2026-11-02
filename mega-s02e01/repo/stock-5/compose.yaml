@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:17
+    ports: ["5462:5432"]
+    environment:
+      POSTGRES_USER: stock5
+      POSTGRES_PASSWORD: stock5
+      POSTGRES_DB: reorder_ydps
+    volumes:
+      - reorder-data:/var/lib/postgresql/data
+
+volumes:
+  reorder-data:

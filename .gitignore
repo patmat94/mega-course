@@ -9,3 +9,11 @@ mega-s01e04/preview/
 # S01E05: receipts hold raw secrets (pingKey, ownerCode)
 mega-s01e05/receipts.json
 .claude/skills/split-plan
+# S02E01: receipts hold the signed archive link
+mega-s02e01/receipts.json
+# S02E01: PGlite store data and packages
+mega-s02e01/repo/stock-5/node_modules/
+mega-s02e01/repo/stock-5/data/
+mega-s02e01/dl/
+mega-s02e01/sessions/
+mega-s02e01/sessions-late/

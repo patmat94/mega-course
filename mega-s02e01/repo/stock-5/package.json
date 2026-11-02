@@ -1,0 +1,19 @@
+{
+  "name": "stock-5-reorder",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "verify": "node scripts/verify.mjs",
+    "db:up": "docker compose up -d db",
+    "db:push": "drizzle-kit push"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.44.0",
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.3.15",
+    "@electric-sql/pglite-socket": "0.0.21",
+    "drizzle-kit": "^0.31.0"
+  }
+}
