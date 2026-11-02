@@ -21,7 +21,7 @@ Before writing the brief, check the Lessons table in `CLAUDE.md`. Find the first
 
 ## 2. Call start-challenge, even when the startPoint is a page
 
-Its reply holds what the page does not: the `ticket` or proofs (often what the Challenge checks), `submit` (the answer shape) and `deliver`. Write its `challengeId` at the top level of `receipts.json` (the claim gate finds the lesson by it). Keep proofs raw in `receipts.json` under `receipts`, and mask them in `log.txt`. Call it again when the course says something changed, because a repeat call can carry an `update` field.
+Its reply holds what the page does not: the `ticket` or proofs (often what the Challenge checks), `submit` (the answer shape) and `deliver`. Write its `challengeId` at the top level of `receipts.json` (the claim gate finds the lesson by it). List every source the work rests on (a file-list URL, a page, a local folder relative to the lesson folder) under `watch` in `receipts.json`. The `recheck-sources` Stop hook re-reads them before each stop and sends you back when one changed: S02E01 added sessions after the plan check-in. Keep proofs raw in `receipts.json` under `receipts`, and mask them in `log.txt`. Call it again when the course says something changed, because a repeat call can carry an `update` field.
 
 ## 3. Write `ticket.md` before the work
 

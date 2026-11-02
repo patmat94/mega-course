@@ -17,3 +17,6 @@ mega-s02e01/repo/stock-5/data/
 mega-s02e01/dl/
 mega-s02e01/sessions/
 mega-s02e01/sessions-late/
+# recheck-sources hook snapshots
+.claude/state/
+.claude/skills/recall
