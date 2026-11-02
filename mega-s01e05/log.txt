@@ -1,0 +1,15 @@
+--- start-challenge (2026-11-02) ---
+REQUEST: start-challenge { uuid: "c0000000-0000-4000-8000-0000005e01e5" }
+
+REPLY (masked):
+  challengeId: c0000000-0000-4000-8000-0000005e01e5
+  task: Put the rig's pulse agent and its test writer on a host with a public https address, so that when the course reviewer asks, an agent answers there on its own.
+  why: The course reviewer wants to know where the rig stands, asked and answered without anyone at a keyboard.
+  done: The reviewer gets its answer from your agent, and claim-challenge says solved.
+  you: Your human picks the host and makes the model key and saves it in the host's secrets; the model key never goes into this chat.
+  ownerCode: [MASKED - in receipts.json]
+  pingKey: [MASKED - in receipts.json]
+  tracker: https://hq.mega.dev/rig/tracker/issues
+  starter.url: https://hq.mega.dev/media/s01e05-swap/starter-77df23ef.zip
+  starter.sha256: 77df23ef8a75f091ee5a53f64d12b1768b3baeea047460473a966569fcadf704
+  submit.answer.url: Your agent's public https address
