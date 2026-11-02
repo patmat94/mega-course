@@ -1,13 +1,13 @@
 ---
-name: lesson-close
-description: Use when a MEGA.dev challenge claim is accepted — to write outcome.md, update the Lessons table in CLAUDE.md, and update the course progress memory. Invoked by new-lesson after a successful claim, or directly when the user says the challenge is solved.
+name: challenge-close
+description: Use when a MEGA.dev challenge claim is accepted — to write outcome.md, update the Lessons table in CLAUDE.md, and update the course progress memory. Invoked by challenge-start after a successful claim, or directly when the user says the challenge is solved.
 ---
 
-# lesson-close
+# challenge-close
 
 ## 1. Write `outcome.md` in the lesson folder
 
-Fill `mega-sXXeYY/outcome.md` from the template in `.claude/skills/new-lesson/outcome.md`. Three to six sentences:
+Fill `mega-sXXeYY/outcome.md` from the template in `.claude/skills/challenge-start/outcome.md`. Three to six sentences:
 
 - What was handed in and where (repo URL, commit, Netlify link, or whatever the challenge accepted).
 - How many claims it took and what each refused claim was missing.

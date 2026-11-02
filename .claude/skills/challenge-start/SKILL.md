@@ -1,9 +1,9 @@
 ---
-name: new-lesson
+name: challenge-start
 description: Use when a MEGA.dev Challenge starts or is picked up again — a prompt with "Start challenge S", "I am a student in the MEGA.dev course" or "Call list-challenges. Find S", or a session that resumes a Challenge (resume-challenge, "pick up S0xE0y") — before calling any MCP tool or reading any course page.
 ---
 
-# new-lesson
+# challenge-start
 
 ## 1. Lesson folder
 
@@ -41,4 +41,4 @@ Use the `netlify-upload` skill, and ask the user before each upload.
 
 ## 5. After a claim is accepted
 
-Invoke the `lesson-close` skill. It owns everything that happens after the solve: outcome.md, CLAUDE.md, and memory.
+Invoke the `challenge-close` skill. It owns everything that happens after the solve: outcome.md, CLAUDE.md, and memory.
