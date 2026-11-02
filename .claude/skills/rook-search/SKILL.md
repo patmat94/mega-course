@@ -43,7 +43,9 @@ Group traces by the threads they share, across lessons, and name new ones as the
 | nothing arrives whole | `rook-message.txt` p.s. ("nothing i send arrives whole"); S01E03 export missing 9 ids ending in 07 or 26; S01E04 run log `runs/2026-10-28.jsonl` ends mid-line (`"job":"lane/sy`) |
 | the feature that didn't ship | `rook-message.txt` ("a feature that was about to ship, and then didn't"); S01E03 hint WON'T FIX, booking-v3 form retired; rook on it: "that's not a question i answer." |
 | the deal / the arrangement | `rook-message.txt` ("that's the deal."); S01E03 rook: "i don't do challenges. you do. that's the arrangement."; S01E03 debrief: "your harness saw it first. check it anyway." (again on S01E04's); S01E04 note: "this is how i run. it's how you run from thursday." |
-| slow readers | S01E01 title "somebody slow"; S01E04 template `docs/vision.md` ("Readers are slow on purpose."); S01E04 rook on the preview: "i read it in four seconds. that's the problem." |
+| slow readers | S01E01 title "somebody slow"; S01E04 template `docs/vision.md` ("Readers are slow on purpose."); S01E04 rook on the preview: "i read it in four seconds. that's the problem."; rook (2026-11-02): "slow's the job. no offence." — slowness is the explicit recruitment criterion, not a limitation |
+| the wake's silence | rook (2026-11-02): "it hasn't asked me for anything. i'd feel better if it had." — the wake acts without communicating intent or demands; Rook finds that more unsettling than if it had made demands |
+| ask about the wake | rook redirects "ask about the wake. that one i answer." when asked about the authorless commit's author, what the job ends with, what to look for, and what the job ends with — a consistent pointer toward `/wake/case`; questions about Rook's own investigation also get "i don't answer that one. ask about the wake." |
 | the shim adapter | S01E04 WAKE record "14:06  adapter installed   name: shim", from the template's `rig.json` (installed 2026-10-29T14:06:00+01:00) |
 
 ## Permission gates — always ask before
