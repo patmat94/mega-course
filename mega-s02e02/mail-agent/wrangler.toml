@@ -1,0 +1,26 @@
+name = "mail-agent"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+[vars]
+INBOX_ID = "patryk-mail-agent@agentmail.to"
+ALLOWED_SENDERS = "rook@mail.mega.dev,patrykmatychniak@gmail.com"
+MODEL = "claude-opus-5-5"
+
+[[queues.producers]]
+queue = "mail-agent-jobs"
+binding = "JOBS"
+
+[[queues.consumers]]
+queue = "mail-agent-jobs"
+max_batch_size = 1
+max_retries = 5
+
+[[kv_namespaces]]
+binding = "SEEN"
+id = "93a21f1f45a34a72954f12a99d1afe35"
+
+[observability]
+enabled = true

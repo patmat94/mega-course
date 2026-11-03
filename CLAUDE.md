@@ -39,3 +39,4 @@ S01E02 is where this came from: the record held two unlabelled summaries, so the
 | S01E04 | before i looked | `mega-s01e04` | solved 2026-10-29; repo patmat94/mega-before-i-looked; preview on Netlify |
 | S01E05 | answer where i asked | `mega-s01e05` | solved 2026-11-02; Cloudflare Worker rig-pulse at patrykmatychniak.workers.dev; may lists must be exact |
 | S02E01 | found out late | `mega-s02e01` | solved 2026-11-02; plan + postgres:17 store on 5462; late sessions arrive mid-solve, re-read sources before each send; store not run (no Docker) |
+| S02E02 | nobody asked | `mega-s02e02` | solved 2026-11-03; mail agent patryk-mail-agent@agentmail.to on Worker mail-agent (still running); untrusted senders get no reply at all |
