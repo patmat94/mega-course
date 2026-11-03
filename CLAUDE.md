@@ -14,7 +14,7 @@ Whenever the user works on the course or calls the `mega-challenge` tools, work 
 
 ## In each lesson folder
 
-- `log.txt` — every request body sent and every reply, exactly, appended as the work goes. The debrief is built from it.
+- `log.txt` — every request body sent and every reply, exactly, appended as the work goes. The debrief is built from it. It is append-only: `.claude/hooks/log-append-only.mjs` denies any Edit or Write that changes lines already there (`docs/adr/0002-journal-append-only-hook.md`).
 - Inputs and outputs of the Challenge (messages, schemas, request bodies, drafts) as plain files.
 - Receipts and challenge ids needed by `resume-challenge` go in `receipts.json`, so a new session can pick the Challenge up.
 - `ticket.md` — Outcome, Scope and Acceptance, written at the start; go through Acceptance before every claim. `outcome.md` — written after the solve. Templates and steps are in the `challenge-start` skill.

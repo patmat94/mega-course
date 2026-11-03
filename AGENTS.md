@@ -16,7 +16,7 @@ Decisions: `docs/adr/`, one file per decision. When the human decides how someth
 1. **Plan.** A piece of work starts as a plan: `plan.md` at the root, one at a time. A finished plan moves to `docs/plans/done/`.
 2. **Split.** The plan is split into issues with the `split-plan` skill (`.agents/skills/split-plan/`). Every issue carries `Source: plan.md § <n>` and `Done when:`.
 3. **Human review.** A human reviews the split before any issue is published. No issue is published without their yes.
-4. **Workers.** One worker per issue, each on its own branch or worktree. Pick the model and the effort per issue: the strongest for logic, a cheaper one for views, copy and tests.
+4. **Workers.** One worker per issue, each on its own branch or worktree. Pick the model and the effort per issue from the table in `docs/adr/0003-model-routing.md`: the strongest for logic, a cheaper one for views, copy and tests.
 5. **Closing comment.** A worker closes its issue with a comment in exactly this shape:
 
    ```
