@@ -38,6 +38,10 @@ Every issue carries `Source:` and `Done when:`. Nothing else.
 
 Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` inside. That folder is the one source for every harness on this repo. A harness that loads skills from somewhere else points there, with a link or a config entry. Never copy a skill: copies drift.
 
+## Principles
+
+- Verify your changes in proportion to their impact. Report what you ran. Why: the checks then match the size of each change, instead of everything waiting for the claim gate (`docs/adr/0005-verify-in-proportion.md`).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.
