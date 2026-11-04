@@ -40,6 +40,12 @@ found: curl at ~\AppData\Local\Programs\Git\mingw64\bin\curl.exe
 - the weather MCP Worker mcp-fun is deployed at https://mcp-fun.patrykmatychniak.workers.dev/mcp (public, no auth) and added to Claude Code as weather-fun, local scope · source: mcp-fun/MISUSE-NOTES.md:5 · how: ran
 - the Open-Meteo geocoder returns no result for "Warszawa" with countryCode PL; "Warsaw" works · source: mcp-fun/runs/05.jsonl:9 · how: ran
 - `claude -p` started in the background inside a `while read` loop reads the loop's stdin (the other prompts) unless run with `< /dev/null` · source: mcp-fun/runs/bad-stdin/03.jsonl:25 · how: ran
+- the current MCP spec revision on 2026-11-04 is 2026-07-28 (stateless, no initialize, server/discover, Mcp-Method/Mcp-Name headers); the one before is 2025-11-25 · source: mega-s02e03/log.txt:13 · how: read
+- piping a secret from Windows PowerShell 5.1 into `wrangler secret put` stores it with a line break; pipe from bash with node `process.stdout.write(...trim())` instead · source: mega-s02e03/log.txt:27 · how: read
+- the S02E03 MCP server tool-home is deployed at https://tool-home.patrykmatychniak.workers.dev/mcp and added to Claude Code as tool-home, local scope of mega-course · source: mega-s02e03/log.txt:30 · how: read
+- in S02E03 the course caps a whole tools/call result at 1024 B and refuses tool errors that do not name the bad input and say what is wrong with it · source: mega-s02e03/log.txt:41 · how: read
+- in S02E03 the course hands an 8.5 MB file to upload; it cannot pass through a model as a tool argument, so tool-home's upload returns a one-time PUT upload_url when content is left out · source: mega-s02e03/log.txt:57 · how: read
+- S02E03 noteA was accepted and the course "will come back later"; claim again later from any session with the same uuid · source: mega-s02e03/log.txt:70 · how: read
 
 ## Receipts
 

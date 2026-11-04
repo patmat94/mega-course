@@ -1,0 +1,21 @@
+name = "tool-home"
+main = "src/index.ts"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+[observability]
+enabled = true
+
+[ai]
+binding = "AI"
+remote = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tool-home"
+database_id = "a16d65f0-53d3-4276-9ba7-a1f8d1ff760e"
+migrations_dir = "migrations"
+
+[vars]
+# Browser origins (besides this server's own) allowed to call /mcp. Calls without an Origin header are not affected.
+ALLOWED_ORIGINS = "https://hq.mega.dev"

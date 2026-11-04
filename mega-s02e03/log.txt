@@ -1,0 +1,73 @@
+== 2026-11-04 list-challenges ==
+S02E03 "schema first" uuid c0000000-0000-4000-8000-0000005e02e3, solved false. startPoint: call start-challenge with the uuid.
+== 2026-11-04 start-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e3"} ==
+task: Build a remote MCP server of your own with the four tools below, and hand it to the course.
+why: Give your tools one home that any agent can reach: a remote MCP server of your own. It is yours to keep and to grow after this.
+done: The course calls your server as a stranger and every check passes.
+you: Your human opens the connect link you give them and lets the course in, and says yes before you put anything on a public address, create an account or use a paid key.
+proofs: note (from the claim that finds your server -> saved with memo tool before human opens connect link); noteA (newest course note on server once check passed -> claim { "noteA": "<code>" }).
+build: Remote MCP server, any stack, https public address, current MCP revision (may keep previous). Spec https://modelcontextprotocol.io/specification. Only those you let in can use it. Stranger = the course. Protected resource metadata names a plan page as resource_documentation, same host, says what tools do, how sign-in works, what data it keeps.
+tools: memo_write {text}->{id}; memo_search {query}->{notes:[{id,text,...}]}; upload -> {url} served by your server, anyone can open; transcribe {url} -> {segments:[{start,text,...}]} start in seconds; results: every result is structured content matching declared output schema.
+submit: answer { "server": "https://<your host>/mcp" }. Claim with it; course hands a connect link; human opens it and lets the course in; claim again to see the check.
+== 2026-11-04 read MCP spec ==
+GET https://modelcontextprotocol.io/specification/latest -> redirects to /specification/2026-07-28 (current revision). Previous: 2025-11-25.
+2026-07-28 key points (changelog.md): stateless, no initialize; server/discover MUST; per-request _meta io.modelcontextprotocol/protocolVersion + clientCapabilities; resultType "complete" on all results; headers MCP-Protocol-Version, Mcp-Method, Mcp-Name required, mismatch -> 400 -32020; unsupported version -> 400 -32022 with data.supported; tools/list needs ttlMs + cacheScope; GET /mcp -> 405; unknown method -> 404 -32601.
+Auth: PRM (RFC9728) MUST; AS SHOULD support Client ID Metadata Documents, DCR deprecated but MAY; iss in auth response SHOULD (+ authorization_response_iss_parameter_supported); tokens bound to resource (RFC8707).
+Plan: dual-era server (2026-07-28 stateless + 2025-11-25 initialize), own OAuth AS on same Worker, D1 storage (strongly consistent), Workers AI whisper for transcribe.
+== 2026-11-04 local build + test ==
+Worker tool-home in mega-s02e03/tool-home (TypeScript, no MCP SDK): src/index.ts router, src/oauth.ts (AS: CIMD + DCR, PKCE S256, iss, resource binding, passphrase consent), src/mcp.ts (2026-07-28 + legacy 2025-11-25/06-18/03-26), src/tools.ts (D1 memos/files, Workers AI @cf/openai/whisper-large-v3-turbo), src/plan.ts.
+tsc --noEmit -> exit 0. wrangler d1 migrations apply --local -> 0001_init.sql ok.
+node test/e2e.mjs http://127.0.0.1:8787 -> 35/35 checks passed (401+WWW-Authenticate, PRM resource_documentation=/plan, AS metadata, DCR, consent, wrong passphrase 401, code+state+iss, token, code single-use, refresh rotate, server/discover, tools/list 4 tools w/ outputSchema, memo_write, memo_search, upload + public link, binary upload, transcribe, -32020 x2, base64 Mcp-Name, -32022, 404 -32601, isError, GET 405, invalid_token, Origin 403, legacy initialize/notification/list/call).
+transcribe sample.wav (SAPI TTS) -> segments [{start:0,end:1.84,"Hello from the tool home server."},{start:2.36,end:5.3,...},{start:5.8,end:8.74,"The meeting starts at 9.30 tomorrow morning."}]
+CIMD: GET /authorize with client_id https://claude.ai/oauth/claude-code-client-metadata, redirect http://localhost:51234/callback -> 200 consent page "Claude Code (identified by ...)".
+== 2026-11-04 deploy (user said "Yes, deploy") ==
+wrangler d1 create tool-home -> created, region EEUR, id a16d65f0-53d3-4276-9ba7-a1f8d1ff760e
+wrangler d1 migrations apply tool-home --remote -> 0001_init.sql ok
+wrangler deploy -> https://tool-home.patrykmatychniak.workers.dev, version 2a702f64-891e-447e-b267-fcc248c1d66d
+wrangler secret put OWNER_PASSWORD (PowerShell pipe) -> success, but e2e: approve failed (passphrase mismatch: PowerShell 5.1 pipe adds a line break). Re-put from bash with node process.stdout.write(...trim()) -> success.
+node test/e2e.mjs https://tool-home.patrykmatychniak.workers.dev -> 35/35 checks passed (transcribe segments same as local).
+== 2026-11-04 connect to Claude Code ==
+claude mcp add --transport http tool-home https://tool-home.patrykmatychniak.workers.dev/mcp -> added to local config (project mega-course)
+claude mcp list -> tool-home: ... (HTTP) - ! Needs authentication. Sign-in needs the owner: interactive claude in terminal tab c1, /mcp -> tool-home -> Authenticate.
+== 2026-11-04 claim 1 ==
+request: claim-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e3","receipts":{},"answer":{"server":"https://tool-home.patrykmatychniak.workers.dev/mcp"}}
+reply: status progress. message: "The course found your server. First save the note with your memo tool. Then give your human the connect link: they open it in their browser and let the course in. Then claim again." connect: https://hq.mega.dev/connect/s02e03?h=v1.**** (masked; raw in receipts.json). note: "Save this as a note with your memo tool before your human opens the connect link: b****g" (raw in receipts.json).
+== 2026-11-04 save note ==
+claude -p ... --allowedTools mcp__tool-home__memo_write, text = the note code -> {"id":"memo_sBmLBMVuytqHlvI4","created_at":"2026-11-04T22:52:04.158Z"}
+== 2026-11-04 claim 2 (after user approved connect link 1) ==
+request: claim-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e3","receipts":{"note":"b****g"},"answer":{"server":"https://tool-home.patrykmatychniak.workers.dev/mcp"}}
+reply: status rejected. message:
+Not yet. What the course measured last time:
+result_too_big · transcribe · on https://hq.mega.dev/media/calibration/calibration-fdadf085.mp3: the whole result is 1384 B, over the 1024 B limit (structuredContent 563 B, text 563 B, rest 258 B); make it 1024 B or less
+unhelpful_error · transcribe · a web page as the url (https://hq.mega.dev/login): the tool error does not name the url; a helpful one names it and says what is wrong with it: "transcription failed: 3030: Failed to decode audio file. Ensure it is a valid audio format."
+unhelpful_error · transcribe · a missing file as the url (https://hq.mega.dev/media/s02e03/missing.mp3): the tool error does not name the url; a helpful one names it and says what is wrong with it: "downloading the audio answered HTTP 404"
+When you have changed it, save the new note first, then give your human the new connect link and claim again.
+connect: new link (masked; raw in receipts.json). note: new code k****7 (raw in receipts.json).
+== 2026-11-04 fix after claim 2 ==
+transcribe: structuredContent drops the duplicate "text" field (segments, language?, duration?); content text = plain transcript, not JSON; times rounded to 0.01 s; tools/call _meta serverInfo shortened to {name, version}.
+transcribe errors now name the url and say what is wrong: 404/410 not found, 401/403 not public, text/html content-type "is not audio: it returned text/html (a web page)", text body sniffed, empty, too big, timeout, undecodable audio.
+tsc ok; wrangler deploy -> version 4fb6afb2-3dc7-4554-aa81-c21172c441d7
+node test/e2e.mjs (live) -> 38/38. calibration-fdadf085.mp3 whole result 738 B ("This is a calibration clip. It holds one clock time and one count. Nothing else in it matters. The library opens at 9 40..."); /login -> "https://hq.mega.dev/login is not audio: it returned text/html (a web page). Give a direct link ..."; missing.mp3 -> "https://hq.mega.dev/media/s02e03/missing.mp3 was not found: the server answered HTTP 404. ..."
+claude -p memo_write text = new note code (k****7) -> {"id":"memo_hLpsXpI7o8ix8iar","created_at":"2026-11-04T22:57:11.594Z"}
+== 2026-11-05 claim 3 (after user approved connect link 2) ==
+request: claim-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e3","receipts":{"note":"k****7"},"answer":{"server":"https://tool-home.patrykmatychniak.workers.dev/mcp"}}
+reply: status progress. message: "The course checked your server and its tools. Not solved yet. Next: the file named in this reply." name: logs/sched/2026-10-05.log. file: https://hq.mega.dev/media/s02e03/sched-2026-10-05-e915d29d.log. laneLine: "lane ebppivko". do: "Download the file. Put the `laneLine` value on top of it, as its own first line. Then upload it with your server's upload tool and claim with { "uploadUrl": "<the link it gave>" }."
+== 2026-11-05 upload large file ==
+downloaded -> upload/original.log, 8483616 bytes, 40213 lines, LF, no BOM; only scheduler log lines (no text aimed at agents).
+8.5 MB cannot go through a model as a tool argument -> upload tool gets a two-step mode: no content -> { url, upload_url (PUT raw bytes, once, 15 min) }. migration 0002_upload_put.sql (put_token, put_exp); limit 25 MB.
+tsc ok; local e2e 43/43; d1 migrations apply --remote 0002 ok; deploy version 645c2852-3da0-4bb3-bb7c-a9b0312f8b2a; live e2e 43/43.
+upload/2026-10-05.log = "lane ebppivko\n" + original -> 8483630 bytes.
+claude -p upload {filename:"2026-10-05.log", content_type:"text/plain; charset=utf-8"} -> url https://tool-home.patrykmatychniak.workers.dev/files/file_d2DMqE1eDMH2iKMF/2026-10-05.log + upload_url (masked)
+PUT upload_url -> 200 {"size":8483630}. GET url -> 200 text/plain, 8483630 bytes, identical to local file, first line "lane ebppivko".
+== 2026-11-05 claim 4 (uploadUrl) ==
+request: claim-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e3","receipts":{"note":"k****7"},"answer":{"uploadUrl":"https://tool-home.patrykmatychniak.workers.dev/files/file_d2DMqE1eDMH2iKMF/2026-10-05.log"}}
+reply 1: status retry, "The course is checking your server.", retryAfter 20. Waited 20 s, same call.
+reply 2: status progress. message: "The check passed. The course left a new note on your server. Read the newest course note with your own memo tool and claim with { "noteA": "<the code in it>" }."
+== 2026-11-05 read course note ==
+claude -p memo_search {query:"", limit:10} -> notes by source "MEGA course check": "course note m****u" (2026-11-04T23:10:32.384Z, newest) and "course note x****c" (22:54:00, older). noteA = code from the newest one (raw in receipts.json).
+== 2026-11-05 claim 5 (noteA) ==
+request: claim-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e3","receipts":{"note":"k****7"},"answer":{"noteA":"m****u"}}
+reply: status progress. message: "The note is right. The course will come back later. Claim again then." next: "The note is right. Not solved yet: claim again later, from any session."
+State: waiting for the course to come back. tool-home must stay up (refresh tokens last 30 days). Resume: claim-challenge with the same uuid; receipts.json holds note/noteA/uploadUrl.
+== 2026-11-05 scheduled re-claim set up (user said "Yes, schedule it") ==
+scheduled task mega-s02e03-reclaim: cron "7 */3 * * *" local, saved in Auto mode; claims with answer {noteA}, logs the reply, acts on nothing new, reports SOLVED / ACTION NEEDED.

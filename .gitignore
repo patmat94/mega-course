@@ -20,3 +20,5 @@ mega-s02e01/sessions-late/
 # recheck-sources hook snapshots
 .claude/state/
 .claude/skills/recall
+# S02E03: receipts hold raw note codes and signed connect links
+mega-s02e03/receipts.json

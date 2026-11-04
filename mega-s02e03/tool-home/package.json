@@ -1,0 +1,17 @@
+{
+  "name": "tool-home",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "db:local": "wrangler d1 migrations apply tool-home --local",
+    "db:remote": "wrangler d1 migrations apply tool-home --remote"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261103.1",
+    "typescript": "^5.7.2",
+    "wrangler": "^4.157.0"
+  }
+}
