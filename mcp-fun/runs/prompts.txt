@@ -1,0 +1,6 @@
+01|What should I wear in Warsaw today?
+02|Will it rain during my commute in Kraków tomorrow between 8 and 9 am?
+03|I want to go for a run in Springfield this evening. When will it be dry?
+04|Compare today's weather in Warsaw, Gdańsk and Wrocław. Where is it nicest?
+05|What's the weather like in Warszawa this weekend? Do I need an umbrella?
+06|Is the air ok for a run in Kraków right now, and what should I wear for it at 18:00?

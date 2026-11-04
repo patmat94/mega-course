@@ -1,0 +1,5 @@
+{
+  "mcpServers": {
+    "weather-fun": { "type": "http", "url": "https://mcp-fun.patrykmatychniak.workers.dev/mcp" }
+  }
+}
