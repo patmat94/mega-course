@@ -35,7 +35,7 @@ A remote MCP server of our own runs over https at a public address, with four to
 - [x] Tickets and tokens are masked in `log.txt`; the raw ones are only in `receipts.json`.
 - [x] Course log file uploaded with our upload tool, lane line as its own first line, rest byte-identical; public link checked (200, 8483630 B, identical).
 - [x] noteA read from the newest course note (source "MEGA course check", 23:10:32Z) with our own memo tool via Claude Code.
-- [ ] claim with noteA returns solved (after claim)
+- [x] claim with noteA returns solved (after claim) (scheduled re-claim 08:12 UTC)
 
 ## Notes
 

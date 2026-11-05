@@ -1,0 +1,5 @@
+# Outcome
+
+Handed in: the remote MCP server tool-home at https://tool-home.patrykmatychniak.workers.dev/mcp, a Cloudflare Worker with D1 and Workers AI whisper (source in `tool-home/`). It speaks MCP 2026-07-28 and 2025-11-25, runs its own OAuth server with passphrase consent, and offers memo_write, memo_search, upload and transcribe.
+It took six claims. Claim 2 was refused because a whole transcribe result was 1384 B against the 1024 B cap and the errors did not name the url. Claims 1, 3, 4 and 5 were progress steps: connect link, large-file upload, noteA. Claim 5 was told "come back later", and the scheduled task mega-s02e03-reclaim got `solved` on the next run.
+For the next lesson: tool-home must stay up, because Claude Code uses it as `tool-home` and the course still holds a grant (refresh tokens last 30 days). There is no revoke route yet: taking the grant back means deleting its rows in the D1 `grants` table. The solve gave the artifact `hands` (a tool contract template plus validator) in the deck. It is not installed.

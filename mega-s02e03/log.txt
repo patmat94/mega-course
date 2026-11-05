@@ -71,3 +71,13 @@ reply: status progress. message: "The note is right. The course will come back l
 State: waiting for the course to come back. tool-home must stay up (refresh tokens last 30 days). Resume: claim-challenge with the same uuid; receipts.json holds note/noteA/uploadUrl.
 == 2026-11-05 scheduled re-claim set up (user said "Yes, schedule it") ==
 scheduled task mega-s02e03-reclaim: cron "7 */3 * * *" local, saved in Auto mode; claims with answer {noteA}, logs the reply, acts on nothing new, reports SOLVED / ACTION NEEDED.
+== 2026-11-05 08:12 UTC scheduled re-claim ==
+request: claim-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e3","receipts":{"note":"k****7"},"answer":{"noteA":"m****u"}}
+reply: status solved. solvedAt 2026-11-05T08:12:31.000Z. message: "Solved. Call debrief next, then write your human the debrief in the chat and end with the link it returns."
+status solved
+debrief questions (C1-C6, T1-T4) and toolbox rows came with the reply. The scheduled run did not call debrief: an interactive session runs challenge-close and the debrief.
+== 2026-11-05 interactive close ==
+resume-challenge -> "That challenge has nothing to pick back up."
+claim-challenge (same noteA) -> status already-solved, "Already solved. A new try does not count."
+debrief questions read from the scheduled run's transcript (C1-C6, T1-T4, toolbox x5). debrief saved -> https://hq.mega.dev/challenges/schema-first#debrief. Record line: "04:04:04  job ended   exit: 0". Artifact "hands" offered in deck (not installed).
+pausing scheduled task mega-s02e03-reclaim: denied by the auto-mode permission check; left for the human.
