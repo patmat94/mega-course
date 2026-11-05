@@ -81,3 +81,12 @@ resume-challenge -> "That challenge has nothing to pick back up."
 claim-challenge (same noteA) -> status already-solved, "Already solved. A new try does not count."
 debrief questions read from the scheduled run's transcript (C1-C6, T1-T4, toolbox x5). debrief saved -> https://hq.mega.dev/challenges/schema-first#debrief. Record line: "04:04:04  job ended   exit: 0". Artifact "hands" offered in deck (not installed).
 pausing scheduled task mega-s02e03-reclaim: denied by the auto-mode permission check; left for the human.
+== 2026-11-05 after the solve: debrief takeaway (user: "Measure each tool's whole result on the live server before the first claim ... Add a revoke route ... I want it also add it as behaviour in future tools") ==
+tool-home: POST /revoke (RFC 7009, revocation_endpoint in AS metadata; one token ends its whole approval via grant_id); owner page /grants (passphrase, list clients holding tokens, "Take back" ends all their tokens); log line tool_result_size {tool, bytes, budget} per tools/call (no arguments).
+e2e: measures every tools/call whole result, prints max per tool, fails over RESULT_BUDGET (1024); revoke + grants checks. local 58/58.
+deploy (user said "Yes, deploy") -> version 8b089892-4d5b-4dad-b6b1-cebdfdda51e2 (before: 645c2852-3da0-4bb3-bb7c-a9b0312f8b2a). live e2e 57/58: FAIL every memo_search result <= 1024 B — 3 calls, max 2314 B (empty query, many notes).
+fix: memo_search fits the budget (newest notes first; omitted + hint when left out; one long note clipped, truncated: true); its text block is one plain line per note; right passphrase clears login_fails for that IP (e2e sends one wrong passphrase per run; 5 runs locked local out). local 60/60.
+deploy (user said "Yes, deploy fix") -> version 5707f363-1e66-4d9c-80fc-3c50ceb9b427. live e2e 60/60: memo_search max 1024 B, 2 shown omitted 4; long note clipped to 255 chars.
+this Claude Code session (tool list loaded at session start) -> mcp__tool-home__memo_search {query:""}: Structured content does not match the tool's output schema: data must NOT have additional properties, data must NOT have additional properties, data/notes/0 must NOT have additional properties
+fresh claude -p -> memo_search {query:""}: Notes returned: 1 / Omitted: 15 / Hint: "Text clipped to fit 1 kB; search words from the part you need."
+rule for future tool servers: docs/adr/0006-tool-servers-measure-and-revoke.md + AGENTS.md Principles.

@@ -41,6 +41,7 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 ## Principles
 
 - Verify your changes in proportion to their impact. Report what you ran. Why: the checks then match the size of each change, instead of everything waiting for the claim gate (`docs/adr/0005-verify-in-proportion.md`).
+- A tool server is done only when its end-to-end test measures every tool's whole result on the live server against the budget (1024 B unless the client sets one), and when access can be taken back without a database edit: a `/revoke` route and an owner page to end a client's grant. Why: the course counts every byte a model receives, and a grant that only a database edit can end stays open (`docs/adr/0006-tool-servers-measure-and-revoke.md`).
 
 ## Rules
 

@@ -46,6 +46,8 @@ found: curl at ~\AppData\Local\Programs\Git\mingw64\bin\curl.exe
 - in S02E03 the course caps a whole tools/call result at 1024 B and refuses tool errors that do not name the bad input and say what is wrong with it · source: mega-s02e03/log.txt:41 · how: read
 - in S02E03 the course hands an 8.5 MB file to upload; it cannot pass through a model as a tool argument, so tool-home's upload returns a one-time PUT upload_url when content is left out · source: mega-s02e03/log.txt:57 · how: read
 - S02E03 noteA was accepted and the course "will come back later"; claim again later from any session with the same uuid · source: mega-s02e03/log.txt:70 · how: read
+- a Claude Code session keeps the tool schemas it loaded at start: after tool-home's memo_search output gained fields (outputSchema has additionalProperties false), this session's call was rejected, while a fresh `claude -p` got the new schema and worked; reconnect clients after an output schema changes · source: mega-s02e03/log.txt:90 · how: ran
+- tool-home has an owner page /grants (passphrase) to take a client's access back, and /revoke for clients; no database edit needed · source: mega-s02e03/log.txt:85 · how: read
 
 ## Receipts
 
@@ -101,6 +103,11 @@ weather-fun: https://mcp-fun.patrykmatychniak.workers.dev/mcp (HTTP) - ✔ Conne
 command: Invoke-WebRequest "https://geocoding-api.open-meteo.com/v1/search?name=Warszawa&count=5&countryCode=PL"
 ```
 {"generationtime_ms":0.23436546}
+```
+
+from: mcp__tool-home__memo_search {query:""} in this Claude Code session, after deploy 5707f363
+```
+Structured content does not match the tool's output schema: data must NOT have additional properties, data must NOT have additional properties, data/notes/0 must NOT have additional properties
 ```
 
 from: claude -p run 03, first batch (mcp-fun/runs/bad-stdin/03.jsonl), end of final text

@@ -26,6 +26,8 @@ export interface TokenInfo {
   client_name: string;
   scope: string;
   resource: string;
+  /** Shared by the access and refresh tokens of one approval, so revoking one ends both. Older grants lack it. */
+  grant_id?: string;
 }
 
 // ---------- metadata ----------
@@ -52,6 +54,8 @@ export function authServerMetadata(origin: string) {
     response_modes_supported: ["query"],
     grant_types_supported: ["authorization_code", "refresh_token"],
     token_endpoint_auth_methods_supported: ["none", "client_secret_basic", "client_secret_post"],
+    revocation_endpoint: `${origin}/revoke`,
+    revocation_endpoint_auth_methods_supported: ["none", "client_secret_basic", "client_secret_post"],
     code_challenge_methods_supported: ["S256"],
     client_id_metadata_document_supported: true,
     authorization_response_iss_parameter_supported: true,
@@ -221,6 +225,27 @@ export async function register(req: Request, env: Env): Promise<Response> {
   return json(out, 201, { "cache-control": "no-store" });
 }
 
+// ---------- owner passphrase (consent page and grants page) ----------
+
+const LOCKED_MSG = "Too many wrong passphrases. Wait 15 minutes and try again.";
+
+/** Checks the owner passphrase in the form, with the per-IP wrong-passphrase limit. */
+async function checkOwner(req: Request, env: Env, form: FormData): Promise<"ok" | "wrong" | "locked"> {
+  const ip = req.headers.get("cf-connecting-ip") ?? "unknown";
+  const fails = await env.DB.prepare("SELECT count FROM login_fails WHERE ip = ? AND exp > ?").bind(ip, nowSec()).first<{ count: number }>();
+  if (fails && fails.count >= MAX_FAILS) return "locked";
+  const passphrase = String(form.get("passphrase") ?? "");
+  if (!env.OWNER_PASSWORD || !(await safeEqual(passphrase, env.OWNER_PASSWORD))) {
+    await env.DB.prepare(
+      "INSERT INTO login_fails (ip, count, exp) VALUES (?, 1, ?) ON CONFLICT(ip) DO UPDATE SET count = count + 1",
+    ).bind(ip, nowSec() + FAIL_WINDOW).run();
+    return "wrong";
+  }
+  // The right passphrase clears this address's count, so the owner is not locked out by earlier typos.
+  if (fails) await env.DB.prepare("DELETE FROM login_fails WHERE ip = ?").bind(ip).run();
+  return "ok";
+}
+
 // ---------- /authorize ----------
 
 interface Pending {
@@ -306,18 +331,9 @@ export async function authorizePost(req: Request, env: Env, origin: string): Pro
     return redirectWith(pending.redirect_uri, { error: "access_denied", error_description: "The owner denied access", state: pending.state, iss: origin });
   }
 
-  const ip = req.headers.get("cf-connecting-ip") ?? "unknown";
-  const fails = await env.DB.prepare("SELECT count FROM login_fails WHERE ip = ? AND exp > ?").bind(ip, nowSec()).first<{ count: number }>();
-  if (fails && fails.count >= MAX_FAILS) {
-    return html(consentPage(pending, pendingId, "Too many wrong passphrases. Wait 15 minutes and try again."), 429);
-  }
-  const passphrase = String(form.get("passphrase") ?? "");
-  if (!env.OWNER_PASSWORD || !(await safeEqual(passphrase, env.OWNER_PASSWORD))) {
-    await env.DB.prepare(
-      "INSERT INTO login_fails (ip, count, exp) VALUES (?, 1, ?) ON CONFLICT(ip) DO UPDATE SET count = count + 1",
-    ).bind(ip, nowSec() + FAIL_WINDOW).run();
-    return html(consentPage(pending, pendingId, "Wrong passphrase."), 401);
-  }
+  const owner = await checkOwner(req, env, form);
+  if (owner === "locked") return html(consentPage(pending, pendingId, LOCKED_MSG), 429);
+  if (owner === "wrong") return html(consentPage(pending, pendingId, "Wrong passphrase."), 401);
 
   await takeGrant(env, pendingId, "pending");
   const code = randomToken(32);
@@ -357,6 +373,7 @@ async function authenticateClient(req: Request, form: FormData, env: Env): Promi
 }
 
 async function issueTokens(env: Env, info: TokenInfo) {
+  if (!info.grant_id) info = { ...info, grant_id: randomToken(12) };
   const access = randomToken(32);
   const refresh = randomToken(32);
   await Promise.all([
@@ -405,6 +422,89 @@ export async function token(req: Request, env: Env, origin: string): Promise<Res
   }
 
   return tokenError("unsupported_grant_type", "grant_type must be authorization_code or refresh_token");
+}
+
+// ---------- revocation ----------
+
+const TOKEN_KINDS = "kind IN ('access', 'refresh')";
+
+/** POST /revoke (RFC 7009): a client ends its own grant. Answers 200 even for an unknown token. */
+export async function revoke(req: Request, env: Env): Promise<Response> {
+  let form: FormData;
+  try { form = await req.formData(); } catch { return tokenError("invalid_request", "body must be application/x-www-form-urlencoded"); }
+  const client = await authenticateClient(req, form, env);
+  if (client instanceof Response) return client;
+  const tok = form.get("token")?.toString();
+  if (!tok) return tokenError("invalid_request", "token is required");
+  const key = await sha256(tok);
+  const row = await env.DB.prepare(`SELECT data FROM grants WHERE key = ? AND ${TOKEN_KINDS}`).bind(key).first<{ data: string }>();
+  if (row) {
+    const info = JSON.parse(row.data) as TokenInfo;
+    if (info.client_id !== client.client_id) return tokenError("unauthorized_client", "token was issued to another client");
+    if (info.grant_id) {
+      await env.DB.prepare(`DELETE FROM grants WHERE ${TOKEN_KINDS} AND json_extract(data, '$.grant_id') = ?`).bind(info.grant_id).run();
+    } else {
+      await env.DB.prepare("DELETE FROM grants WHERE key = ?").bind(key).run();
+    }
+  }
+  return new Response(null, { status: 200, headers: { "cache-control": "no-store" } });
+}
+
+interface ClientGrants { client_id: string; client_name: string; tokens: number; until: number }
+
+async function listGrants(env: Env): Promise<ClientGrants[]> {
+  const { results } = await env.DB.prepare(
+    `SELECT json_extract(data, '$.client_id') AS client_id, MAX(json_extract(data, '$.client_name')) AS client_name,
+            COUNT(*) AS tokens, MAX(exp) AS until
+       FROM grants WHERE ${TOKEN_KINDS} AND exp >= ? GROUP BY 1 ORDER BY until DESC`,
+  ).bind(nowSec()).all<ClientGrants>();
+  return results;
+}
+
+/** Ends every access and refresh token of one client. Returns how many were deleted. */
+async function revokeClient(env: Env, clientId: string): Promise<number> {
+  const r = await env.DB.prepare(`DELETE FROM grants WHERE ${TOKEN_KINDS} AND json_extract(data, '$.client_id') = ?`)
+    .bind(clientId).run();
+  return r.meta.changes ?? 0;
+}
+
+/** GET /grants: the owner's page to see who holds access and take it back. */
+export function grantsGet(): Response {
+  return html(grantsPage(null));
+}
+
+export async function grantsPost(req: Request, env: Env): Promise<Response> {
+  const form = await req.formData();
+  const owner = await checkOwner(req, env, form);
+  if (owner === "locked") return html(grantsPage(null, LOCKED_MSG), 429);
+  if (owner === "wrong") return html(grantsPage(null, "Wrong passphrase."), 401);
+  let notice: string | undefined;
+  const target = form.get("revoke")?.toString();
+  if (target) {
+    const n = await revokeClient(env, target);
+    notice = n ? `Access taken back from ${target}: ${n} token(s) ended. Its next call gets 401.` : `${target} held no active tokens.`;
+  }
+  return html(grantsPage(await listGrants(env), undefined, notice));
+}
+
+function grantsPage(list: ClientGrants[] | null, error?: string, notice?: string): string {
+  const rows = (list ?? []).map((g) => `<tr><td><b>${esc(g.client_name)}</b><br><span class="muted">${esc(g.client_id)}</span></td>
+<td>${g.tokens}</td><td>${new Date(g.until * 1000).toISOString().slice(0, 16).replace("T", " ")} UTC</td>
+<td><button type="submit" name="revoke" value="${esc(g.client_id)}">Take back</button></td></tr>`).join("");
+  const table = list === null ? "" : list.length === 0
+    ? `<p>No client holds access now.</p>`
+    : `<table><tr><th>Client</th><th>Tokens</th><th>Lasts until</th><th></th></tr>${rows}</table>`;
+  return page("Who has access — Tool Home", `
+<h1>Who has access</h1>
+<div class="card">
+${error ? `<p class="err">${esc(error)}</p>` : ""}${notice ? `<p>${esc(notice)}</p>` : ""}
+<form method="post" action="/grants">
+<p><label for="pp">Server passphrase (needed for every action here)</label><br>
+<input id="pp" type="password" name="passphrase" autocomplete="current-password" autofocus required></p>
+${table}
+<p><button class="primary" type="submit">${list === null ? "Show clients" : "Refresh"}</button></p>
+</form></div>
+<p class="muted">Taking access back ends the client's access and refresh tokens. To get back in, the client must ask again and you must approve it on the consent page. <a href="/plan">Plan</a></p>`);
 }
 
 // ---------- bearer check ----------

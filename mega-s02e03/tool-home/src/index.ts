@@ -1,6 +1,6 @@
 import { Env, json, html } from "./util";
 import {
-  authServerMetadata, authorizeGet, authorizePost, checkBearer, protectedResourceMetadata, register, token,
+  authServerMetadata, authorizeGet, authorizePost, checkBearer, grantsGet, grantsPost, protectedResourceMetadata, register, revoke, token,
 } from "./oauth";
 import { handleMcp } from "./mcp";
 import { readFile, receivePut } from "./tools";
@@ -78,6 +78,14 @@ export default {
     if (path === "/token") {
       if (m === "OPTIONS") return new Response(null, { status: 204, headers: PUBLIC_CORS });
       if (m === "POST") return withHeaders(await token(req, env, origin), PUBLIC_CORS);
+    }
+    if (path === "/revoke") {
+      if (m === "OPTIONS") return new Response(null, { status: 204, headers: PUBLIC_CORS });
+      if (m === "POST") return withHeaders(await revoke(req, env), PUBLIC_CORS);
+    }
+    if (path === "/grants") {
+      if (m === "GET") return grantsGet();
+      if (m === "POST") return grantsPost(req, env);
     }
     if (path === "/authorize") {
       if (m === "GET") return authorizeGet(req, env, origin);

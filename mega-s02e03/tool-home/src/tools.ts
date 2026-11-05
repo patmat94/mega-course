@@ -35,7 +35,7 @@ export const TOOLS = [
   {
     name: "memo_search",
     title: "Find notes",
-    description: "Finds saved notes whose text contains every word of the query (case-insensitive), newest first. An empty query returns the newest notes.",
+    description: "Finds saved notes whose text contains every word of the query (case-insensitive), newest first. An empty query returns the newest notes. The result is kept under 1 kB: when matching notes do not fit, the oldest are left out (omitted counts them) and a very long note is clipped (truncated: true); hint then says how to narrow the search.",
     inputSchema: {
       type: "object",
       properties: {
@@ -57,11 +57,14 @@ export const TOOLS = [
               text: { type: "string" },
               created_at: { type: "string", format: "date-time" },
               source: { type: "string", description: "Name of the client that saved the note." },
+              truncated: { type: "boolean", description: "Only when the text was clipped to fit the result." },
             },
             required: ["id", "text", "created_at", "source"],
             additionalProperties: false,
           },
         },
+        omitted: { type: "integer", minimum: 1, description: "Only when matching notes were left out to fit the result: how many." },
+        hint: { type: "string", description: "Only when notes were left out or clipped: how to see the rest." },
       },
       required: ["notes"],
       additionalProperties: false,
@@ -166,7 +169,40 @@ async function memoWrite(args: Args, env: Env, who: TokenInfo) {
   return { id, created_at };
 }
 
-async function memoSearch(args: Args, env: Env) {
+interface Note { id: string; text: string; created_at: string; source: string; truncated?: true }
+
+/**
+ * Keeps the newest notes that fit the whole-result budget. When notes are left out, `omitted` counts them
+ * and `hint` says how to reach them; a single note too long on its own is clipped and marked `truncated`.
+ */
+function fitNotes(rows: Note[], fits: Fits): Record<string, unknown> {
+  const build = (notes: Note[]) => {
+    const omitted = rows.length - notes.length;
+    const clipped = notes.some((n) => n.truncated);
+    if (!omitted && !clipped) return { notes };
+    const hint = clipped
+      ? "Text clipped to fit 1 kB; search words from the part you need."
+      : `${omitted} older note(s) left out to fit 1 kB; add query words to see them.`;
+    return omitted ? { notes, omitted, hint } : { notes, hint };
+  };
+  const notes: Note[] = [];
+  for (const row of rows) {
+    if (fits(build([...notes, row]))) { notes.push(row); continue; }
+    if (notes.length === 0) {
+      // Longest prefix of the newest note that still fits (binary search on characters).
+      let lo = 0, hi = row.text.length;
+      while (lo < hi) {
+        const mid = Math.ceil((lo + hi) / 2);
+        if (fits(build([{ ...row, text: row.text.slice(0, mid), truncated: true }]))) lo = mid; else hi = mid - 1;
+      }
+      notes.push({ ...row, text: row.text.slice(0, lo), truncated: true });
+    }
+    break;
+  }
+  return build(notes);
+}
+
+async function memoSearch(args: Args, env: Env, fits: Fits) {
   onlyKeys(args, ["query", "limit"]);
   const query = str(args, "query", { required: true, max: 500 })!;
   let limit = 20;
@@ -180,8 +216,8 @@ async function memoSearch(args: Args, env: Env) {
   const where = words.map(() => "instr(lower(text), ?) > 0").join(" AND ");
   const sql = `SELECT id, text, created_at, client_name AS source FROM memos ${where ? `WHERE ${where}` : ""} ORDER BY n DESC LIMIT ?`;
   const { results } = await env.DB.prepare(sql).bind(...words, limit)
-    .all<{ id: string; text: string; created_at: string; source: string }>();
-  return { notes: results.map((r) => ({ id: r.id, text: r.text, created_at: r.created_at, source: r.source })) };
+    .all<Note>();
+  return fitNotes(results.map((r) => ({ id: r.id, text: r.text, created_at: r.created_at, source: r.source })), fits);
 }
 
 // ---------- upload ----------
@@ -383,15 +419,26 @@ export function summaryText(name: string, out: Record<string, unknown>): string 
     const segs = (out as unknown as Transcript).segments;
     return segs.length ? segs.map((s) => s.text).join(" ") : "No speech found.";
   }
+  if (name === "memo_search") {
+    // Plain lines, not the JSON again: escaped JSON would cost about twice the bytes of each note.
+    const { notes, hint } = out as { notes: Note[]; hint?: string };
+    const lines = notes.map((n) => `${n.id} (${n.created_at.slice(0, 16)}Z, ${n.source}${n.truncated ? ", clipped" : ""}): ${n.text}`);
+    if (!lines.length) lines.push("No notes match.");
+    if (hint) lines.push(hint);
+    return lines.join("\n");
+  }
   return JSON.stringify(out);
 }
 
 // ---------- dispatch ----------
 
-export async function callTool(name: string, args: Args, env: Env, who: TokenInfo, origin: string): Promise<Record<string, unknown>> {
+/** True when this tool output, sent as a whole tools/call result, stays within the result budget. */
+export type Fits = (out: Record<string, unknown>) => boolean;
+
+export async function callTool(name: string, args: Args, env: Env, who: TokenInfo, origin: string, fits: Fits): Promise<Record<string, unknown>> {
   switch (name) {
     case "memo_write": return memoWrite(args, env, who);
-    case "memo_search": return memoSearch(args, env);
+    case "memo_search": return memoSearch(args, env, fits);
     case "upload": return upload(args, env, who, origin);
     case "transcribe": return transcribe(args, env, origin) as unknown as Promise<Record<string, unknown>>;
     default: throw new Error("unknown tool");

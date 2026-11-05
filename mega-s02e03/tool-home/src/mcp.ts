@@ -34,6 +34,23 @@ function decodeHeader(v: string): string {
   return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
 }
 
+/** Whole-result budget per tools/call, in bytes of the JSON result object. The course counts every byte. */
+export const RESULT_BUDGET = 1024;
+
+const resultBytes = (result: unknown) => new TextEncoder().encode(JSON.stringify(result)).length;
+
+/** The modern-era result envelope; tool results carry a short serverInfo. */
+function wrapResult(result: Record<string, unknown>, short: boolean) {
+  return { resultType: "complete", ...result,
+    _meta: { [SERVER_INFO_KEY]: short ? { name: SERVER_INFO.name, version: SERVER_INFO.version } : SERVER_INFO } };
+}
+
+function logResultSize(tool: string, result: unknown) {
+  const bytes = resultBytes(result);
+  const line = { event: "tool_result_size", tool, bytes, budget: RESULT_BUDGET, over: bytes > RESULT_BUDGET };
+  if (line.over) console.warn(JSON.stringify(line)); else console.log(JSON.stringify(line));
+}
+
 function toolResult(name: string, out: Record<string, unknown>) {
   return { content: [{ type: "text", text: summaryText(name, out) }], structuredContent: out, isError: false };
 }
@@ -51,8 +68,10 @@ async function runTool(params: Record<string, unknown>, env: Env, who: TokenInfo
   if (typeof args !== "object" || args === null || Array.isArray(args)) {
     return toolFailure("arguments must be an object");
   }
+  // Measured as the modern-era result (the larger envelope), so the legacy one fits too.
+  const fits = (out: Record<string, unknown>) => resultBytes(wrapResult(toolResult(name, out), true)) <= RESULT_BUDGET;
   try {
-    return toolResult(name, await callTool(name, args as Record<string, unknown>, env, who, origin));
+    return toolResult(name, await callTool(name, args as Record<string, unknown>, env, who, origin, fits));
   } catch (e) {
     if (e instanceof ToolError) return toolFailure(e.message);
     console.error("tool failed", name, e);
@@ -117,9 +136,14 @@ export async function handleMcp(req: Request, env: Env, who: TokenInfo, origin: 
   }
 
   // Tool results stay small (the course caps a whole result at 1 kB), so they carry a short serverInfo.
-  const done = (result: Record<string, unknown>, short = false) =>
-    json({ jsonrpc: "2.0", id, result: { resultType: "complete", ...result,
-      _meta: { [SERVER_INFO_KEY]: short ? { name: SERVER_INFO.name, version: SERVER_INFO.version } : SERVER_INFO } } });
+  const wrap = wrapResult;
+  const done = (result: Record<string, unknown>) => json({ jsonrpc: "2.0", id, result: wrap(result, false) });
+  // Logs each tool result's whole size (never its arguments), so an over-budget tool shows in Workers Logs.
+  const toolDone = (name: unknown, result: Record<string, unknown>) => {
+    const full = wrap(result, true);
+    logResultSize(String(name), full);
+    return json({ jsonrpc: "2.0", id, result: full });
+  };
 
   switch (method) {
     case "server/discover":
@@ -134,7 +158,7 @@ export async function handleMcp(req: Request, env: Env, who: TokenInfo, origin: 
       return done({ tools: TOOLS, ttlMs: 300000, cacheScope: "private" });
     case "tools/call": {
       const r = await runTool(params, env, who, origin, id, true);
-      return r instanceof Response ? r : done(r, true);
+      return r instanceof Response ? r : toolDone(params.name, r);
     }
     default:
       return rpcError(id, -32601, `Method not found: ${method}`, 404);
@@ -160,7 +184,9 @@ async function legacy(method: string, params: Record<string, unknown>, env: Env,
       return done({ tools: TOOLS });
     case "tools/call": {
       const r = await runTool(params, env, who, origin, id, false);
-      return r instanceof Response ? r : done(r);
+      if (r instanceof Response) return r;
+      logResultSize(String(params.name), r);
+      return done(r);
     }
     default:
       return json({ jsonrpc: "2.0", id, error: { code: -32601, message: `Method not found: ${method}` } });
