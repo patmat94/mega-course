@@ -66,7 +66,7 @@ async function runTool(params: Record<string, unknown>, env: Env, who: TokenInfo
   }
   const args = params.arguments ?? {};
   if (typeof args !== "object" || args === null || Array.isArray(args)) {
-    return toolFailure("arguments must be an object");
+    return toolFailure(`arguments: must be an object. Send the ${name} arguments as a JSON object, such as {"${TOOLS.find((t) => t.name === name)!.inputSchema.required[0]}": "..."}.`);
   }
   // Measured as the modern-era result (the larger envelope), so the legacy one fits too.
   const fits = (out: Record<string, unknown>) => resultBytes(wrapResult(toolResult(name, out), true)) <= RESULT_BUDGET;
@@ -75,7 +75,7 @@ async function runTool(params: Record<string, unknown>, env: Env, who: TokenInfo
   } catch (e) {
     if (e instanceof ToolError) return toolFailure(e.message);
     console.error("tool failed", name, e);
-    return toolFailure(`${name} failed on the server`);
+    return toolFailure(`No field is wrong: ${name} failed on the server. Send the same call again in 1 minute.`);
   }
 }
 

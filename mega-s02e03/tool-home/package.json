@@ -4,10 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "typecheck": "tsc --noEmit",
+    "deploy": "node scripts/contracts.mjs --check && wrangler deploy",
+    "typecheck": "node scripts/contracts.mjs --check && tsc --noEmit",
     "db:local": "wrangler d1 migrations apply tool-home --local",
-    "db:remote": "wrangler d1 migrations apply tool-home --remote"
+    "db:remote": "wrangler d1 migrations apply tool-home --remote",
+    "contracts": "node scripts/contracts.mjs",
+    "check-tools": "node scripts/check-tools.mjs"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^5.20261103.1",

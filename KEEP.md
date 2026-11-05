@@ -48,6 +48,8 @@ found: curl at ~\AppData\Local\Programs\Git\mingw64\bin\curl.exe
 - S02E03 noteA was accepted and the course "will come back later"; claim again later from any session with the same uuid · source: mega-s02e03/log.txt:70 · how: read
 - a Claude Code session keeps the tool schemas it loaded at start: after tool-home's memo_search output gained fields (outputSchema has additionalProperties false), this session's call was rejected, while a fresh `claude -p` got the new schema and worked; reconnect clients after an output schema changes · source: mega-s02e03/log.txt:90 · how: ran
 - tool-home has an owner page /grants (passphrase) to take a client's access back, and /revoke for clients; no database edit needed · source: mega-s02e03/log.txt:85 · how: read
+- the hands skill (version 1451720afc1f) is installed in .claude/skills/hands/; its check-tool.mjs does not sign in, so tool-home is checked through test/stdio-proxy.mjs (npm run check-tools -- <base-url> --yes) · source: mega-s02e03/log.txt:94 · how: ran
+- tool-home's upload no longer takes file contents: it always returns upload_url for one HTTP PUT · source: mega-s02e03/tool-home/tools/upload.tool.md:15 · how: read
 
 ## Receipts
 

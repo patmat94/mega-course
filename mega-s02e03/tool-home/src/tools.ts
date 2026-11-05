@@ -1,5 +1,6 @@
-import { Env, base64ToBytes, bytesToBase64, newId, randomToken, safeEqual, sha256 } from "./util";
+import { Env, bytesToBase64, newId, randomToken, safeEqual, sha256 } from "./util";
 import type { TokenInfo } from "./oauth";
+import contracts from "./contracts.json";
 
 export class ToolError extends Error {}
 
@@ -9,158 +10,40 @@ const CHUNK = 1024 * 1024;
 const MAX_AUDIO = 25 * 1024 * 1024;
 const WHISPER = "@cf/openai/whisper-large-v3-turbo";
 
-// Tool definitions, in a fixed order.
-export const TOOLS = [
-  {
-    name: "memo_write",
-    title: "Save a note",
-    description: "Saves a text note on this server and returns its id. Notes can be found again with memo_search.",
-    inputSchema: {
-      type: "object",
-      properties: { text: { type: "string", minLength: 1, maxLength: 20000, description: "The note text." } },
-      required: ["text"],
-      additionalProperties: false,
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        id: { type: "string", description: "Id of the saved note." },
-        created_at: { type: "string", format: "date-time" },
-      },
-      required: ["id", "created_at"],
-      additionalProperties: false,
-    },
-    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
-  },
-  {
-    name: "memo_search",
-    title: "Find notes",
-    description: "Finds saved notes whose text contains every word of the query (case-insensitive), newest first. An empty query returns the newest notes. The result is kept under 1 kB: when matching notes do not fit, the oldest are left out (omitted counts them) and a very long note is clipped (truncated: true); hint then says how to narrow the search.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        query: { type: "string", maxLength: 500, description: "Words to look for. Empty matches every note." },
-        limit: { type: "integer", minimum: 1, maximum: 100, default: 20, description: "Most notes to return." },
-      },
-      required: ["query"],
-      additionalProperties: false,
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        notes: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              id: { type: "string" },
-              text: { type: "string" },
-              created_at: { type: "string", format: "date-time" },
-              source: { type: "string", description: "Name of the client that saved the note." },
-              truncated: { type: "boolean", description: "Only when the text was clipped to fit the result." },
-            },
-            required: ["id", "text", "created_at", "source"],
-            additionalProperties: false,
-          },
-        },
-        omitted: { type: "integer", minimum: 1, description: "Only when matching notes were left out to fit the result: how many." },
-        hint: { type: "string", description: "Only when notes were left out or clipped: how to see the rest." },
-      },
-      required: ["notes"],
-      additionalProperties: false,
-    },
-    annotations: { readOnlyHint: true, openWorldHint: false },
-  },
-  {
-    name: "upload",
-    title: "Upload a file",
-    description: "Stores a file on this server and returns a public link to it that anyone can open without signing in. Small files (up to 1 MB): send content as text (encoding utf8) or base64 (encoding base64). Large files (up to 25 MB), or bytes you have on disk: leave content out; the result then also has upload_url, and you send the raw bytes with one HTTP PUT to it (no auth header, valid 15 minutes, once). The link in url works as soon as the PUT returns 200.",
-    inputSchema: {
-      type: "object",
-      properties: {
-        filename: { type: "string", minLength: 1, maxLength: 200, description: "File name, e.g. notes.txt or clip.mp3." },
-        content: { type: "string", maxLength: 1400000, description: "File content: plain text, or base64 when encoding is base64. Leave out to get an upload_url instead." },
-        encoding: { type: "string", enum: ["utf8", "base64"], default: "utf8", description: "How content is encoded." },
-        content_type: { type: "string", maxLength: 200, description: "MIME type. Guessed from the file name when left out." },
-      },
-      required: ["filename"],
-      additionalProperties: false,
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        url: { type: "string", format: "uri", description: "Public link, served by this server." },
-        id: { type: "string" },
-        filename: { type: "string" },
-        size: { type: "integer", description: "Size in bytes (when content was sent)." },
-        content_type: { type: "string" },
-        upload_url: { type: "string", format: "uri", description: "Only when content was left out: PUT the raw bytes here." },
-        expires_at: { type: "string", format: "date-time", description: "Only with upload_url: when it stops working." },
-      },
-      required: ["url", "id", "filename", "content_type"],
-      additionalProperties: false,
-    },
-    annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
-  },
-  {
-    name: "transcribe",
-    title: "Transcribe audio",
-    description: "Downloads audio from a public http(s) URL (up to 25 MB; mp3, wav, m4a, ogg, flac, webm) and turns speech into timestamped text with Whisper. start and end are seconds from the beginning of the audio.",
-    inputSchema: {
-      type: "object",
-      properties: { url: { type: "string", format: "uri", description: "Public link to the audio file." } },
-      required: ["url"],
-      additionalProperties: false,
-    },
-    outputSchema: {
-      type: "object",
-      properties: {
-        segments: {
-          type: "array",
-          items: {
-            type: "object",
-            properties: {
-              start: { type: "number", minimum: 0, description: "Start time in seconds." },
-              end: { type: "number", minimum: 0, description: "End time in seconds." },
-              text: { type: "string" },
-            },
-            required: ["start", "end", "text"],
-            additionalProperties: false,
-          },
-        },
-        language: { type: "string" },
-        duration: { type: "number", description: "Audio length in seconds." },
-      },
-      required: ["segments"],
-      additionalProperties: false,
-    },
-    annotations: { readOnlyHint: true, openWorldHint: true },
-  },
-] as const;
+// Tool definitions. Name, description and schemas come from tools/<name>.tool.md (hands TOOL.md) through
+// src/contracts.json: change the TOOL.md, run npm run contracts, then the code.
+const EXTRA: Record<string, { title: string; annotations: Record<string, boolean> }> = {
+  memo_write: { title: "Save a note", annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false } },
+  memo_search: { title: "Find notes", annotations: { readOnlyHint: true, openWorldHint: false } },
+  upload: { title: "Upload a file", annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false } },
+  transcribe: { title: "Transcribe audio", annotations: { readOnlyHint: true, openWorldHint: true } },
+};
+export const TOOLS = contracts.map((c) => ({ name: c.name, title: EXTRA[c.name].title, description: c.description,
+  inputSchema: c.inputSchema, outputSchema: c.outputSchema, annotations: EXTRA[c.name].annotations }));
 
 type Args = Record<string, unknown>;
 
 function str(args: Args, key: string, opts: { required?: boolean; max?: number; min?: number } = {}): string | undefined {
   const v = args[key];
   if (v === undefined || v === null) {
-    if (opts.required) throw new ToolError(`${key} is required`);
+    if (opts.required) throw new ToolError(`${key}: required. Send ${key} as a string.`);
     return undefined;
   }
-  if (typeof v !== "string") throw new ToolError(`${key} must be a string`);
-  if (opts.min !== undefined && v.length < opts.min) throw new ToolError(`${key} must have at least ${opts.min} character(s)`);
-  if (opts.max !== undefined && v.length > opts.max) throw new ToolError(`${key} must have at most ${opts.max} characters`);
+  if (typeof v !== "string") throw new ToolError(`${key}: must be a string, not ${Array.isArray(v) ? "an array" : typeof v}. Send ${key} as text.`);
+  if (opts.min !== undefined && v.length < opts.min) throw new ToolError(`${key}: shorter than ${opts.min} character${opts.min === 1 ? "" : "s"}. Send at least ${opts.min}.`);
+  if (opts.max !== undefined && v.length > opts.max) throw new ToolError(`${key}: longer than ${opts.max} characters. Send at most ${opts.max}.`);
   return v;
 }
 
-function onlyKeys(args: Args, keys: string[]) {
+function onlyKeys(args: Args, keys: string[], tool: string, then = "") {
   const extra = Object.keys(args).filter((k) => !keys.includes(k));
-  if (extra.length) throw new ToolError(`unknown argument(s): ${extra.join(", ")}`);
+  if (extra.length) throw new ToolError(`${extra[0]}: not an argument of ${tool}. Send only: ${keys.join(", ")}${then}.`);
 }
 
 // ---------- memo ----------
 
 async function memoWrite(args: Args, env: Env, who: TokenInfo) {
-  onlyKeys(args, ["text"]);
+  onlyKeys(args, ["text"], "memo_write");
   const text = str(args, "text", { required: true, min: 1, max: 20000 })!;
   const id = newId("memo");
   const created_at = new Date().toISOString();
@@ -180,9 +63,11 @@ function fitNotes(rows: Note[], fits: Fits): Record<string, unknown> {
     const omitted = rows.length - notes.length;
     const clipped = notes.some((n) => n.truncated);
     if (!omitted && !clipped) return { notes };
-    const hint = clipped
-      ? "Text clipped to fit 1 kB; search words from the part you need."
-      : `${omitted} older note(s) left out to fit 1 kB; add query words to see them.`;
+    const hint = clipped && omitted
+      ? `Text clipped and ${omitted} older note(s) left out to fit 1 kB; add query words from the part you need.`
+      : clipped
+        ? "Text clipped to fit 1 kB; search words from the part you need."
+        : `${omitted} older note(s) left out to fit 1 kB; add query words to see them.`;
     return omitted ? { notes, omitted, hint } : { notes, hint };
   };
   const notes: Note[] = [];
@@ -203,12 +88,13 @@ function fitNotes(rows: Note[], fits: Fits): Record<string, unknown> {
 }
 
 async function memoSearch(args: Args, env: Env, fits: Fits) {
-  onlyKeys(args, ["query", "limit"]);
+  onlyKeys(args, ["query", "limit"], "memo_search");
+  if (args.query === undefined || args.query === null) throw new ToolError(`query: required. Send query as a string; send "" for the newest notes.`);
   const query = str(args, "query", { required: true, max: 500 })!;
   let limit = 20;
   if (args.limit !== undefined) {
     if (typeof args.limit !== "number" || !Number.isInteger(args.limit) || args.limit < 1 || args.limit > 100) {
-      throw new ToolError("limit must be an integer from 1 to 100");
+      throw new ToolError("limit: must be a whole number from 1 to 100. Send a number in that range, or leave limit out.");
     }
     limit = args.limit;
   }
@@ -247,40 +133,34 @@ function chunkStatements(env: Env, id: string, bytes: Uint8Array) {
 }
 
 async function upload(args: Args, env: Env, who: TokenInfo, origin: string) {
-  onlyKeys(args, ["filename", "content", "encoding", "content_type"]);
-  const filename = safeName(str(args, "filename", { required: true, min: 1, max: 200 })!);
-  const content = str(args, "content");
-  const encoding = str(args, "encoding") ?? "utf8";
-  if (encoding !== "utf8" && encoding !== "base64") throw new ToolError(`encoding "${encoding}" is not supported: use utf8 or base64`);
+  onlyKeys(args, ["filename", "content_type"], "upload", "; then PUT the bytes to upload_url");
+  const raw = str(args, "filename", { max: 200 });
+  if (raw === undefined || raw.length < 1) throw new ToolError("filename: " + (raw === undefined ? "required" : "shorter than 1 character") + ". Send a name such as notes.txt.");
+  const filename = safeName(raw);
   const ext = filename.includes(".") ? filename.split(".").pop()!.toLowerCase() : "";
-  const type = (str(args, "content_type", { max: 200 }) ?? "").trim() || TYPES[ext] || "application/octet-stream";
-  if (!/^[\w.+-]+\/[\w.+-]+(\s*;\s*[\w.+-]+=[\w.+"-]+)*$/.test(type)) throw new ToolError(`content_type "${type}" is not a valid MIME type`);
+  const asked = (str(args, "content_type", { max: 200 }) ?? "").trim();
+  const type = asked || TYPES[ext] || "application/octet-stream";
+  if (!/^[\w.+-]+\/[\w.+-]+(\s*;\s*[\w.+-]+=[\w.+"-]+)*$/.test(type)) {
+    throw new ToolError(`content_type: "${type}" is not a MIME type. Send one such as text/plain, or leave content_type out.`);
+  }
   const id = newId("file");
-  const url = `${origin}/files/${id}/${encodeURIComponent(filename)}`;
-  const created = new Date().toISOString();
+  const token = randomToken(24);
+  const exp = Math.floor(Date.now() / 1000) + PUT_TTL;
+  await env.DB.prepare("INSERT INTO files (id, name, type, size, chunks, created_at, client_id, put_token, put_exp) VALUES (?, ?, ?, 0, 0, ?, ?, ?, ?)")
+    .bind(id, filename, type, new Date().toISOString(), who.client_id, await sha256(token), exp).run();
+  return { url: `${origin}/files/${id}/${encodeURIComponent(filename)}`, upload_url: `${origin}/put/${id}/${token}`, expires_at: new Date(exp * 1000).toISOString() };
+}
 
-  if (content === undefined) {
-    const token = randomToken(24);
-    const exp = Math.floor(Date.now() / 1000) + PUT_TTL;
-    await env.DB.prepare("INSERT INTO files (id, name, type, size, chunks, created_at, client_id, put_token, put_exp) VALUES (?, ?, ?, 0, 0, ?, ?, ?, ?)")
-      .bind(id, filename, type, created, who.client_id, await sha256(token), exp).run();
-    return { url, id, filename, content_type: type, upload_url: `${origin}/put/${id}/${token}`, expires_at: new Date(exp * 1000).toISOString() };
-  }
-
-  let bytes: Uint8Array;
-  if (encoding === "base64") {
-    try { bytes = base64ToBytes(content); } catch { throw new ToolError("content is not valid base64; send encoding utf8 for text"); }
-  } else {
-    bytes = new TextEncoder().encode(content);
-  }
-  if (bytes.length > MAX_UPLOAD) throw new ToolError(`the file is ${bytes.length} bytes, over the ${MAX_UPLOAD} byte limit`);
+/** Stores bytes the server made itself (a long transcript) as a public file, and returns its link. */
+async function storeFile(env: Env, who: TokenInfo, origin: string, filename: string, type: string, bytes: Uint8Array): Promise<string> {
+  const id = newId("file");
   const { chunks, stmts } = chunkStatements(env, id, bytes);
   await env.DB.batch([
     env.DB.prepare("INSERT INTO files (id, name, type, size, chunks, created_at, client_id) VALUES (?, ?, ?, ?, ?, ?, ?)")
-      .bind(id, filename, type, bytes.length, chunks, created, who.client_id),
+      .bind(id, filename, type, bytes.length, chunks, new Date().toISOString(), who.client_id),
     ...stmts,
   ]);
-  return { url, id, filename, size: bytes.length, content_type: type };
+  return `${origin}/files/${id}/${encodeURIComponent(filename)}`;
 }
 
 /** PUT /put/<id>/<token>: stores the raw request body for a file created by upload without content. */
@@ -324,8 +204,9 @@ export async function readFile(env: Env, id: string): Promise<{ name: string; ty
 
 // ---------- transcribe ----------
 
-const AUDIO_HINT = "Give a direct link to an audio file (mp3, wav, m4a, ogg, flac or webm) that opens without sign-in.";
+const AUDIO_HINT = "Send a direct link to an audio file (mp3, wav, m4a, ogg, flac or webm) that opens without sign-in.";
 const MB = (n: number) => `${(n / 1024 / 1024).toFixed(1)} MB`;
+const MAX_REDIRECTS = 5;
 
 /** True when the bytes start like an HTML, XML or JSON document rather than audio. */
 function looksLikeText(b: Uint8Array): boolean {
@@ -333,100 +214,133 @@ function looksLikeText(b: Uint8Array): boolean {
   return head.startsWith("<!doctype") || head.startsWith("<html") || head.startsWith("<?xml") || head.startsWith("{") || head.startsWith("[");
 }
 
-async function loadAudio(url: URL, env: Env, origin: string): Promise<Uint8Array> {
-  const u = url.toString();
-  if (url.origin === origin) {
-    const m = url.pathname.match(/^\/files\/([^/]+)/);
+/**
+ * True for a host on this machine or a private network (hands rule 9): localhost names, loopback, private,
+ * link-local, carrier-grade NAT and unique-local ranges, and IPv4 written as one number. A name that resolves
+ * to such an address is also out of reach: a Worker cannot open connections into a private network.
+ */
+function isPrivateHost(hostname: string): boolean {
+  const h = hostname.toLowerCase().replace(/^\[|\]$/g, "").replace(/\.$/, "");
+  if (h === "localhost" || h.endsWith(".localhost") || h.endsWith(".local") || h.endsWith(".internal")) return true;
+  if (/^\d+$/.test(h) || /^0x[0-9a-f]+$/.test(h)) return true;
+  const v4 = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (v4) {
+    const p = Number(v4[1]), q = Number(v4[2]);
+    return p === 0 || p === 10 || p === 127 || (p === 169 && q === 254) || (p === 172 && q >= 16 && q <= 31) ||
+      (p === 192 && q === 168) || (p === 100 && q >= 64 && q <= 127) || p >= 224;
+  }
+  if (h.includes(":")) {
+    if (h === "::" || h === "::1") return true;
+    if (/^(fc|fd)/.test(h) || /^fe[89ab]/.test(h)) return true;
+    const mapped = h.match(/^::ffff:(.+)$/);
+    if (mapped) return mapped[1].includes(".") ? isPrivateHost(mapped[1]) : true;
+  }
+  return false;
+}
+
+/** Checks one link before it is fetched: http or https, a public host. Returns the URL, or throws for the model. */
+function publicUrl(raw: string, origin: string, shown = raw): URL {
+  let url: URL;
+  try { url = new URL(raw); } catch { throw new ToolError(`url: ${shown} is not an http or https link. ${AUDIO_HINT}`); }
+  if (url.protocol !== "https:" && url.protocol !== "http:") throw new ToolError(`url: ${shown} is not an http or https link. ${AUDIO_HINT}`);
+  if (url.origin !== origin && isPrivateHost(url.hostname)) {
+    throw new ToolError(`url: ${shown} points to a private or local address. Send a public link to an audio file (mp3, wav, m4a, ogg, flac or webm) that opens without sign-in.`);
+  }
+  return url;
+}
+
+async function loadAudio(first: URL, env: Env, origin: string): Promise<Uint8Array> {
+  const u = first.toString();
+  if (first.origin === origin) {
+    const m = first.pathname.match(/^\/files\/([^/]+)/);
     const f = m ? await readFile(env, m[1]) : null;
-    if (!f) throw new ToolError(`${u} was not found: this server has no file at that link. ${AUDIO_HINT}`);
-    if (f.bytes.length > MAX_AUDIO) throw new ToolError(`${u} is ${MB(f.bytes.length)}, over the ${MB(MAX_AUDIO)} limit.`);
+    if (!f) throw new ToolError(`url: ${u} was not found: this server has no file at that link. Send a link that opens, or upload the file first.`);
+    if (f.bytes.length > MAX_AUDIO) throw new ToolError(`url: ${u} is ${MB(f.bytes.length)}, over the ${MB(MAX_AUDIO)} limit. Send a shorter recording, at most ${MB(MAX_AUDIO)}.`);
     return f.bytes;
   }
-  let res: Response;
-  try {
-    res = await fetch(u, { redirect: "follow", signal: AbortSignal.timeout(30000), headers: { "user-agent": "tool-home/1.0", accept: "audio/*, */*;q=0.5" } });
-  } catch (e) {
-    const why = (e as Error).name === "TimeoutError" ? "it did not answer within 30 seconds" : `the request failed (${(e as Error).message})`;
-    throw new ToolError(`Could not download ${u}: ${why}. ${AUDIO_HINT}`);
+  // Redirects are followed by hand, so each hop is checked like the first link (hands rule 9).
+  let url = first;
+  let res: Response | undefined;
+  for (let hop = 0; ; hop++) {
+    try {
+      res = await fetch(url.toString(), { redirect: "manual", signal: AbortSignal.timeout(30000), headers: { "user-agent": "tool-home/1.0", accept: "audio/*, */*;q=0.5" } });
+    } catch (e) {
+      if ((e as Error).name === "TimeoutError") throw new ToolError(`url: ${u} did not answer within 30 seconds. Send the same call again later, or a link on a faster host.`);
+      throw new ToolError(`url: ${u} could not be downloaded (${(e as Error).message}). ${AUDIO_HINT}`);
+    }
+    if (res.status < 300 || res.status >= 400) break;
+    const next = res.headers.get("location");
+    await res.body?.cancel();
+    if (!next) throw new ToolError(`url: ${u} answered HTTP ${res.status} with no address to go on to. ${AUDIO_HINT}`);
+    if (hop >= MAX_REDIRECTS) throw new ToolError(`url: ${u} redirects more than ${MAX_REDIRECTS} times. Send the final link of the audio file.`);
+    const target = new URL(next, url);
+    url = publicUrl(target.toString(), origin, `${u} (redirected to ${target.host})`);
+    if (url.origin === origin) return loadAudio(url, env, origin);
   }
   if (res.status === 404 || res.status === 410) {
-    throw new ToolError(`${u} was not found: the server answered HTTP ${res.status}. Check that the link is right and the file still exists.`);
+    throw new ToolError(`url: ${u} was not found: the server answered HTTP ${res.status}. Send a link that opens, or check that the file still exists.`);
   }
-  if (res.status === 401 || res.status === 403) {
-    throw new ToolError(`${u} is not public: the server answered HTTP ${res.status}. ${AUDIO_HINT}`);
-  }
-  if (!res.ok) throw new ToolError(`Could not download ${u}: the server answered HTTP ${res.status}. ${AUDIO_HINT}`);
+  if (res.status === 401 || res.status === 403) throw new ToolError(`url: ${u} is not public: the server answered HTTP ${res.status}. ${AUDIO_HINT}`);
+  if (!res.ok) throw new ToolError(`url: ${u} could not be downloaded: the server answered HTTP ${res.status}. ${AUDIO_HINT}`);
   const type = (res.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
   if (type.startsWith("text/") || type.includes("html") || type.includes("json") || type === "application/xml") {
     await res.body?.cancel();
-    throw new ToolError(`${u} is not audio: it returned ${type}${type.includes("html") ? " (a web page)" : ""}. ${AUDIO_HINT}`);
+    throw new ToolError(`url: ${u} is not audio: it returned ${type}${type.includes("html") ? " (a web page)" : ""}. ${AUDIO_HINT}`);
   }
   const len = Number(res.headers.get("content-length") ?? "0");
   if (len > MAX_AUDIO) {
     await res.body?.cancel();
-    throw new ToolError(`${u} is ${MB(len)}, over the ${MB(MAX_AUDIO)} limit.`);
+    throw new ToolError(`url: ${u} is ${MB(len)}, over the ${MB(MAX_AUDIO)} limit. Send a shorter recording, at most ${MB(MAX_AUDIO)}.`);
   }
   const buf = new Uint8Array(await res.arrayBuffer());
-  if (buf.length > MAX_AUDIO) throw new ToolError(`${u} is ${MB(buf.length)}, over the ${MB(MAX_AUDIO)} limit.`);
-  if (buf.length === 0) throw new ToolError(`${u} is empty: it returned 0 bytes. ${AUDIO_HINT}`);
-  if (looksLikeText(buf)) throw new ToolError(`${u} is not audio: it returned a text document${type ? ` (${type})` : ""}. ${AUDIO_HINT}`);
+  if (buf.length > MAX_AUDIO) throw new ToolError(`url: ${u} is ${MB(buf.length)}, over the ${MB(MAX_AUDIO)} limit. Send a shorter recording, at most ${MB(MAX_AUDIO)}.`);
+  if (buf.length === 0) throw new ToolError(`url: ${u} is empty: it returned 0 bytes. ${AUDIO_HINT}`);
+  if (looksLikeText(buf)) throw new ToolError(`url: ${u} is not audio: it returned a text document${type ? ` (${type})` : ""}. ${AUDIO_HINT}`);
   return buf;
 }
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
-export interface Transcript {
-  segments: { start: number; end: number; text: string }[];
-  language?: string;
-  duration?: number;
-}
+export interface Segment { start: number; text: string }
 
-async function transcribe(args: Args, env: Env, origin: string): Promise<Transcript> {
-  onlyKeys(args, ["url"]);
+async function transcribe(args: Args, env: Env, who: TokenInfo, origin: string, fits: Fits): Promise<Record<string, unknown>> {
+  onlyKeys(args, ["url"], "transcribe");
   const raw = str(args, "url", { required: true, max: 2000 })!;
-  let url: URL;
-  try { url = new URL(raw); } catch { throw new ToolError(`${raw} is not a valid URL. ${AUDIO_HINT}`); }
-  if (url.protocol !== "https:" && url.protocol !== "http:") throw new ToolError(`${raw} is not an http or https link. ${AUDIO_HINT}`);
+  const url = publicUrl(raw.trim(), origin);
   const audio = await loadAudio(url, env, origin);
 
-  type Seg = { start?: number; end?: number; text?: string };
-  type Out = { text?: string; segments?: Seg[]; transcription_info?: { language?: string; duration?: number } };
+  type Seg = { start?: number; text?: string };
+  type Out = { text?: string; segments?: Seg[] };
   let out: Out;
   try {
-    out = (await (env.AI as unknown as { run(m: string, i: unknown): Promise<Out> }).run(WHISPER, { audio: bytesToBase64(audio) }));
+    out = await (env.AI as unknown as { run(m: string, i: unknown): Promise<Out> }).run(WHISPER, { audio: bytesToBase64(audio) });
   } catch (e) {
     const msg = (e as Error).message;
     if (/decode|format/i.test(msg)) {
-      throw new ToolError(`${url} could not be decoded as audio: the file is not in a format Whisper reads (${MB(audio.length)} downloaded). ${AUDIO_HINT}`);
+      throw new ToolError(`url: ${url} could not be decoded as audio (${MB(audio.length)} downloaded). ${AUDIO_HINT}`);
     }
-    throw new ToolError(`Transcribing ${url} failed on the speech model: ${msg}. Try again in a minute.`);
+    throw new ToolError(`No field is wrong: the speech model failed (${msg.slice(0, 120)}). Send the same call again in 1 minute.`);
   }
-  let segments = (out.segments ?? [])
+  let segments: Segment[] = (out.segments ?? [])
     .filter((s) => typeof s.text === "string" && s.text.trim())
-    .map((s) => ({ start: round(Math.max(0, Number(s.start) || 0)), end: round(Math.max(0, Number(s.end) || 0)), text: s.text!.trim() }));
-  const duration = out.transcription_info?.duration;
+    .map((s) => ({ start: round(Math.max(0, Number(s.start) || 0)), text: s.text!.trim() }));
   const whole = (out.text ?? "").trim();
-  if (segments.length === 0 && whole) segments = [{ start: 0, end: round(Number(duration) || 0), text: whole }];
-  const result: Transcript = { segments };
-  if (typeof out.transcription_info?.language === "string") result.language = out.transcription_info.language;
-  if (typeof duration === "number") result.duration = round(duration);
-  return result;
+  if (segments.length === 0 && whole) segments = [{ start: 0, text: whole }];
+  if (fits({ segments })) return { segments };
+
+  // Over the budget (hands rule 4): the whole transcript goes to a file on this server; the result keeps the
+  // first segments that fit, the link and the size.
+  const file = new TextEncoder().encode(segments.map((s) => `[${s.start}] ${s.text}`).join("\n") + "\n");
+  const name = (url.pathname.split("/").pop() || "audio").replace(/\.[^.]*$/, "") + ".transcript.txt";
+  const transcript_url = await storeFile(env, who, origin, safeName(name), "text/plain; charset=utf-8", file);
+  const build = (n: number) => ({ segments: segments.slice(0, n), omitted: segments.length - n, transcript_url, transcript_bytes: file.length });
+  let n = 0;
+  while (n < segments.length - 1 && fits(build(n + 1))) n++;
+  return build(n);
 }
 
-/** Short text for the content block: the transcript for transcribe, the JSON for the other tools. */
-export function summaryText(name: string, out: Record<string, unknown>): string {
-  if (name === "transcribe") {
-    const segs = (out as unknown as Transcript).segments;
-    return segs.length ? segs.map((s) => s.text).join(" ") : "No speech found.";
-  }
-  if (name === "memo_search") {
-    // Plain lines, not the JSON again: escaped JSON would cost about twice the bytes of each note.
-    const { notes, hint } = out as { notes: Note[]; hint?: string };
-    const lines = notes.map((n) => `${n.id} (${n.created_at.slice(0, 16)}Z, ${n.source}${n.truncated ? ", clipped" : ""}): ${n.text}`);
-    if (!lines.length) lines.push("No notes match.");
-    if (hint) lines.push(hint);
-    return lines.join("\n");
-  }
+/** The text item: the same JSON as structuredContent, compact, once (hands rule 2). */
+export function summaryText(_name: string, out: Record<string, unknown>): string {
   return JSON.stringify(out);
 }
 
@@ -440,7 +354,7 @@ export async function callTool(name: string, args: Args, env: Env, who: TokenInf
     case "memo_write": return memoWrite(args, env, who);
     case "memo_search": return memoSearch(args, env, fits);
     case "upload": return upload(args, env, who, origin);
-    case "transcribe": return transcribe(args, env, origin) as unknown as Promise<Record<string, unknown>>;
+    case "transcribe": return transcribe(args, env, who, origin, fits);
     default: throw new Error("unknown tool");
   }
 }

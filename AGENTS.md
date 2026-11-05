@@ -41,7 +41,7 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 ## Principles
 
 - Verify your changes in proportion to their impact. Report what you ran. Why: the checks then match the size of each change, instead of everything waiting for the claim gate (`docs/adr/0005-verify-in-proportion.md`).
-- A tool server is done only when its end-to-end test measures every tool's whole result on the live server against the budget (1024 B unless the client sets one), and when access can be taken back without a database edit: a `/revoke` route and an owner page to end a client's grant. Why: the course counts every byte a model receives, and a grant that only a database edit can end stays open (`docs/adr/0006-tool-servers-measure-and-revoke.md`).
+- Build or change every tool an agent calls with the hands skill (`.claude/skills/hands/`): a TOOL.md per tool before the code, and `check-tool.mjs --yes` exiting 0 against the live tool before a claim or hand-off (budget 1024 B unless the client sets one). A server with sign-in keeps it on, gets a signed-in stdio entry for the check, and lets access be taken back without a database edit (`/revoke` and an owner page). Why: the course counts every byte a model receives, and a grant that only a database edit can end stays open (`docs/adr/0006-tool-servers-measure-and-revoke.md`).
 
 ## Rules
 

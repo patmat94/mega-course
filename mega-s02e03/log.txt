@@ -90,3 +90,11 @@ deploy (user said "Yes, deploy fix") -> version 5707f363-1e66-4d9c-80fc-3c50ceb9
 this Claude Code session (tool list loaded at session start) -> mcp__tool-home__memo_search {query:""}: Structured content does not match the tool's output schema: data must NOT have additional properties, data must NOT have additional properties, data/notes/0 must NOT have additional properties
 fresh claude -p -> memo_search {query:""}: Notes returned: 1 / Omitted: 15 / Hint: "Text clipped to fit 1 kB; search words from the part you need."
 rule for future tool servers: docs/adr/0006-tool-servers-measure-and-revoke.md + AGENTS.md Principles.
+== 2026-11-05 hands skill (user: "install, change the ADR 0006 so project will use skill instead, and change tool-home accordingly") ==
+artifact install (uuid of S02E03) -> hands version 1451720afc1f, 6 files; written to .claude/skills/hands/, every sha256 matched; check-tool --self-test -> self-test ok; example spec -> exit 2 (nothing sent).
+tool-home: tools/<name>.tool.md per tool (hands TOOL.md); scripts/contracts.mjs writes src/contracts.json (typecheck/deploy refuse a stale copy); upload takes no file contents (always upload_url); text item = compact JSON; errors start with the field; transcribe output {segments:[{start,text}]}, over budget -> transcript file + transcript_url; transcribe refuses local/private hosts at every redirect.
+test/stdio-proxy.mjs: signed-in stdio entry for check-tool (registers, approves with passphrase, revokes its token on stdin end). scripts/check-tools.mjs runs check-tool on all four.
+local: check-tools --yes exit 0 (4/4); e2e 66/66.
+deploy (user said "Yes, deploy") -> version 314f4d2b-6ff2-4162-a3e4-d9bffd1f7e15. live check-tools --yes exit 0: memo_search 1024 B, memo_write 334 B, transcribe 814 B, upload 718 B. live e2e 66/66 (transcribe max 932 B).
+fresh claude -p -> upload keys url, upload_url, expires_at; memo_search 1 note, no omitted.
+ADR 0006 rewritten: tools are built with hands; revoke + reconnect-after-schema-change stay. AGENTS.md Principles line updated.

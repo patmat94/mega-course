@@ -1,0 +1,235 @@
+[
+  {
+    "name": "memo_write",
+    "description": "Saves a text note on this server and returns its id. Find it again with memo_search. It does not edit or delete notes.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 20000,
+          "description": "The note, as plain text, 1 to 20,000 characters. Example: \"Meeting moved to 14:00.\""
+        }
+      },
+      "required": [
+        "text"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Id of the saved note, such as memo_hLpsXpI7o8ix8iar."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When it was saved, in UTC."
+        }
+      },
+      "required": [
+        "id",
+        "created_at"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "memo_search",
+    "description": "Finds saved notes that contain every word of the query, newest first; an empty query returns the newest notes. The result stays under 1 kB: older matches are left out (omitted counts them) and one very long note is clipped (truncated), and hint says how to narrow the search.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "maxLength": 500,
+          "description": "Words to look for, case-insensitive; a note matches when it holds every word. Empty matches every note. Example: \"meeting 14:00\"."
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "description": "Most notes to return, from 1 to 100. Default 20. Fewer come back when they would not fit 1 kB."
+        }
+      },
+      "required": [
+        "query"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "notes": {
+          "type": "array",
+          "description": "Matching notes, newest first.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id of the note."
+              },
+              "text": {
+                "type": "string",
+                "description": "The note text, or its start when truncated is true."
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "When it was saved, in UTC."
+              },
+              "source": {
+                "type": "string",
+                "description": "Name of the client that saved it."
+              },
+              "truncated": {
+                "type": "boolean",
+                "description": "Only when the text was clipped to fit 1 kB."
+              }
+            },
+            "required": [
+              "id",
+              "text",
+              "created_at",
+              "source"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "omitted": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Only when older matching notes were left out to fit 1 kB: how many."
+        },
+        "hint": {
+          "type": "string",
+          "description": "Only when notes were left out or clipped: how to see the rest."
+        }
+      },
+      "required": [
+        "notes"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "upload",
+    "description": "Gives a link for a file to store on this server: PUT the file's raw bytes to upload_url, then share url, which anyone can open without signing in. The file itself never goes through the tool call.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "description": "File name with its extension, such as notes.txt or clip.mp3. It ends the link, and sets the type when content_type is left out."
+        },
+        "content_type": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "MIME type, such as text/plain or audio/mpeg. Guessed from the file name when left out."
+        }
+      },
+      "required": [
+        "filename"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Public link to the file on this server. It works once the PUT returns 200; anyone with it can open it."
+        },
+        "upload_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Send the raw bytes here with one HTTP PUT, no sign-in header, once, up to 25 MB."
+        },
+        "expires_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When upload_url stops working, 15 minutes after this call."
+        }
+      },
+      "required": [
+        "url",
+        "upload_url",
+        "expires_at"
+      ],
+      "additionalProperties": false
+    }
+  },
+  {
+    "name": "transcribe",
+    "description": "Turns speech in an audio file at a public link into text segments, each with its start in seconds (Whisper). When the transcript does not fit 1 kB, the result holds the first segments and a link to the whole transcript. It does not translate.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "maxLength": 2000,
+          "description": "Public http or https link to an audio file (mp3, wav, m4a, ogg, flac or webm), up to 25 MB, not on a private network. Example: https://example.com/talk.mp3."
+        }
+      },
+      "required": [
+        "url"
+      ],
+      "additionalProperties": false
+    },
+    "outputSchema": {
+      "type": "object",
+      "properties": {
+        "segments": {
+          "type": "array",
+          "description": "What was said, in order; only the first ones when omitted is set.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "start": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Seconds from the start of the audio, rounded to 0.01."
+              },
+              "text": {
+                "type": "string",
+                "description": "What was said from that point."
+              }
+            },
+            "required": [
+              "start",
+              "text"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "omitted": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Only when the transcript did not fit 1 kB: how many later segments are left out."
+        },
+        "transcript_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Only with omitted: public link to the whole transcript as text, one line per segment, \"[start] text\"."
+        },
+        "transcript_bytes": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Only with omitted: size of that text in bytes."
+        }
+      },
+      "required": [
+        "segments"
+      ],
+      "additionalProperties": false
+    }
+  }
+]

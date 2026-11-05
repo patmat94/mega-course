@@ -99,26 +99,59 @@ const marker = `fitcheck${randomBytes(4).toString("hex")}`;
 for (let i = 0; i < 6; i++) await modern("tools/call", { name: "memo_write", arguments: { text: `${marker} note ${i} ` + "lorem ipsum ".repeat(2) } });
 x = await modern("tools/call", { name: "memo_search", arguments: { query: marker } });
 let sc = x.body.result?.structuredContent;
-check("memo_search leaves out old notes to fit", sc?.notes?.length >= 2 && sc.omitted === 6 - sc.notes.length && /left out/.test(sc.hint ?? "") && /left out/.test(x.body.result.content[0].text) &&
+check("memo_search leaves out old notes to fit", sc?.notes?.length >= 1 && sc.omitted === 6 - sc.notes.length && /left out/.test(sc.hint ?? "") && /left out/.test(x.body.result.content[0].text) &&
   sc.notes[0].text.startsWith(`${marker} note 5`) && !sc.notes.some((n) => n.truncated), `${sc?.notes?.length} shown, omitted ${sc?.omitted}`);
 await modern("tools/call", { name: "memo_write", arguments: { text: `${marker}long ` + "a long line of text. ".repeat(200) } });
 x = await modern("tools/call", { name: "memo_search", arguments: { query: `${marker}long` } });
 sc = x.body.result?.structuredContent;
 check("memo_search clips one note too long to fit", sc?.notes?.length === 1 && sc.notes[0].truncated === true && sc.notes[0].text.length > 100 && /clipped/.test(sc.hint ?? ""),
   `${sc?.notes?.[0]?.text?.length} chars kept`);
-x = await modern("tools/call", { name: "upload", arguments: { filename: "hello.txt", content: "hello world" } });
-const up = x.body.result?.structuredContent;
-check("upload", !!up?.url?.startsWith(`${base}/files/`), up?.url);
+// upload never takes the file in its arguments (hands rule 4): it gives a link, and the bytes go by PUT.
+async function putFile(filename, bytes) {
+  const res = await modern("tools/call", { name: "upload", arguments: { filename } });
+  const sc = res.body.result?.structuredContent;
+  const put = await fetch(sc.upload_url, { method: "PUT", body: bytes });
+  return { sc, put };
+}
+let { sc: up, put } = await putFile("hello.txt", "hello world");
+check("upload gives url + upload_url + expires_at only", Object.keys(up ?? {}).sort().join() === "expires_at,upload_url,url" && up.url.startsWith(`${base}/files/`), up?.url);
 r = await fetch(up.url);
-check("upload link opens without sign-in", r.status === 200 && (await r.text()) === "hello world");
+check("upload link opens without sign-in", put.status === 200 && r.status === 200 && (await r.text()) === "hello world");
+x = await modern("tools/call", { name: "upload", arguments: { filename: "a.txt", content: "hello" } });
+check("upload with content -> isError naming content", x.body.result?.isError === true && /^content: not an argument of upload\. .*upload_url/.test(x.body.result.content[0].text), x.body.result?.content?.[0]?.text);
 const audio = readFileSync(audioPath);
-x = await modern("tools/call", { name: "upload", arguments: { filename: "sample.wav", content: audio.toString("base64"), encoding: "base64" } });
-const audioUrl = x.body.result?.structuredContent?.url;
-check("upload binary", x.body.result?.structuredContent?.size === audio.length, `${x.body.result?.structuredContent?.size} bytes`);
+({ sc: up, put } = await putFile("sample.wav", audio));
+const audioUrl = up.url;
+check("upload binary by PUT", put.status === 200 && (await put.json()).size === audio.length, `${audio.length} bytes`);
 x = await modern("tools/call", { name: "transcribe", arguments: { url: audioUrl } });
 const tr = x.body.result?.structuredContent;
-check("transcribe", Array.isArray(tr?.segments) && tr.segments.length > 0 && typeof tr.segments[0].start === "number", JSON.stringify(tr)?.slice(0, 300));
+check("transcribe gives segments of start + text only", Array.isArray(tr?.segments) && tr.segments.length > 0 && Object.keys(tr).join() === "segments" &&
+  tr.segments.every((s) => Object.keys(s).sort().join() === "start,text" && typeof s.start === "number"), JSON.stringify(tr)?.slice(0, 300));
 if (x.body.result?.isError) console.log("     ", x.body.result.content[0].text);
+check("text item is the same JSON, compact (hands rule 2)", x.body.result?.content?.length === 1 && x.body.result.content[0].text === JSON.stringify(tr));
+
+// A transcript over the budget goes to a file (hands rule 4): a ~3 minute WAV made of the sample, repeated.
+const pcmAt = audio.indexOf("data") + 8;
+const pcm = audio.subarray(pcmAt, pcmAt + audio.readUInt32LE(pcmAt - 4));
+const reps = 18;
+const longWav = Buffer.concat([audio.subarray(0, pcmAt), ...Array(reps).fill(pcm)]);
+longWav.writeUInt32LE(longWav.length - 8, 4);
+longWav.writeUInt32LE(pcm.length * reps, pcmAt - 4);
+({ sc: up } = await putFile("long.wav", longWav));
+x = await modern("tools/call", { name: "transcribe", arguments: { url: up.url } });
+const lt = x.body.result?.structuredContent;
+check("long transcript: first segments + omitted + transcript_url", lt?.omitted >= 1 && lt.segments.length >= 1 && typeof lt.transcript_bytes === "number" && !!lt.transcript_url,
+  `${lt?.segments?.length} shown, omitted ${lt?.omitted}, ${lt?.transcript_bytes} B; ${x.body.result?.isError ? x.body.result.content[0].text : ""}`);
+if (lt?.transcript_url) {
+  r = await fetch(lt.transcript_url);
+  const all = await r.text();
+  check("transcript file opens and holds every segment", r.status === 200 && all.trim().split("\n").length === lt.segments.length + lt.omitted && all.startsWith(`[${lt.segments[0].start}] `),
+    `${Buffer.byteLength(all)} B`);
+}
+x = await modern("tools/call", { name: "transcribe", arguments: { url: "http://127.0.0.1/" } });
+check("transcribe refuses a local address (hands rule 9)", x.body.result?.isError === true && /^url: http:\/\/127\.0\.0\.1\/ points to a private or local address\. Send/.test(x.body.result.content[0].text), x.body.result?.content?.[0]?.text);
+x = await modern("tools/call", { name: "transcribe", arguments: { url: "http://[::ffff:10.0.0.1]/a.mp3" } });
+check("transcribe refuses a private IPv6-mapped address", x.body.result?.isError === true && /private or local address/.test(x.body.result.content[0].text));
 
 // 6a. two-step upload (content left out -> PUT raw bytes)
 x = await modern("tools/call", { name: "upload", arguments: { filename: "big.txt" } });
@@ -142,7 +175,7 @@ check("transcribe calibration result <= 1024 B", !x.body.result?.isError && byte
 for (const [label, bad] of [["web page", "https://hq.mega.dev/login"], ["missing file", "https://hq.mega.dev/media/s02e03/missing.mp3"]]) {
   x = await modern("tools/call", { name: "transcribe", arguments: { url: bad } });
   const msg = x.body.result?.content?.[0]?.text ?? "";
-  check(`transcribe error names url (${label})`, x.body.result?.isError === true && msg.includes(bad), msg);
+  check(`transcribe error names url (${label})`, x.body.result?.isError === true && msg.startsWith(`url: ${bad} `) && / Send /.test(msg), msg);
 }
 
 // 7. modern error paths
