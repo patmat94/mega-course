@@ -42,6 +42,7 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 
 - Verify your changes in proportion to their impact. Report what you ran. Why: the checks then match the size of each change, instead of everything waiting for the claim gate (`docs/adr/0005-verify-in-proportion.md`).
 - Build or change every tool an agent calls with the hands skill (`.claude/skills/hands/`): a TOOL.md per tool before the code, and `check-tool.mjs --yes` exiting 0 against the live tool before a claim or hand-off (budget 1024 B unless the client sets one). A server with sign-in keeps it on, gets a signed-in stdio entry for the check, and lets access be taken back without a database edit (`/revoke` and an owner page). Why: the course counts every byte a model receives, and a grant that only a database edit can end stays open (`docs/adr/0006-tool-servers-measure-and-revoke.md`).
+- Before you start a worker off this machine (a cloud session, CI, SSH), check that it can reach its repo, and write its way home into the brief: by default a tool-home memo the main agent reads back, checked before the hand-off. Why: a private repo stopped the first S02E04 cloud worker at once, and a cloud session cannot report back, so its result needed a paste (`docs/adr/0007-remote-workers-reach-and-way-home.md`).
 
 ## Rules
 
