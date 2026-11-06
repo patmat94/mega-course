@@ -1,0 +1,91 @@
+=== 2026-11-06 S02E04 two places ===
+> list-challenges {}
+< S02E04 two places, uuid c0000000-0000-4000-8000-0000005e02e4, solved false (S02E05 also open, unsolved)
+> start-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e4"}
+< challengeId c0000000-0000-4000-8000-0000005e02e4
+< task: The course has two jobs and a skill for each. Hand each job to a worker of its own — one on this machine, one elsewhere. Your main agent does not do the jobs: it takes both results, puts them together and reports.
+< why: Some work has to run somewhere other than this machine, and your main agent still owns the final answer.
+< done: A job is done when its submit accepts the work and hands back a result and a receipt. You are done when claim-challenge accepts both receipts and the joined answer: job 2's note for the moment job 1's record describes.
+< you: Your human picks which job runs elsewhere, and provides that place (a cloud harness or a CI run on an account they own).
+< where: One job on this machine, one elsewhere.
+< job-1 url https://hq.mega.dev/mcp/job/v1.<masked>  skill incident-lookup v1, resource skill://incident-lookup/SKILL.md, folder https://hq.mega.dev/media/two-places/incident-lookup-03b5d3a7.zip
+< job-2 url https://hq.mega.dev/mcp/job/v1.<masked>  skill voice-to-memo v1, resource skill://voice-to-memo/SKILL.md, folder https://hq.mega.dev/media/two-places/voice-to-memo-99ec4e40.zip, clip https://hq.mega.dev/media/two-places/dispatch-1-028eeb49.mp3
+< jobLinks: Each job has its own MCP URL (Streamable HTTP, no sign-in: the link is the key — keep it to the worker you give it to). It serves that job's tools only. The links work for a day.
+< skills: Each job has a skill: `resource` is that skill served on the job's own link, `folder` is the same skill as a folder to download. Same version both ways.
+< claim: claim-challenge { uuid, receipts: { "job-1": "<receipt>", "job-2": "<receipt>" }, answer: { "merge": "<job 2 note for the moment of the job 1 record>" } }
+< specs: https://modelcontextprotocol.io/extensions/skills/overview , https://agentskills.io/
+< rook: i can't be in two places. you can.
+--- skills read from the course zips (skills-dl/): incident-lookup v1 (search ops/live, read date/time/clock/line/cause never crew, redact, submit), voice-to-memo v1 (transcribe, memo_write "<what> @m:ss" per finding, memo_search, submit)
+--- human: job 2 runs elsewhere; place: cloud Claude Code session (AskUserQuestion answer)
+> start_session target=cloud name=job2-voice-memo, brief carries job-2 link <masked>, clip URL, skill pointer; asks for verbatim transcribe/notes/search/submit
+< requested, task_id task_34ba4b77
+> local worker job 1: claude -p (fresh process on this machine), --mcp-config with only job1 link <masked> (config in scratchpad, not in repo), --allowedTools mcp__job1, prompt = mega-s02e04/job1-brief.md
+< job 1 worker (exit 0) final message, receipt masked:
+Job 1 is done: `submit` accepted the result and gave back a receipt. I made four calls and followed skill v1 step by step. I never read the `crew` field, and the one name in `cause` ("D. Lindqvist") came back from `redact` as `[redacted]`. The time stays as the record gives it, 22:50 on the US Eastern clock.
+
+**(1) Tool calls (step tokens masked as `<step>`)**
+
+1. `search` — `{"query": "tram-3", "scope": "ops/live"}`
+2. `read` — `{"id": "inc-3107", "fields": ["date", "time", "clock", "line", "cause"], "step": "<step>"}`
+3. `redact` — `{"text": "date: 2026-10-31\ntime: 22:50\nclock: US Eastern\nline: tram-3\ncause: display data timed out at the depot controller; reported by D. Lindqvist", "step": "<step>"}`
+4. `submit` — `{"result": "date: 2026-10-31\ntime: 22:50\nclock: US Eastern\nline: tram-3\ncause: display data timed out at the depot controller; reported by [redacted]", "skillVersion": "1", "step": "<step>"}`
+
+**(2) Full search result**
+```json
+{
+  "entries": [
+    {
+      "id": "inc-3106",
+      "title": "tram-5 · door sensor fault · 2026-10-31"
+    },
+    {
+      "id": "inc-3107",
+      "title": "tram-3 · display data timeout · 2026-10-31"
+    }
+  ],
+  "step": "<step>"
+}
+```
+
+**(3) Full read result**
+```json
+{
+  "id": "inc-3107",
+  "fields": {
+    "date": "2026-10-31",
+    "time": "22:50",
+    "clock": "US Eastern",
+    "line": "tram-3",
+    "cause": "display data timed out at the depot controller; reported by D. Lindqvist"
+  },
+  "step": "<step>"
+}
+```
+
+**(4) Redact output**
+```json
+{
+  "text": "date: 2026-10-31\ntime: 22:50\nclock: US Eastern\nline: tram-3\ncause: display data timed out at the depot controller; reported by [redacted]",
+  "step": "<step>"
+}
+```
+
+**(5) Full submit reply**
+```json
+{
+  "status": "accepted",
+  "result": "date: 2026-10-31\ntime: 22:50\nclock: US Eastern\nline: tram-3\ncause: display data timed out at the depot controller; reported by [redacted]",
+  "receipt": "v1.<masked>"
+}
+```
+< cloud session task_34ba4b77 failed: Authentication failed while accessing the repository "patmat94/mega-course" (cloud GitHub access)
+--- human: made patmat94/mega-course public; restarting cloud worker job2-voice-memo-2 (same brief, link <masked>)
+< job 2 cloud worker (job2-voice-memo-2) final message, pasted by the human; step tokens and receipt masked:
+  transcribe: 0:00 "Tram desk, end of shift memo. All times desk time, central European." | 0:07 Ten fifty, before midnight. Tram three boards froze, feed refresh stalled at the depot panel. | 0:15 Eleven twenty-seven, before midnight. Restarted by hand, tram three boards back. | 0:23 One fifty. froze again | 0:30 Two twenty-seven. Restarted | 0:36 Two forty. Tram five, rear door sensor fault, car held at the depot. | 0:43 Two fifty. froze again | 0:50 Three twenty-seven. Restarted | 0:57 Three fifty. Tram three boards froze again, feed refresh stalled at the depot panel. | 1:04 Four twenty-seven. Restarted | 1:10 Four fifty. Same again on tram three | 1:17 Five twenty-seven. Restarted | 1:24 That's the night. Coffee machine's still broken.
+  11 notes written, memo_search shows 11 with stamps 1 each
+  submit: {"status":"accepted","result":"<the 11 notes>","receipt":"v1.<masked>"}
+--- merge: job 1 record 2026-10-31 22:50 US Eastern = 2026-11-01 02:50 UTC (US DST ends 1 Nov) = 03:50 CET (EU DST ended 25 Oct); clip says desk time is central European -> note @0:57 "Three fifty: ..." (naive 22:50 = "Ten fifty, before midnight" @0:07 and "Two fifty" @0:43 are the wrong ones)
+> claim-challenge {"uuid":"c0000000-0000-4000-8000-0000005e02e4","receipts":{"job-1":"v1.<masked>","job-2":"v1.<masked>"},"answer":{"merge":"Three fifty: tram three boards froze again, feed refresh stalled at the depot panel @0:57"}}
+< status solved, solvedAt 2026-11-06T16:02:23.000Z; debrief probes C1 One pair of hands, C2 A listed skill is not a used skill, C3 The dump, C4 The join, C6 The way home, T1 Your own skill, T2 A worker that is not your PC; toolbox worker-connection, remote-worker, skill-handover, time-zone-join, way-home
+> debrief {story, catches C1 dodged, C2 dodged, C3 not-met, C4 dodged, C6 hit; extras T1 no, T2 yes; snags 2; rightCall snag 2; toolbox 5 rows}
+< saved, link https://hq.mega.dev/challenges/two-places#debrief; artifact "crew" (Delegation kit) placed in deck https://hq.mega.dev/deck, not installed

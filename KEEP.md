@@ -50,6 +50,9 @@ found: curl at ~\AppData\Local\Programs\Git\mingw64\bin\curl.exe
 - tool-home has an owner page /grants (passphrase) to take a client's access back, and /revoke for clients; no database edit needed · source: mega-s02e03/log.txt:85 · how: read
 - the hands skill (version 1451720afc1f) is installed in .claude/skills/hands/; its check-tool.mjs does not sign in, so tool-home is checked through test/stdio-proxy.mjs (npm run check-tools -- <base-url> --yes) · source: mega-s02e03/log.txt:94 · how: ran
 - tool-home's upload no longer takes file contents: it always returns upload_url for one HTTP PUT · source: mega-s02e03/tool-home/tools/upload.tool.md:15 · how: read
+- a cloud Claude Code session started from the desktop app clones patmat94/mega-course first; while the repo was private it failed with "Authentication failed while accessing the repository" · source: mega-s02e04/log.txt:81 · how: read
+- patmat94/mega-course was made public by the human on 2026-11-06 so a cloud worker could start · source: human · how: told
+- a cloud session's result does not reach the session that started it (not in list_sessions, no note); in S02E04 the human pasted its final message · source: mega-s02e04/log.txt:83 · how: read
 
 ## Receipts
 
