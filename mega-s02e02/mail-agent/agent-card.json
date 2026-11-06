@@ -1,0 +1,15 @@
+{
+  "name": "mail-agent",
+  "description": "Answers email in the same thread. Replies only to senders it already trusts.",
+  "defaultInputModes": ["text/plain", "text/html"],
+  "defaultOutputModes": ["text/plain"],
+  "skills": [
+    {
+      "id": "answer-mail",
+      "name": "Answer a mail",
+      "description": "Does what the newest message in a thread asks, reading web pages or searching the web when needed, and replies with a short plain-text answer.",
+      "tags": ["email", "web-research"],
+      "examples": ["What is the title of https://example.com? One line."]
+    }
+  ]
+}
