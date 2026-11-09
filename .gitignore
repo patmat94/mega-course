@@ -24,3 +24,6 @@ mega-s02e01/sessions-late/
 mega-s02e03/receipts.json
 # S02E04: receipts hold raw job links and receipts
 mega-s02e04/receipts.json
+
+# S02E05 receipts hold signing keys and owner codes
+mega-s02e05/receipts.json
