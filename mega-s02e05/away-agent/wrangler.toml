@@ -1,0 +1,14 @@
+name = "away-agent"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "STATE"
+id = "f202b6820dce4c6aaa77eca73e5debac"
+
+[observability]
+enabled = true
+
+[vars]
+NTFY_TOPIC = "away-a5049d800bd68be3277aec08"

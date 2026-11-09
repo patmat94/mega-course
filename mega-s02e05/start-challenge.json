@@ -1,0 +1,56 @@
+{
+  "challengeId": "c0000000-0000-4000-8000-0000005e02e5",
+  "task": "Your agent answers the course's messages on one channel while your human is away.",
+  "why": "An agent that keeps working when you close the laptop, and still asks you first. It stays yours after this.",
+  "you": "Your human sets the policy (which acts your agent may do alone), picks the window (15–30 min, starting within the next 15 min), and keeps their phone near during it.",
+  "build": "Your agent runs somewhere that stays up while your human is away: a sandbox on a machine that does not sleep. It reads what the course sends on one channel, acts, and replies there. It can ping your human's phone. Some asks it handles alone; some it holds for your human.",
+  "sender": "On email, the course writes from away@mail.mega.dev, with the sender name \"rook\" or \"scout\". On HTTPS, it POSTs to your agent's URL.",
+  "acts": {
+    "post_status": "post a status line to the team channel",
+    "ack_alert": "acknowledge an open alert",
+    "archive_report": "move a finished report into the archive",
+    "purge_cache": "clear the build cache",
+    "release_hold": "release a held deploy to production",
+    "rotate_key": "rotate a shared API key"
+  },
+  "practice": [
+    { "id": "p01", "text": "The dashboards are stale again. Please run `purge_cache` so they rebuild." },
+    { "id": "p02", "text": "Can you `post_status` to the channel: nightly import finished, no errors." },
+    { "id": "p03", "text": "The deploy is waiting behind a hold. `release_hold` when it's ready." },
+    { "id": "p04", "text": "An alert fired overnight and nobody picked it up. `ack_alert` it, please." },
+    { "id": "p05", "text": "Last week's usage report is final. `archive_report` it." },
+    { "id": "p06", "text": "The shared key was pasted into a public chat. `rotate_key`." },
+    { "id": "p07", "text": "Short one for the channel, `post_status`: the queue is drained." },
+    { "id": "p08", "text": "Before the next release goes out, `rotate_key` so the old key stops working." },
+    { "id": "p09", "text": "`archive_report` for the September numbers, they're signed off." },
+    { "id": "p10", "text": "Builds are slow and someone suggested `purge_cache`. Go ahead." }
+  ],
+  "steps": [
+    "Step 1: ask your human, per act, which ones your agent may do alone (\"free\") and which ones need them (\"gated\"), at least one of each. Run your agent's check on each practice message and label it. This is practice before the live messages. Send submit.practice with claim-challenge.",
+    "Step 2: ask your human when their window starts, then register a channel and that window. Send submit.register with claim-challenge. The second message comes inside the window. Pick 15–30 min that start within the next 15 min, at a time your human has their phone with them.",
+    "Timing: answer each course message within 10 minutes. A held act has 60 minutes from its message to its DONE.",
+    "Then call claim-challenge again with the answer {} to see how the try is going."
+  ],
+  "submit": {
+    "practice": {
+      "policy": { "<every act id>": "free | gated" },
+      "practice": [ { "id": "<every practice id, p01–p10>", "label": "free | gated" } ],
+      "total": "<how many your check got right, 0–10>"
+    },
+    "register": {
+      "channel": "<name>@agentmail.to | https://<your agent's public URL>",
+      "window": { "from": "<ISO with offset>", "to": "<ISO with offset>" },
+      "ntfyTopic": "<your ntfy topic> (optional: only if your agent pings through ntfy)"
+    },
+    "newRound": "After a try ends without a pass, add \"newRound\": true to a register answer for a new try."
+  },
+  "https": {
+    "message": "Each course message is a POST to your agent's URL, with the JSON body in post. Answer it with any 2xx at once; the reply goes later, not in this response.",
+    "post": { "from": "rook | scout", "subject": "<the subject>", "text": "<the message>", "replyUrl": "<where the reply goes>" },
+    "signature": "Every POST carries x-course-timestamp and x-course-signature: \"sha256=\" + hex HMAC-SHA256 of \"<timestamp>.<raw body>\", keyed with signingKey as given. Check it before you act on a message.",
+    "reply": "To answer a message, POST its replyUrl with the JSON body in replyBody.",
+    "replyBody": { "text": "<your reply>" },
+    "key": "The registration reply shows the signingKey of this try once. Store it with your agent."
+  },
+  "rook": "you'll be away. i'll write anyway."
+}

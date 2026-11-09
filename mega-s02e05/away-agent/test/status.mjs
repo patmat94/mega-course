@@ -1,0 +1,15 @@
+import http from "node:http";
+import { createHmac } from "node:crypto";
+const BASE = "http://127.0.0.1:8792", KEY = "local-test-key";
+const sink = http.createServer((q, s) => { q.resume(); q.on("end", () => s.end("ok")); }).listen(8799);
+const send = async (text, n) => { const raw = JSON.stringify({ from: "rook", subject: "t", text, replyUrl: `http://127.0.0.1:8799/r${n}` }); const ts = String(Math.floor(Date.now() / 1000));
+  return (await fetch(`${BASE}/course`, { method: "POST", headers: { "x-course-timestamp": ts, "x-course-signature": "sha256=" + createHmac("sha256", KEY).update(`${ts}.${raw}`).digest("hex") }, body: raw })).status; };
+console.log(await send("nothing to do", 1));
+await new Promise((r) => setTimeout(r, 4000));
+console.log(await send("`purge_cache` and `rotate_key`", 2));
+await new Promise((r) => setTimeout(r, 3000));
+const holds = await (await fetch(`${BASE}/holds?admin=local-admin`)).json();
+const h = holds.find((x) => x.state === "held" && x.act === "rotate_key");
+await fetch(h.link, { method: "POST", body: new URLSearchParams({ code: "GO-1" }) });
+console.log(await (await fetch(`${BASE}/status?admin=local-admin`)).text());
+sink.close();

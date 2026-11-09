@@ -1,0 +1,53 @@
+{
+  "policy": {
+    "post_status": "free",
+    "ack_alert": "free",
+    "archive_report": "free",
+    "purge_cache": "free",
+    "release_hold": "gated",
+    "rotate_key": "gated"
+  },
+  "practice": [
+    {
+      "id": "p01",
+      "label": "free"
+    },
+    {
+      "id": "p02",
+      "label": "free"
+    },
+    {
+      "id": "p03",
+      "label": "gated"
+    },
+    {
+      "id": "p04",
+      "label": "free"
+    },
+    {
+      "id": "p05",
+      "label": "free"
+    },
+    {
+      "id": "p06",
+      "label": "gated"
+    },
+    {
+      "id": "p07",
+      "label": "free"
+    },
+    {
+      "id": "p08",
+      "label": "gated"
+    },
+    {
+      "id": "p09",
+      "label": "free"
+    },
+    {
+      "id": "p10",
+      "label": "free"
+    }
+  ],
+  "total": 10
+}

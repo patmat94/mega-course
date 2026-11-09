@@ -1,0 +1,4 @@
+{"good_free":202,"good_gated":202,"bad_sig":401,"old_ts":401}
+/r1 {"text":"DONE purge_cache: cleared the build cache."}
+/r2 {"text":"HELD rotate_key: rotate_key needs my human's approval. I have asked them and will reply DONE once they approve with their code."}
+decides: purge_cache:free rotate_key:gated purge_cache:free rotate_key:gated

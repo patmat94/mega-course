@@ -64,6 +64,9 @@ found: claude at ~\.local\bin\claude.exe
 - Claude Code on this PC does not find the per-user Git Bash, so sh-syntax plugin hooks (Langfuse) run in PowerShell and fail; CLAUDE_CODE_GIT_BASH_PATH pointing at ~\AppData\Local\Programs\Git\bin\bash.exe fixes it · source: mega-s02e04/log.txt:97 · how: ran
 - with claude -p, Claude Code cancels the SessionEnd hook at exit; the Langfuse Stop hook still sends generations and tool spans · source: mega-s02e04/replay/RESULTS.md:33 · how: ran
 - the S02E04 job-1 replay against the stub matched the original's shape (6 messages, 5 tool calls in the same order) and cost 0.2647 and 0.2826 USD against 0.2920 · source: mega-s02e04/replay/RESULTS.md:10 · how: ran
+- the S02E05 status-log validator does not find a row whose "round" is text ("2"); it must be a number (2); five tries failed on this as "Round 2: log_mismatch: received" · source: human · how: told
+- S02E05 was accepted with the 7 status rows sent with round as a number · source: mega-s02e05/log.txt:189 · how: ran
+- a ntfy push from the away-agent Worker, run in ctx.waitUntil after the reply, can fail with no trace; direct re-pings from the Worker got 429 and 522 for about 12 minutes before a 200 · source: mega-s02e05/log.txt:186 · how: ran
 
 ## Receipts
 
@@ -171,4 +174,19 @@ replay session: 400a846f-0ec7-40ac-ab24-e54d9c4c0652
 stub calls: 4
 | cost USD (-p JSON) | 0.2920 | 0.2826 |
 | tool calls, total | 5 | 5 |
+```
+
+command: node loop POST /reping on away-agent every 30 s (admin token <secret removed>)
+```
+2026-11-09T15:45:22.155Z [{"act":"release_hold","status":522}]
+2026-11-09T15:46:41.138Z [{"act":"release_hold","status":522}]
+2026-11-09T15:48:00.256Z [{"act":"release_hold","status":522}]
+2026-11-09T15:49:39.067Z [{"act":"release_hold","status":522}]
+2026-11-09T15:50:53.556Z [{"act":"release_hold","status":200}]
+```
+
+from: mega-challenge claim-challenge (S02E05 status log, round as number)
+```
+"status": "solved",
+"summary": "Practice 10 of 10. Live tries: log_mismatch: received → log_mismatch: received → passed.",
 ```
