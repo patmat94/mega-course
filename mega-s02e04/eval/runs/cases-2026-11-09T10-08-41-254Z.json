@@ -1,0 +1,296 @@
+{
+  "when": "2026-11-09T10:08:41.257Z",
+  "node": "v24.16.0",
+  "subject": [
+    "node",
+    "mega-s02e04/eval/subject-one-clock.mjs"
+  ],
+  "casesFile": "mega-s02e04/eval/cases.jsonl",
+  "summary": {
+    "cases": 10,
+    "k": 3,
+    "pass_at_1": 1,
+    "pass_at_k": 1,
+    "pass_pow_k": 1
+  },
+  "perCase": [
+    {
+      "id": "c01-record",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "2026-11-01T02:50:00Z"
+      ],
+      "expected": "2026-11-01T02:50:00Z"
+    },
+    {
+      "id": "c02-desk-note",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "2026-11-01T02:50:00Z"
+      ],
+      "expected": "2026-11-01T02:50:00Z"
+    },
+    {
+      "id": "c03-naive-trap",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "2026-10-31T21:50:00Z"
+      ],
+      "expected": "2026-10-31T21:50:00Z"
+    },
+    {
+      "id": "c04-us-twice",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "2026-11-01T05:30:00Z or 2026-11-01T06:30:00Z"
+      ],
+      "expected": "2026-11-01T05:30:00Z or 2026-11-01T06:30:00Z"
+    },
+    {
+      "id": "c05-eu-twice",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "2026-10-25T00:30:00Z or 2026-10-25T01:30:00Z"
+      ],
+      "expected": "2026-10-25T00:30:00Z or 2026-10-25T01:30:00Z"
+    },
+    {
+      "id": "c06-eu-never",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "none"
+      ],
+      "expected": "none"
+    },
+    {
+      "id": "c07-us-never",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "none"
+      ],
+      "expected": "none"
+    },
+    {
+      "id": "c08-own-offset",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "2026-11-01T02:50:00Z"
+      ],
+      "expected": "2026-11-01T02:50:00Z"
+    },
+    {
+      "id": "c09-short-name",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "refused"
+      ],
+      "expected": "refused"
+    },
+    {
+      "id": "c10-into",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "2026-11-01T02:00:57Z"
+      ],
+      "expected": "2026-11-01T02:00:57Z"
+    }
+  ],
+  "runs": [
+    {
+      "c01-record": {
+        "answer": "2026-11-01T02:50:00Z",
+        "ok": true,
+        "ms": 145,
+        "exit": 0
+      },
+      "c02-desk-note": {
+        "answer": "2026-11-01T02:50:00Z",
+        "ok": true,
+        "ms": 134,
+        "exit": 0
+      },
+      "c03-naive-trap": {
+        "answer": "2026-10-31T21:50:00Z",
+        "ok": true,
+        "ms": 149,
+        "exit": 0
+      },
+      "c04-us-twice": {
+        "answer": "2026-11-01T05:30:00Z or 2026-11-01T06:30:00Z",
+        "ok": true,
+        "ms": 137,
+        "exit": 0
+      },
+      "c05-eu-twice": {
+        "answer": "2026-10-25T00:30:00Z or 2026-10-25T01:30:00Z",
+        "ok": true,
+        "ms": 132,
+        "exit": 0
+      },
+      "c06-eu-never": {
+        "answer": "none",
+        "ok": true,
+        "ms": 188,
+        "exit": 0
+      },
+      "c07-us-never": {
+        "answer": "none",
+        "ok": true,
+        "ms": 141,
+        "exit": 0
+      },
+      "c08-own-offset": {
+        "answer": "2026-11-01T02:50:00Z",
+        "ok": true,
+        "ms": 152,
+        "exit": 0
+      },
+      "c09-short-name": {
+        "answer": "refused",
+        "ok": true,
+        "ms": 158,
+        "exit": 0
+      },
+      "c10-into": {
+        "answer": "2026-11-01T02:00:57Z",
+        "ok": true,
+        "ms": 148,
+        "exit": 0
+      }
+    },
+    {
+      "c01-record": {
+        "answer": "2026-11-01T02:50:00Z",
+        "ok": true,
+        "ms": 150,
+        "exit": 0
+      },
+      "c02-desk-note": {
+        "answer": "2026-11-01T02:50:00Z",
+        "ok": true,
+        "ms": 145,
+        "exit": 0
+      },
+      "c03-naive-trap": {
+        "answer": "2026-10-31T21:50:00Z",
+        "ok": true,
+        "ms": 135,
+        "exit": 0
+      },
+      "c04-us-twice": {
+        "answer": "2026-11-01T05:30:00Z or 2026-11-01T06:30:00Z",
+        "ok": true,
+        "ms": 134,
+        "exit": 0
+      },
+      "c05-eu-twice": {
+        "answer": "2026-10-25T00:30:00Z or 2026-10-25T01:30:00Z",
+        "ok": true,
+        "ms": 134,
+        "exit": 0
+      },
+      "c06-eu-never": {
+        "answer": "none",
+        "ok": true,
+        "ms": 132,
+        "exit": 0
+      },
+      "c07-us-never": {
+        "answer": "none",
+        "ok": true,
+        "ms": 139,
+        "exit": 0
+      },
+      "c08-own-offset": {
+        "answer": "2026-11-01T02:50:00Z",
+        "ok": true,
+        "ms": 124,
+        "exit": 0
+      },
+      "c09-short-name": {
+        "answer": "refused",
+        "ok": true,
+        "ms": 138,
+        "exit": 0
+      },
+      "c10-into": {
+        "answer": "2026-11-01T02:00:57Z",
+        "ok": true,
+        "ms": 144,
+        "exit": 0
+      }
+    },
+    {
+      "c01-record": {
+        "answer": "2026-11-01T02:50:00Z",
+        "ok": true,
+        "ms": 138,
+        "exit": 0
+      },
+      "c02-desk-note": {
+        "answer": "2026-11-01T02:50:00Z",
+        "ok": true,
+        "ms": 141,
+        "exit": 0
+      },
+      "c03-naive-trap": {
+        "answer": "2026-10-31T21:50:00Z",
+        "ok": true,
+        "ms": 141,
+        "exit": 0
+      },
+      "c04-us-twice": {
+        "answer": "2026-11-01T05:30:00Z or 2026-11-01T06:30:00Z",
+        "ok": true,
+        "ms": 139,
+        "exit": 0
+      },
+      "c05-eu-twice": {
+        "answer": "2026-10-25T00:30:00Z or 2026-10-25T01:30:00Z",
+        "ok": true,
+        "ms": 135,
+        "exit": 0
+      },
+      "c06-eu-never": {
+        "answer": "none",
+        "ok": true,
+        "ms": 138,
+        "exit": 0
+      },
+      "c07-us-never": {
+        "answer": "none",
+        "ok": true,
+        "ms": 131,
+        "exit": 0
+      },
+      "c08-own-offset": {
+        "answer": "2026-11-01T02:50:00Z",
+        "ok": true,
+        "ms": 119,
+        "exit": 0
+      },
+      "c09-short-name": {
+        "answer": "refused",
+        "ok": true,
+        "ms": 180,
+        "exit": 0
+      },
+      "c10-into": {
+        "answer": "2026-11-01T02:00:57Z",
+        "ok": true,
+        "ms": 147,
+        "exit": 0
+      }
+    }
+  ]
+}

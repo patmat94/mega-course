@@ -1,0 +1,13 @@
+// S02E04 join eval: time, clock, expected UTC. Expected values worked out by hand from the zone rules
+// (US DST ends 2026-11-01 02:00, starts 2026-03-08 02:00; EU DST ends 2026-10-25 03:00, starts 2026-03-29 02:00),
+// never by running the subject. "none" = that wall time never existed; "refused" = the clock is ambiguous.
+{"id":"c01-record","note":"job 1 record as written, US Eastern before US fall-back (EDT, -4)","time":"2026-10-31 22:50","clock":"America/New_York","expected":"2026-11-01T02:50:00Z"}
+{"id":"c02-desk-note","note":"job 2 note @0:57 'Three fifty', desk time central European after EU fall-back (CET, +1)","time":"2026-11-01 03:50","clock":"Europe/Warsaw","expected":"2026-11-01T02:50:00Z"}
+{"id":"c03-naive-trap","note":"reading 22:50 as desk time: lands an hour before c01, the wrong note","time":"2026-10-31 22:50","clock":"Europe/Warsaw","expected":"2026-10-31T21:50:00Z"}
+{"id":"c04-us-twice","note":"US fall-back: 01:30 happened twice (EDT then EST)","time":"2026-11-01 01:30","clock":"America/New_York","expected":"2026-11-01T05:30:00Z or 2026-11-01T06:30:00Z"}
+{"id":"c05-eu-twice","note":"EU fall-back: 02:30 happened twice (CEST then CET)","time":"2026-10-25 02:30","clock":"Europe/Warsaw","expected":"2026-10-25T00:30:00Z or 2026-10-25T01:30:00Z"}
+{"id":"c06-eu-never","note":"EU spring-forward: 02:00-03:00 skipped","time":"2026-03-29 02:30","clock":"Europe/Warsaw","expected":"none"}
+{"id":"c07-us-never","note":"US spring-forward: 02:00-03:00 skipped","time":"2026-03-08 02:30","clock":"America/New_York","expected":"none"}
+{"id":"c08-own-offset","note":"time carries its own offset, no clock needed","time":"2026-11-01T03:50+01:00","clock":"","expected":"2026-11-01T02:50:00Z"}
+{"id":"c09-short-name","note":"'EST' is a short name several clocks share: must be refused, not guessed","time":"2026-10-31 22:50","clock":"EST","expected":"refused"}
+{"id":"c10-into","note":"moment @0:57 into a clip that started 03:00 desk time","time":"2026-11-01 03:00","clock":"Europe/Warsaw","into":"@0:57","expected":"2026-11-01T02:00:57Z"}

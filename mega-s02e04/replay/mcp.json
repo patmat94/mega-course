@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "job1": {
+      "type": "stdio",
+      "command": "node",
+      "args": ["C:/Users/p.matychniak/Repos/mega-course/mega-s02e04/replay/job1-stub.mjs"]
+    }
+  }
+}

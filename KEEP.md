@@ -20,6 +20,8 @@ not found: wrangler
 found: netlify at ~\AppData\Local\Programs\nodejs\netlify.cmd
 not found: gh
 found: curl at ~\AppData\Local\Programs\Git\mingw64\bin\curl.exe
+found: python3 at ~\AppData\Local\Python\bin\python3.exe
+found: claude at ~\.local\bin\claude.exe
 ```
 <!-- keep:can-run:end -->
 
@@ -53,6 +55,15 @@ found: curl at ~\AppData\Local\Programs\Git\mingw64\bin\curl.exe
 - a cloud Claude Code session started from the desktop app clones patmat94/mega-course first; while the repo was private it failed with "Authentication failed while accessing the repository" · source: mega-s02e04/log.txt:81 · how: read
 - patmat94/mega-course was made public by the human on 2026-11-06 so a cloud worker could start · source: human · how: told
 - a cloud session's result does not reach the session that started it (not in list_sessions, no note); in S02E04 the human pasted its final message · source: mega-s02e04/log.txt:83 · how: read
+- the S02E04 job links expired 2026-11-07T15:30:09Z, so job 1 can be rerun only against the replay stub mega-s02e04/replay/job1-stub.mjs · source: mega-s02e04/receipts.json:7 · how: read
+- the S02E04 join eval (10 cases, crew's one-clock.mjs) scored pass^3 100% (10/10) on 2026-11-09; with three expectations broken it scored 7/10 · source: mega-s02e04/eval/RESULTS.md:13 · how: ran
+- the original S02E04 job-1 worker session 25e684bf made 5 tool calls (ToolSearch, then search, read, redact, submit); log.txt lists only the 4 MCP calls; its transcript token totals equal job1-worker.json · source: mega-s02e04/job1-worker.json:1 · how: ran
+- the skills pass-k-eval and session-trace live in .agents/skills/ and are linked (junctions) into ~/.claude/skills/ for every project on this PC · source: .agents/skills/pass-k-eval/SKILL.md:2 · how: ran
+- .claude/settings.local.json is git-ignored by the user's global git ignore file, not by this repo's .gitignore · source: ~/.config/git/ignore:1 · how: ran
+- Langfuse tracing for Claude Code needs a Langfuse account with keys, Python 3.9+ with langfuse>=4.0,<5, and the plugin langfuse-observability (or a Stop hook); it sends transcripts to Langfuse · source: .agents/skills/session-trace/SKILL.md:30 · how: read
+- Claude Code on this PC does not find the per-user Git Bash, so sh-syntax plugin hooks (Langfuse) run in PowerShell and fail; CLAUDE_CODE_GIT_BASH_PATH pointing at ~\AppData\Local\Programs\Git\bin\bash.exe fixes it · source: mega-s02e04/log.txt:97 · how: ran
+- with claude -p, Claude Code cancels the SessionEnd hook at exit; the Langfuse Stop hook still sends generations and tool spans · source: mega-s02e04/replay/RESULTS.md:33 · how: ran
+- the S02E04 job-1 replay against the stub matched the original's shape (6 messages, 5 tool calls in the same order) and cost 0.2647 and 0.2826 USD against 0.2920 · source: mega-s02e04/replay/RESULTS.md:10 · how: ran
 
 ## Receipts
 
@@ -118,4 +129,46 @@ Structured content does not match the tool's output schema: data must NOT have a
 from: claude -p run 03, first batch (mcp-fun/runs/bad-stdin/03.jsonl), end of final text
 ```
 Your message also had five other questions (01–06: Warsaw, Kraków, Gdańsk, Wrocław). Want me to answer those too?
+```
+
+command: node .agents/skills/pass-k-eval/scripts/evalk.mjs --cases mega-s02e04/eval/cases.jsonl --k 3 -- node mega-s02e04/eval/subject-one-clock.mjs
+```
+pass@1 100% · pass@3 100% · pass^3 100% (10/10 cases passed every run)
+```
+
+command: node .agents/skills/pass-k-eval/scripts/evalk.mjs --cases <scratchpad>/bad.jsonl --k 2 (three expectations changed to 03:50Z)
+```
+pass@1 70% · pass@2 70% · pass^2 70% (7/10 cases passed every run)
+```
+
+command: node .agents/skills/session-trace/scripts/compare-run.mjs original=25e684bf-4ff5-4335-a4d0-5ef6789c396b,mega-s02e04/job1-worker.json
+```
+| tool calls, total | 5 |
+| input tokens | 14 |
+| output tokens | 2987 |
+| cache read tokens | 268604 |
+| cache write tokens | 22306 |
+original: tool order ToolSearch > mcp__job1__search > mcp__job1__read > mcp__job1__redact > mcp__job1__submit
+```
+
+command: git check-ignore -v .claude/settings.local.json
+```
+"C:\Users\p.matychniak/.config/git/ignore":1:**/.claude/settings.local.json	.claude/settings.local.json
+```
+
+command: sh mega-s02e04/replay/run-replay.sh (run 1, no CLAUDE_CODE_GIT_BASH_PATH)
+```
+SessionEnd hook [if command -v uv >/dev/null 2>&1; then exec uv run --quiet --script "${CLAUDE_PLUGIN_ROOT}"/hooks/langfuse_hook.py; else exec python3 "${CLAUDE_PLUGIN_ROOT}"/hooks/langfuse_hook.py; fi] failed: At line:1 char:3
++ if command -v uv >/dev/null 2>&1; then exec uv run --quiet --script " ...
++   ~
+Missing '(' after 'if' in if statement.
+```
+
+command: sh mega-s02e04/replay/run-replay.sh (run 2, CLAUDE_CODE_GIT_BASH_PATH set)
+```
+SessionEnd hook [if command -v uv >/dev/null 2>&1; then exec uv run --quiet --script "${CLAUDE_PLUGIN_ROOT}"/hooks/langfuse_hook.py; else exec python3 "${CLAUDE_PLUGIN_ROOT}"/hooks/langfuse_hook.py; fi] failed: Hook cancelled
+replay session: 400a846f-0ec7-40ac-ab24-e54d9c4c0652
+stub calls: 4
+| cost USD (-p JSON) | 0.2920 | 0.2826 |
+| tool calls, total | 5 | 5 |
 ```
