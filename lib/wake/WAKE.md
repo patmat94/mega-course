@@ -151,6 +151,10 @@ The module decides the last try, not the queue: set the queue's `max_retries` in
 | Row `about` | at most 200 characters | rows are read by people and models; no bodies |
 | Source size | about 150 lines without tests was the aim; 245 after § 4 (verify 72, consume 62, log 38, ingress 35, types 31, index 7; `wc -l`) | plan principle; still readable in one sitting, but over the aim |
 
+## Wiring a Worker
+
+`lib/wake/demo/` is the worked example: `src/index.ts` routes `POST /course` to `ingress` and the queue to `consume`; `wrangler.toml` has the KV, the queue (`max_retries = 40`) and no secrets. Admin routes take the token as `Authorization: Bearer`, never in the URL. Check it locally with `node test/e2e-local.mjs` from that folder (13 checks, about 30 s).
+
 ## Tests (plan §§ 2–4)
 
 Run with `node --test "lib/wake/test/*.test.ts"` (Node 24 runs `.ts` test files directly; a bare folder path is read as a file and fails). Type-check with strict `tsc --noEmit` (lib es2022 + dom). Every test fixes `nowMs`. Fakes stand in for KV, the queue, the message batch and `fetch`; nothing calls Cloudflare.

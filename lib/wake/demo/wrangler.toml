@@ -1,0 +1,24 @@
+# wake-demo: the shared wake module (lib/wake, ADR 0009) wired into one Worker.
+# Plan § 5 runs it under wrangler dev only; § 6 (issue #7) deploys it after the human's yes (#5).
+name = "wake-demo"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "KV"
+id = "wake-demo-local" # placeholder for wrangler dev; #7 replaces it with a real namespace id
+
+[[queues.producers]]
+queue = "wake-demo-jobs"
+binding = "JOBS"
+
+[[queues.consumers]]
+queue = "wake-demo-jobs"
+max_batch_size = 1
+max_retries = 40 # above the module's maxTries (30), so the module writes the last row (WAKE.md § consume)
+
+[vars]
+NTFY_URL = "" # set per environment: .dev.vars locally, the real topic URL in #7
+
+# Secrets (never in this file): SIGNING_KEY, ADMIN_TOKEN

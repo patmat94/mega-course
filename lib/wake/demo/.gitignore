@@ -1,0 +1,5 @@
+# local secrets for wrangler dev (signing key, admin token)
+.dev.vars
+# wrangler's local state (KV, queue)
+.wrangler/
+node_modules/
