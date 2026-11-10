@@ -27,6 +27,8 @@
 - [ ] Counted with the owner's own table first, own split as a labelled layer (S01E03).
 - [ ] An issue that waits on a person (a review) stays open until they answer (S01E04).
 - [ ] Every public link checked from outside: 200, right content, nothing that must be gone (S01E04).
+- [ ] Every spoken tag or value was checked by ear, not only by transcript (S03E01).
+- [ ] After each accepted step, the signed-in Challenge page was re-read and its answers applied (S03E01).
 -->
 
 - [ ] Tickets and tokens are masked in `log.txt`; the raw ones are only in `receipts.json`.

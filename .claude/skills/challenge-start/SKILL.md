@@ -31,7 +31,13 @@ Copy [ticket.md](ticket.md) from this folder and fill it from the start-challeng
 
 A hook on `claim-challenge` (`.claude/hooks/claim-gate.mjs`) denies the claim while any Acceptance line in the ticket.md of the folder whose `receipts.json` holds that `challengeId` is unticked. A line that can only be ticked once the claim answers (e.g. "claim-challenge returns solved") carries `(after claim)` and is skipped. Check each line against the real result (run the count, open the link, read the issue's state), tick it, and claim only when all are ticked. When a claim is refused, add the missing check as a new Acceptance line and a line in Notes.
 
+When the answer rests on speech (a memo, a call, a video's audio), add the Acceptance line "Every spoken tag or value was checked by ear, not only by transcript" and tick it only after you or the user listened at each second you cite. A transcript swaps letters, and a second run repeats the same mistake (S03E01: "RH-5-H" for R-Z5H, first claim refused).
+
 Also check the real output against the "Who it is for" line, preferably with a small script in the lesson folder (S02E05: `check-helped.mjs`). This check does not block the claim, since the gate reads only Acceptance, but write its result in Notes and tell the user before claiming when it fails.
+
+## 4b. After each accepted step: re-read the Challenge page
+
+When a claim comes back `progress` (a step passed, not yet solved), read the signed-in Challenge page again and call `start-challenge` again before the next step. Owners answer there, and the claim reply only hints at it (S03E01: "one of them answered you"; the answer to the date conflict was only on the page). Log what changed, apply it to the next step, and tell the user which questions are still open.
 
 ## Issue work
 

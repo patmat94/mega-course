@@ -47,6 +47,9 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 - Never fire a push the human must get only from background work after the response (`ctx.waitUntil`, a detached promise). Log each attempt, keep a failed push pending and retry it until a 2xx, write "notified" only on that 2xx, and test the push from the host itself. Why: in S02E05 the push died silently and arrived 12 minutes late (same ADR).
 - Build a Worker that an outside service wakes (a signed call, a webhook) on `lib/wake/`: import it by relative path, never copy it, and start from `lib/wake/demo/` (contract: `lib/wake/WAKE.md`). Why: it already does the signature check, dedupe, queue, 2xx and pushes that retry with a row per attempt; on Cloudflare it kept a push alive through 7 refusals from ntfy.sh, where S02E05's hand-wired agent lost it (`docs/adr/0009-shared-wake-module.md`).
 
+- Check every tag or value that came only from speech by ear before the first claim: listen at each cited second, or ask the human to. A second transcription run is not a check. Why: in S03E01 Whisper wrote "RH-5-H" for R-Z5H twice, and the first list was refused (`docs/adr/0010-spoken-tags-by-ear-and-reread-page.md`).
+- After a claim comes back `progress`, re-read the signed-in Challenge page and call `start-challenge` again before the next step, then apply what changed. Why: in S03E01 product's answer to a conflict was only on the page, and the claim reply only hinted at it (same ADR).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.
