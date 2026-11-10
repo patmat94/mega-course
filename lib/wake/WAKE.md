@@ -1,6 +1,6 @@
 # wake · contract
 
-The shared path for a Cloudflare Worker that an outside service wakes with a signed HTTPS call: check the signature, drop a duplicate, queue the job, answer 2xx, then run the job and any push from the queue. Decision: `docs/adr/0009-shared-wake-module.md`. Plan: `plan.md` (issues #1–#11 on patmat94/mega-course).
+The shared path for a Cloudflare Worker that an outside service wakes with a signed HTTPS call: check the signature, drop a duplicate, queue the job, answer 2xx, then run the job and any push from the queue. Decision: `docs/adr/0009-shared-wake-module.md`. Plan: `docs/plans/done/2026-11-10-wake-module.md` (issues #1–#11 on patmat94/mega-course, all closed; the issues cite it as `plan.md`).
 
 This file is written before the code. Sections 2–5 of the plan build to it; a change to the behaviour changes this file first.
 
