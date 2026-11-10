@@ -36,7 +36,7 @@ The agent that builds the next lesson's Worker, and through it the human waiting
 
 ## Exports
 
-All from `lib/wake/index.ts`. Types use `@cloudflare/workers-types`.
+All from `lib/wake/index.ts`. KV and Queue are typed as the small shapes the module uses (`KVLike`, `QueueLike` in `types.ts`): Cloudflare's `KVNamespace` and `Queue` satisfy them, and so do the test fakes, so the module needs no `@cloudflare/workers-types` to test or type-check. Below, `KVNamespace` and `Queue` mean those shapes. `writeRow` and `isoAt` are exported too, for a Worker's own rows.
 
 ```ts
 // ---- verifiers (plan § 2)
@@ -144,7 +144,7 @@ The module decides the last try, not the queue: set the queue's `max_retries` in
 | Max tries | 30 per job or push | about 2 h of retries at 300 s |
 | Queue `max_retries` | above max tries (40) | the module, not the queue, writes the last row |
 | Signature window | 300 s standard webhooks, 600 s course | the values the existing Workers use |
-| Log rows | key `log:<ms, 13 digits>:<random 6>`, TTL 7 days | sorted by time when listed; old rows expire |
+| Log rows | key `log:<ms, 13 digits>:<seq 3><random 3>` (base 36), TTL 7 days | sorted by time when listed; the per-isolate sequence keeps rows from the same millisecond in write order (a random suffix alone did not); old rows expire |
 | Row `about` | at most 200 characters | rows are read by people and models; no bodies |
 | Source size | about 150 lines without tests | plan principle |
 
