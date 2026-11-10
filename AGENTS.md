@@ -8,8 +8,8 @@ Decisions: `docs/adr/`, one file per decision. When the human decides how someth
 ## Commands
 
 - Run: none — each lesson folder has its own commands.
-- Test: none
-- Typecheck or lint: none
+- Test: `node --test "lib/wake/test/*.test.ts"` (the shared wake module); lesson folders have their own.
+- Typecheck or lint: none at the root; `lib/wake/WAKE.md` § Tests gives the strict `tsc` line.
 
 ## How work moves here
 
@@ -45,6 +45,7 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 - Before you start a worker off this machine (a cloud session, CI, SSH), check that it can reach its repo, and write its way home into the brief: by default a tool-home memo the main agent reads back, checked before the hand-off. Why: a private repo stopped the first S02E04 cloud worker at once, and a cloud session cannot report back, so its result needed a paste (`docs/adr/0007-remote-workers-reach-and-way-home.md`).
 - Send every field with the JSON type the contract's example shows: a number as a number, never as text; check each field's type in the built body before the send. Why: S02E05's validator skipped rows with "round": "2" without naming the field, so five tries failed (`docs/adr/0008-exact-field-types-and-push-outside-background.md`).
 - Never fire a push the human must get only from background work after the response (`ctx.waitUntil`, a detached promise). Log each attempt, keep a failed push pending and retry it until a 2xx, write "notified" only on that 2xx, and test the push from the host itself. Why: in S02E05 the push died silently and arrived 12 minutes late (same ADR).
+- Build a Worker that an outside service wakes (a signed call, a webhook) on `lib/wake/`: import it by relative path, never copy it, and start from `lib/wake/demo/` (contract: `lib/wake/WAKE.md`). Why: it already does the signature check, dedupe, queue, 2xx and pushes that retry with a row per attempt; on Cloudflare it kept a push alive through 7 refusals from ntfy.sh, where S02E05's hand-wired agent lost it (`docs/adr/0009-shared-wake-module.md`).
 
 ## Rules
 

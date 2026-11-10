@@ -67,6 +67,11 @@ found: claude at ~\.local\bin\claude.exe
 - the S02E05 status-log validator does not find a row whose "round" is text ("2"); it must be a number (2); five tries failed on this as "Round 2: log_mismatch: received" · source: human · how: told
 - S02E05 was accepted with the 7 status rows sent with round as a number · source: mega-s02e05/log.txt:189 · how: ran
 - a ntfy push from the away-agent Worker, run in ctx.waitUntil after the reply, can fail with no trace; direct re-pings from the Worker got 429 and 522 for about 12 minutes before a 200 · source: mega-s02e05/log.txt:186 · how: ran
+- on 2026-11-10 ntfy.sh refused the deployed wake-demo Worker's push 7 times (429, 429, 522, 522, 429, 429, 429) and accepted attempt 8 at 10:49:57Z, about 18.5 min after the call; the queue retried it with no manual re-ping · source: lib/wake/demo/test/e2e-remote.mjs:38 · how: ran
+- the human confirmed that wake-demo's ping (10:49:57Z) arrived on their phone, on away-agent's ntfy topic · source: human · how: told
+- wake-demo is deployed at https://wake-demo.patrykmatychniak.workers.dev with KV wake-demo-kv and queue wake-demo-jobs; its secrets are only on Cloudflare and in lib/wake/demo/.secrets.json (git-ignored); the human chose to keep it (issue #10) · source: lib/wake/demo/wrangler.toml:10 · how: ran
+- under wrangler dev (4.157) the local queue honours retry delaySeconds: a push that got 503 was retried 15.1 s later, matching delayFor(1) = 15 · source: lib/wake/demo/test/e2e-local.mjs:79 · how: ran
+- `node --test lib/wake/test/` reads the folder as one file and fails on Node 24; pass a glob, `node --test "lib/wake/test/*.test.ts"` · source: lib/wake/WAKE.md:160 · how: ran
 
 ## Receipts
 
@@ -189,4 +194,35 @@ from: mega-challenge claim-challenge (S02E05 status log, round as number)
 ```
 "status": "solved",
 "summary": "Practice 10 of 10. Live tries: log_mismatch: received → log_mismatch: received → passed.",
+```
+
+command: node watcher polling GET /log on wake-demo for job e5025902641bf7fa (admin token <secret removed>)
+```
+10:50:21 10:31:30 push_attempt:429 #1 | 10:31:45 push_attempt:429 #2 | 10:32:36 push_attempt:522 #3 | 10:33:56 push_attempt:522 #4 | 10:35:56 push_attempt:429 #5 | 10:39:56 push_attempt:429 #6 | 10:44:57 push_attempt:429 #7 | 10:49:57 push_attempt:200 #8 | 10:49:58 notified:200 #8
+DONE
+```
+
+command: wrangler deploy (lib/wake/demo)
+```
+Uploaded wake-demo (4.66 sec)
+Deployed wake-demo triggers (5.16 sec)
+  https://wake-demo.patrykmatychniak.workers.dev
+  Producer for wake-demo-jobs
+  Consumer for wake-demo-jobs
+Current Version ID: 4deba545-f154-4012-80e6-b63c318cf72a
+```
+
+command: node test/e2e-local.mjs (lib/wake/demo, against wrangler dev)
+```
+PASS  push failed once (503), retried, then notified
+PASS  fake ntfy got 2 pushes: retry after 15.1 s
+```
+
+command: node --test lib/wake/test/ (Node 24.16, all module files present; the glob form passes 36/36)
+```
+✖ failing tests:
+
+test at lib\wake\test:1:1
+✖ lib\wake\test (61.2784ms)
+  'test failed'
 ```
