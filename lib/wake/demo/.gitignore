@@ -1,5 +1,7 @@
 # local secrets for wrangler dev (signing key, admin token)
 .dev.vars
+# deployed secrets (signing key, admin token, ntfy URL), kept on this PC only
+.secrets.json
 # wrangler's local state (KV, queue)
 .wrangler/
 node_modules/

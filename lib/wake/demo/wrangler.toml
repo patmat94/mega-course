@@ -7,7 +7,7 @@ workers_dev = true
 
 [[kv_namespaces]]
 binding = "KV"
-id = "wake-demo-local" # placeholder for wrangler dev; #7 replaces it with a real namespace id
+id = "f43d5cdda048498dab58708897e47e57" # wake-demo-kv, created 2026-11-10 (#7); wrangler dev keeps its own local copy
 
 [[queues.producers]]
 queue = "wake-demo-jobs"
@@ -18,7 +18,6 @@ queue = "wake-demo-jobs"
 max_batch_size = 1
 max_retries = 40 # above the module's maxTries (30), so the module writes the last row (WAKE.md § consume)
 
-[vars]
-NTFY_URL = "" # set per environment: .dev.vars locally, the real topic URL in #7
-
-# Secrets (never in this file): SIGNING_KEY, ADMIN_TOKEN
+# Secrets (never in this file): SIGNING_KEY, ADMIN_TOKEN, NTFY_URL.
+# NTFY_URL is a secret, not a var: the repo is public and an ntfy topic is open to anyone who knows it.
+# Locally they come from .dev.vars (test/e2e-local.mjs writes it); deployed, from `wrangler secret put`.
