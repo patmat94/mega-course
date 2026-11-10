@@ -150,7 +150,7 @@ The module decides the last try, not the queue: set the queue's `max_retries` in
 
 ## Tests (plan §§ 2–4)
 
-Run with `node --test lib/wake/test/` (Node 24 runs `.ts` test files directly). Every test fixes `nowMs`. Fakes stand in for KV, the queue, the message batch and `fetch`; nothing calls Cloudflare.
+Run with `node --test "lib/wake/test/*.test.ts"` (Node 24 runs `.ts` test files directly; a bare folder path is read as a file and fails). Type-check with strict `tsc --noEmit` (lib es2022 + dom). Every test fixes `nowMs`. Fakes stand in for KV, the queue, the message batch and `fetch`; nothing calls Cloudflare.
 
 - § 2: for each verifier, good signature passes; wrong key, changed body, timestamp outside the window and a missing header each fail with a reason that names the problem.
 - § 3: a bad signature never reaches the queue; the same id twice is queued once; every 202 has a queued job behind it; a failed send gives 503 and no `seen` key.
