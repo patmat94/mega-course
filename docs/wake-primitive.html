@@ -1,0 +1,205 @@
+<title>Shared Wake Primitive</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one reading column; verdict first, then two matrices that scroll sideways inside their own boxes, then sources. */
+:root {
+  --bg: #f6f7f8;
+  --surface: #ffffff;
+  --fg: #1b2228;
+  --muted: #5b6670;
+  --line: #d9dee3;
+  --accent: #1f6f8b;
+  --good: #1d7a46;  --good-bg: #e3f3e9;
+  --mid: #8a5a00;   --mid-bg: #fbf0d9;
+  --bad: #a3322a;   --bad-bg: #f8e3e1;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171b; --surface: #192026; --fg: #e3e8ec; --muted: #9aa6b0; --line: #2c363e; --accent: #6cb8d4;
+  --good: #7fd3a0; --good-bg: #173325; --mid: #e6c071; --mid-bg: #352a12; --bad: #f09a92; --bad-bg: #3a1d1b;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12171b; --surface: #192026; --fg: #e3e8ec; --muted: #9aa6b0; --line: #2c363e; --accent: #6cb8d4;
+  --good: #7fd3a0; --good-bg: #173325; --mid: #e6c071; --mid-bg: #352a12; --bad: #f09a92; --bad-bg: #3a1d1b;
+  color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 15px; line-height: 1.55; }
+main { max-width: 1040px; margin: 0 auto; padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 40px; }
+header { display: grid; gap: 8px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+h1 { font-size: 30px; line-height: 1.2; margin: 0; font-weight: 700; text-wrap: balance; }
+h2 { font-size: 20px; margin: 0; font-weight: 600; text-wrap: balance; }
+p { margin: 0; max-width: 68ch; }
+section { display: grid; gap: 14px; min-width: 0; }
+code, .mono { font-family: var(--mono); font-size: .88em; }
+
+.verdict { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
+  border-radius: 6px; padding: 20px 22px; display: grid; gap: 12px; }
+.verdict strong { color: var(--accent); }
+.verdict ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; max-width: 72ch; }
+
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; min-width: 820px; font-size: 13.5px; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+thead th { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .03em; text-transform: uppercase; background: var(--bg); }
+tbody th { font-weight: 600; white-space: nowrap; }
+tbody tr:last-child td, tbody tr:last-child th { border-bottom: 0; }
+td small { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+.rec th { color: var(--accent); }
+
+.chip { display: inline-block; font-size: 12px; font-weight: 600; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.good { color: var(--good); background: var(--good-bg); }
+.mid  { color: var(--mid);  background: var(--mid-bg); }
+.bad  { color: var(--bad);  background: var(--bad-bg); }
+
+.flow { font-family: var(--mono); font-size: 13px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+  padding: 14px 16px; overflow-x: auto; white-space: pre; line-height: 1.7; }
+.note { color: var(--muted); font-size: 13.5px; }
+ol.src { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow">mega-course · 2026-11-10 · feasibility</span>
+    <h1>Three wake triggers, or one shared subscribe/wake primitive?</h1>
+    <p>rig-pulse, mail-agent and away-agent are each woken by an outside service: a signed HTTPS call arrives, the Worker must check it, answer fast and then do the work. Today each one does this its own way. This page compares keeping them separate with building one shared primitive.</p>
+  </header>
+
+  <section class="verdict" aria-labelledby="v">
+    <h2 id="v">Decision: build it as a small module, not as a shared service</h2>
+    <p><strong>Worth building:</strong> one module of roughly 120 lines, taken from mail-agent's queue path: <span class="mono">verify → dedupe → enqueue → 2xx</span>, then a queue consumer that runs the handler and sends each outbound push with retries until a 2xx.</p>
+    <ul>
+      <li>It fixes the one failure that repeats across lessons: work done in <span class="mono">ctx.waitUntil</span> that dies without a trace. That is how away-agent lost its ping in try 6, and rig-pulse uses the same pattern. A queue keeps the job pending and retries it, which is what ADR 0008 asks for.</li>
+      <li>Do not build a hosted wake service that the three Workers subscribe to. It would hold three course signing keys in one place, put a single point of failure in front of Workers the course still calls, and cut across the rule that running Workers stay as they are unless you say otherwise.</li>
+      <li>Use it first for the next Worker a lesson needs. Move away-agent onto it only if it has to answer the course again. Leave rig-pulse alone: its <span class="mono">may</span> lists must stay exact, and it gains the least.</li>
+      <li>What it does not fix: ntfy.sh being unreachable from Cloudflare (429, then 522 for about 12 minutes). A retry keeps the ping alive but it still arrives late. That needs a second push channel, which is a separate decision.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="m1">
+    <h2 id="m1">How each Worker is woken today</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th scope="col">Worker</th><th scope="col">Woken by</th><th scope="col">Signature check</th><th scope="col">Dedupe</th>
+          <th scope="col">Hand-off to work</th><th scope="col">Retry if work fails</th><th scope="col">Outbound effect</th><th scope="col">Failure seen</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <th scope="row">rig-pulse<br><small>S01E05</small></th>
+            <td>Course POST, any path<small>discovery at <span class="mono">/.well-known/mega-pulse.json</span></small></td>
+            <td><span class="mono">webhook-id/-timestamp/-signature</span>, <span class="mono">v1,</span> HMAC<small>300 s replay window</small></td>
+            <td><span class="chip bad">none</span></td>
+            <td>202, then <span class="mono">ctx.waitUntil</span></td>
+            <td><span class="chip bad">none</span></td>
+            <td>reply POST to the course<small>also fetches the tracker</small></td>
+            <td>none recorded</td>
+          </tr>
+          <tr>
+            <th scope="row">mail-agent<br><small>S02E02</small></th>
+            <td>AgentMail webhook, <span class="mono">POST /webhooks</span></td>
+            <td>Svix headers, same <span class="mono">v1,</span> HMAC scheme<small>sender allowlist after it</small></td>
+            <td><span class="chip good">KV, 7 days</span><small>by message_id</small></td>
+            <td>Cloudflare Queue <span class="mono">mail-agent-jobs</span></td>
+            <td><span class="chip good">queue, 5 tries</span><small>20 s delay</small></td>
+            <td>mail reply through AgentMail</td>
+            <td>a polite reply to an untrusted sender failed a round</td>
+          </tr>
+          <tr>
+            <th scope="row">away-agent<br><small>S02E05</small></th>
+            <td>Course POST, <span class="mono">POST /course</span></td>
+            <td><span class="mono">x-course-signature</span>, hex HMAC of <span class="mono">ts.body</span></td>
+            <td><span class="chip mid">KV, 24 h</span><small>inside waitUntil</small></td>
+            <td>202, then <span class="mono">ctx.waitUntil</span></td>
+            <td><span class="chip mid">4 tries, 1.5 s steps</span><small>all inside waitUntil</small></td>
+            <td>reply POST, plus ntfy ping for held acts</td>
+            <td>try 6: ping lost; manual <span class="mono">/reping</span> got it out after ~12 min</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The three signature checks differ in header names and encoding. rig-pulse and mail-agent use the same algorithm (Standard Webhooks / Svix), so the module needs two verifier adapters, not three.</p>
+  </section>
+
+  <section aria-labelledby="m2">
+    <h2 id="m2">Options compared</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr>
+          <th scope="col">Option</th><th scope="col">Fixes lost background work</th><th scope="col">Effort</th>
+          <th scope="col">Risk to running Workers</th><th scope="col">Keys and access</th><th scope="col">Fits ADR 0006 / 0008</th><th scope="col">Verdict</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <th scope="row">A · Keep three separate triggers</th>
+            <td><span class="chip bad">no</span><small>each Worker fixes it alone, or not at all</small></td>
+            <td><span class="chip good">none now</span><small>paid again in every new Worker</small></td>
+            <td><span class="chip good">none</span></td>
+            <td><span class="chip good">one key per Worker</span></td>
+            <td><span class="chip mid">only mail-agent meets 0008</span></td>
+            <td>Fine while nothing new is built</td>
+          </tr>
+          <tr>
+            <th scope="row">B · One hosted wake service<small>Workers subscribe, it forwards</small></th>
+            <td><span class="chip good">yes</span></td>
+            <td><span class="chip bad">high</span><small>new Worker, routing, a subscribe API, auth between Workers</small></td>
+            <td><span class="chip bad">high</span><small>every course URL would move or be proxied</small></td>
+            <td><span class="chip bad">all keys in one place</span><small>one more grant to revoke</small></td>
+            <td><span class="chip mid">needs its own revoke page</span></td>
+            <td>Not worth it for three Workers</td>
+          </tr>
+          <tr class="rec">
+            <th scope="row">C · Shared module<small>taken from mail-agent</small></th>
+            <td><span class="chip good">yes</span><small>queue keeps jobs and pushes pending</small></td>
+            <td><span class="chip good">low</span><small>about half a day with tests (estimate)</small></td>
+            <td><span class="chip good">none</span><small>used by new Workers; old ones move by choice</small></td>
+            <td><span class="chip good">one key per Worker</span></td>
+            <td><span class="chip good">retry until 2xx, row on 2xx</span></td>
+            <td>Build this</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="g">
+    <h2 id="g">What each Worker would gain from the module</h2>
+    <div class="scroll">
+      <table>
+        <thead><tr><th scope="col">Worker</th><th scope="col">Gain</th><th scope="col">Move cost</th><th scope="col">Move it?</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">rig-pulse</th><td>retries for the tracker fetch and the reply</td><td><span class="chip mid">low</span><small>but the course checks its may lists exactly</small></td><td><span class="chip bad">no</span></td></tr>
+          <tr><th scope="row">mail-agent</th><td>little; it is the model for the module</td><td><span class="chip good">none</span></td><td><span class="chip mid">only as the reference</span></td></tr>
+          <tr><th scope="row">away-agent</th><td>the ntfy ping stays pending and retries on its own, so no manual <span class="mono">/reping</span></td><td><span class="chip mid">medium</span><small>holds and the owner-code form stay as they are</small></td><td><span class="chip mid">only if it must answer again</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="s">
+    <h2 id="s">The module's shape</h2>
+<div class="flow">fetch(req)      verify(adapter: "standard-webhooks" | "course-hmac")  →  401 if bad
+                dedupe(id, KV, ttl)                                   →  200 "duplicate"
+                enqueue({ kind, body })                               →  202 at once
+queue(batch)    handler(job)          ok → ack       throws → retry(delay)
+                push(target, msg)     2xx → event row "notified"     else → retry, row stays pending</div>
+    <p class="note">The per-lesson parts stay in each Worker: the handler, the policy, holds and owner codes, and the may lists.</p>
+  </section>
+
+  <section aria-labelledby="src">
+    <h2 id="src">Sources</h2>
+    <ol class="src">
+      <li><span class="mono">mega-s01e05/pulse-agent/src/index.ts:167–212</span>: signature check, 202, waitUntil</li>
+      <li><span class="mono">mega-s02e02/mail-agent/src/index.ts:161–198</span> and <span class="mono">wrangler.toml</span>: Svix check, KV dedupe, queue with 5 retries</li>
+      <li><span class="mono">mega-s02e05/away-agent/src/index.js:78–92, 178–210</span>: ntfy retries and handling inside waitUntil</li>
+      <li><span class="mono">mega-s02e05/log.txt:183–186</span>: try 6 ping lost, then 429 and 522 for about 12 minutes</li>
+      <li><span class="mono">mega-s02e05/ticket.md</span>, new "who it is for" line: the accepted run fails it at 717 s from ask to ping</li>
+      <li><span class="mono">docs/adr/0006</span>, <span class="mono">0008</span>; <span class="mono">CLAUDE.md</span> Lessons table</li>
+    </ol>
+  </section>
+</main>

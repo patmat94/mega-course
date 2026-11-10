@@ -11,6 +11,7 @@ Fill `mega-sXXeYY/outcome.md` from the template in `.claude/skills/challenge-sta
 
 - What was handed in and where (repo URL, commit, Netlify link, or whatever the challenge accepted).
 - How many claims it took and what each refused claim was missing.
+- Whether the result met the ticket's "Who it is for / how we'd know it helped" line, with the measured number, even when the course accepted it.
 - Anything the next lesson must know (a tool installed, a pattern that failed, a constraint discovered).
 
 Git and `log.txt` carry the dates — do not repeat them.

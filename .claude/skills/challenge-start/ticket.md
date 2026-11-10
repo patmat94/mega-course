@@ -6,6 +6,8 @@
 
 <!-- Two to four sentences: what exists or is true once the Challenge is solved, in the course's own words. -->
 
+**Who it is for / how we'd know it helped:** <!-- One line, in your human's terms, not the course's: who uses the result, and what we would measure in its own output (a log, a count, a time) to show it helped them. Give each limit a number. Check the output against this line as well as against Acceptance; the course can accept a result that fails it (S02E05: accepted, but the ping took 717 s). Say whether the human set the limits or you did. -->
+
 ## Scope
 
 - <!-- What the work touches: repo, files, pages, tools. One line each. -->

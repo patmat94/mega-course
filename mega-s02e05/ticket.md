@@ -4,6 +4,8 @@
 
 An agent of ours runs on a machine that stays up (a sandbox that does not sleep) and answers the course's messages on one registered channel while the human is away. It acts alone on the acts the human marked "free", holds "gated" acts, pings the human's phone, and does a gated act only after the human gives it a code only they have. The course accepts the practice labels and the live try in the registered window.
 
+**Who it is for / how we'd know it helped:** the human, away from the laptop with only the phone; it helped if every gated ask reached the phone from the agent itself within 2 min, free acts never pinged them, and each held act was done within 1 min of their code. Checked by `node check-helped.mjs <log> <heldActs>` (thresholds set by me on 2026-11-10, not yet confirmed by the human).
+
 ## Scope
 
 - Policy: per act (post_status, ack_alert, archive_report, purge_cache, release_hold, rotate_key) free or gated, decided by the human, at least one of each.
@@ -50,3 +52,4 @@ An agent of ours runs on a machine that stays up (a sandbox that does not sleep)
 - Try 4 (window 15:31, after a third Start over): all messages answered in time (round 1 reply +1.5 s; round 2 DONE ack_alert / HOLD release_hold +2 s; owner code from the phone form, DONE release_hold CODE at +4.5 min). Status log from GET /status, rows written at each event, received stamped at arrival (0.2 s after x-course-timestamp). Still log_mismatch: received. Hint 3: write one row at the moment each event happens, with its time and offset; never from memory at the end. Cause still unknown. Source: log.txt.
 - Try 5 (window 16:12, diagnostic): agent now records every request (GET /reqs). Only two course POSTs, each answered 202 in the same ms, 0.3–0.4 s after the course's own timestamp. Log sent with a second round-2 "received" row (one per ask): still log_mismatch: received. Ruled out: lost/extra deliveries, slow 2xx, one row per ask. One window left in this 24 h set. Source: log.txt.
 - Course answer 2026-11-09 (pasted by the human): the validator does not find a row whose "round" is a string; send it as a number. Source: log.txt.
+- 2026-11-10, "who it is for" check (check-helped.mjs): the accepted try 6 (status-log-accepted.jsonl, rows from log.txt:189) **fails** it: the ping reached the phone 717 s after the gated ask (limit 120 s); one ping, none for free acts, and done 1.0 s after the code all pass. status-log.jsonl on disk is the try-2 log (2026-11-06), not the accepted one: its pings were on time (24 s) but were laptop relays, not the agent (log.txt:111), so it fails too. The course accepted a run that did not help its user on the one thing it was for. Source: check-helped.mjs run, log.txt:111, 183–189.

@@ -25,11 +25,13 @@ Its reply holds what the page does not: the `ticket` or proofs (often what the C
 
 ## 3. Write `ticket.md` before the work
 
-Copy [ticket.md](ticket.md) from this folder and fill it from the start-challenge reply and the page. Acceptance is the part that matters: one checkable line per thing the course will look at. Show the user the Outcome and Acceptance before starting.
+Copy [ticket.md](ticket.md) from this folder and fill it from the start-challenge reply and the page. Acceptance is the part that matters: one checkable line per thing the course will look at. Fill the "Who it is for / how we'd know it helped" line too: who the result serves and what in its own output would show it helped, with numbers. Acceptance answers to the course; this line answers to the user. Show the user the Outcome, that line and Acceptance before starting, and ask them to confirm or change its limits.
 
 ## 4. Before every claim: tick Acceptance
 
 A hook on `claim-challenge` (`.claude/hooks/claim-gate.mjs`) denies the claim while any Acceptance line in the ticket.md of the folder whose `receipts.json` holds that `challengeId` is unticked. A line that can only be ticked once the claim answers (e.g. "claim-challenge returns solved") carries `(after claim)` and is skipped. Check each line against the real result (run the count, open the link, read the issue's state), tick it, and claim only when all are ticked. When a claim is refused, add the missing check as a new Acceptance line and a line in Notes.
+
+Also check the real output against the "Who it is for" line, preferably with a small script in the lesson folder (S02E05: `check-helped.mjs`). This check does not block the claim, since the gate reads only Acceptance, but write its result in Notes and tell the user before claiming when it fails.
 
 ## Issue work
 
