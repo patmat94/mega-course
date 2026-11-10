@@ -16,6 +16,14 @@ export type Job =
   | { kind: "push"; id: string; push: Push; at: string };
 export type Bindings = { kv: KVLike; queue: QueueLike<Job> };
 
+export interface MessageLike<T> {
+  body: T; attempts: number; ack(): void; retry(o?: { delaySeconds?: number }): void;
+}
+export interface BatchLike<T> { messages: readonly MessageLike<T>[] }
+
+export type Tools = { push(p: Push): Promise<void>; log(row: Omit<Row, "at">): Promise<void> };
+export type Handler = (job: Job, t: Tools) => Promise<void>;
+
 export type Event = "received" | "duplicate" | "refused" | "handled" | "handler_failed" | "job_failed"
   | "push_attempt" | "notified" | "push_failed";
 export type Row = {

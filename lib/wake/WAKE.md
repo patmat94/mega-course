@@ -81,7 +81,10 @@ type Handler = (job: Job, t: Tools) => Promise<void>;
 
 function consume(batch: MessageBatch<Job>, b: Bindings, handlers: Record<string, Handler>, o?: {
   maxTries?: number;         // default 30
+  fetch?: (url: string, init: RequestInit) => Promise<Response>; // default global fetch; tests pass a fake
+  now?: () => number;        // default Date.now; tests fix the clock
 }): Promise<void>;
+// A push job's id is `<job id>.push.<n>`, n counting the pushes one handler run queued.
 
 function delayFor(attempt: number): number; // seconds: min(15 * 2^(attempt-1), 300)
 
@@ -146,7 +149,7 @@ The module decides the last try, not the queue: set the queue's `max_retries` in
 | Signature window | 300 s standard webhooks, 600 s course | the values the existing Workers use |
 | Log rows | key `log:<ms, 13 digits>:<seq 3><random 3>` (base 36), TTL 7 days | sorted by time when listed; the per-isolate sequence keeps rows from the same millisecond in write order (a random suffix alone did not); old rows expire |
 | Row `about` | at most 200 characters | rows are read by people and models; no bodies |
-| Source size | about 150 lines without tests | plan principle |
+| Source size | about 150 lines without tests was the aim; 245 after § 4 (verify 72, consume 62, log 38, ingress 35, types 31, index 7; `wc -l`) | plan principle; still readable in one sitting, but over the aim |
 
 ## Tests (plan §§ 2–4)
 
