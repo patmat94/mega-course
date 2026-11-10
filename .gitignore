@@ -27,3 +27,15 @@ mega-s02e04/receipts.json
 
 # S02E05 receipts hold signing keys and owner codes
 mega-s02e05/receipts.json
+
+# S03E01: receipts and claim bodies hold the board token and step receipt
+mega-s03e01/receipts.json
+mega-s03e01/claim1-answer.json
+mega-s03e01/claim2-answer.json
+mega-s03e01/list.json
+mega-s03e01/build-list.mjs
+mega-s03e01/pack-dl/
+mega-s03e01/night-status/node_modules/
+mega-s03e01/night-status/.wrangler/
+mega-s03e01/pack/
+mega-s03e01/wrangler-dev.log

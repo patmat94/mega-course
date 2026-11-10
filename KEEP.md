@@ -73,6 +73,12 @@ found: claude at ~\.local\bin\claude.exe
 - under wrangler dev (4.157) the local queue honours retry delaySeconds: a push that got 503 was retried 15.1 s later, matching delayFor(1) = 15 · source: lib/wake/demo/test/e2e-local.mjs:79 · how: ran
 - `node --test lib/wake/test/` reads the folder as one file and fails on Node 24; pass a glob, `node --test "lib/wake/test/*.test.ts"` · source: lib/wake/WAKE.md:160 · how: ran
 
+- tool-home transcribe (Whisper) wrote the S03E01 memo tag at 34 s as "RH-5-H"; the human listened and heard RZ-5-H (R-Z5H); a second run gave the same wrong text, so spoken tags need a human ear when a claim says unknown_tag · source: human · how: told
+- in S03E01 product answered a list conflict on the signed-in Challenge page ("Product answered your list"), not in the claim reply; re-read the page after an accepted step · source: mega-s03e01/log.txt:54 · how: read
+- in the built-in browser, video frames come out right only with seek, a 1 s wait, then a screenshot; quick seeks gave a stale frame, and javascript_tool loses async loops and window state after the call returns · source: mega-s03e01/log.txt:47 · how: read
+- the S03E01 status page Worker night-status is deployed at https://night-status.patrykmatychniak.workers.dev and reads the ops feed live; RANGE=last-night was the human's choice · source: mega-s03e01/night-status/wrangler.toml:9 · how: ran
+- the Bash tool here gets "Permission denied" running curl (/mingw64/bin/curl); PowerShell Invoke-WebRequest works for downloads and PUT uploads · source: mega-s03e01/log.txt:61 · how: ran
+
 ## Receipts
 
 command: echo '{"session_id":"t1"}' | node .claude/hooks/recheck-sources.mjs (before the fix)
@@ -225,4 +231,18 @@ command: node --test lib/wake/test/ (Node 24.16, all module files present; the g
 test at lib\wake\test:1:1
 ✖ lib\wake\test (61.2784ms)
   'test failed'
+```
+
+command: curl -sS -o pack-dl/pack.zip https://hq.mega.dev/media/status-for-the-night/pack-ca30e2ec.zip (Bash tool)
+```
+Exit code 126
+/usr/bin/bash: line 1: /mingw64/bin/curl: Permission denied
+```
+
+command: npx --no-install wrangler deploy (mega-s03e01/night-status)
+```
+Uploaded night-status (3.37 sec)
+Deployed night-status triggers (1.89 sec)
+  https://night-status.patrykmatychniak.workers.dev
+Current Version ID: 403b251f-3aac-43b9-801a-573a3369e950
 ```

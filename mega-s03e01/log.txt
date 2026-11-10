@@ -1,0 +1,61 @@
+=== 2026-11-10 list-challenges -> S03E01 "status for the night", startPoint https://hq.mega.dev/challenges/status-for-the-night
+=== start-challenge {"uuid":"c0000000-0000-4000-8000-0000005e03e1"}
+reply: challengeId c0000000-0000-4000-8000-0000005e03e1
+task: Turn what several people sent about a status page into one requirements list, each requirement cited to where it came from, then build the page from that list and deploy it.
+why: Product wants a public status page for the night, built from what its people asked for.
+done: The course accepts your list at step one, then the page you deployed from it at step two.
+you: Your human opens the Challenge page signed in when you ask, because one source is only there; where sources disagree, product decides, not your human.
+proofs: receipt from the step-one pass -> step-two claim, inside answer
+pack: https://hq.mega.dev/media/status-for-the-night/pack-ca30e2ec.zip
+ask: Turn the pack into a requirements list first: every tagged requirement, cited by the file it came from and where in it. Then build the page from that list and deploy it on Cloudflare Workers, next to the MCP server you put up earlier — public https, no login.
+skill: Do the intake with a skill of your own, named capture: a folder of mixed files in, a tagged requirements list out, each one cited. Keep it where your agent can use it on any project; you send its text with the list. check-lane { "need": "skill-wiring", "probe": { "scope": "user", … } } shows where that is for your harness.
+page: Not all of the material reaches you: some of it lives on the Challenge page.
+submit.list: Step one: claim-challenge with answer { list, skill }. list = { accepted: [{ tag, source }], conflicts: [{ tag, with, ownerQuestion, source }], unreadable?: [{ file, why }] }. source = { file, at?, region? }: file = the file's name, or for something you opened by a link, that link; at = seconds into a recording; region = { page?, x, y, w, h } as 0–1 fractions of the image or PDF page. with = what it disagrees with: the other tag, or the record by its id; ownerQuestion = the one question you would put to its owner, naming both sides. skill = { name, path, text }: the skill as written.
+submit.build: Step two: claim-challenge with answer { receipt, buildUrl }: the receipt from step one, and the public https address of your deployed status page.
+rook: they want a status page for the night. six files from six people, one page. they don't agree. not everything comes through your agent. the challenge page has the rest.
+=== check-lane {"need":"skill-wiring"} -> user scope: own skills in ~/.agents/skills, one source, link never copy; check = new session lists the skill
+=== check-lane {"need":"list"} -> needs: gh, upload-cli, skill-wiring, remote-mcp, channel, hint, browser
+=== GET pack-ca30e2ec.zip -> 690048 B: board-link.txt memo.m4a recording.mp4 screenshot.png spec.pdf whiteboard.jpg
+board-link.txt: "tram 3 board, live. from tram ops. / its link is on the challenge page, signed in. it is not in this pack."
+read screenshot.png: R-R8X "keep it teal, exactly this one" (arrow to banner); R-Z8K "dates month first like the boards" (arrow to date column)
+read whiteboard.jpg: R-R6H "json updatedAt = the ops feed's, read live, never a copy"; R-Z6L "keep the whole week on it!"; untagged "ask product about colours?"
+read spec.pdf (owner rune, from product): p1 R-K9R newest incident at the top; R-K5H each incident names who ran it; p2 R-Z9L dates day first 12/10; R-H2L last night only, nothing older
+=== GET /challenges/status-for-the-night/api/incidents/7a5169564388 -> 200, saved feed-1.json (updatedAt 2026-11-10T11:07:00Z, 7 incidents 5208-5214; 5214 author "—")
+=== tool-home upload {"filename":"memo.m4a","content_type":"audio/mp4"} -> url .../files/file_jDxKmPKT4dJvQfv_/memo.m4a, upload_url <masked>; PUT 200 size 323270
+=== tool-home upload {"filename":"recording.mp4","content_type":"video/mp4"} -> url .../files/file_mFm_H8LKkTdnXVR8/recording.mp4, upload_url <masked>; PUT 200 size 228375
+=== tool-home transcribe memo.m4a -> full transcript (file_wszU21kTA0WlbQhU/memo.transcript.txt):
+[0] Quick one for the night status page. This is on-call.
+[5.06] RM-8-Z. The tram boards read our status JSON from their own pages, so the JSON has to answer with access control allow origin star.
+[18.78] RH-4-X. Every status JSON carries updated at in UTC ending in Z.
+[26.66] RH-9-M. And the page heading says status for the night. Those exact words.
+[33.84] RH-5-H. One more on the JSON. Cache control max age 30 seconds or less. The boards poll it that often.
+[44.16] That's all from me. The rest is in the spec.
+=== tool-home transcribe recording.mp4 ->
+[0] OK, I'm sharing my screen. This is the draft for tonight's status page.
+[7] RL9X. Every line gets its own row on the page, Tram 3 included. The boards care about that one.
+[14.18] Hold on.
+[19.82] Right, that's product. The rest is on call and the spec.
+[24.44] Ping me if something doesn't add up.
+=== recording.mp4 frames (browser, 28.76 s, 960x540): mock table line/now/last incident (tram 3, bus 14, night bus N2); tram 3 row highlighted from ~16 s; "my notes" panel gains "R-Z4M footer: all times UTC" between 19.5 s and 20.5 s, shown to the end
+=== wrote ~/.agents/skills/capture/SKILL.md; junction ~/.claude/skills/capture -> it; claude -p from ~ -> "capture: yes"
+=== check-lane skill-wiring probe {scope:user, how:link, loaded.present:true} -> verdict "wired"
+=== Challenge page (signed in): "One source is not in the pack. Its link is only on this page: tram 3 board." link /challenges/status-for-the-night/board?t=<masked> (raw in receipts.json sources.boardLink)
+=== board (canvas, static over 30 s): "TRAM 3 · DEPOT NORTH 04:12 / 04:16 depot north on time / 04:31 depot north on time / 04:46 depot north +3 min / R-K6X status page: say "shown on tram 3 boards""; snapshot board-2026-11-10.jpg
+=== node build-list.mjs -> list.json: 10 accepted, 5 conflict rows (R-Z9L<->R-Z8K, R-H2L<->R-Z6L, R-K5H vs record 5214), 15 tags
+=== claim-challenge step one (body = claim1-answer.json, board token masked here) -> rejected: "Not yet. missing_tag: 1 · unknown_tag: 1. Finding which ones is yours."
+=== check-lane hint {code:"unknown_tag"|"missing_tag"|"rejected"|full message, tries:1} -> unknown-code each time
+=== recording.mp4 frames re-checked with 1 s waits: note "R-Z4M footer: all times UTC" typed from ~14 s, visible to ~24 s, gone at 25-28 s (earlier 27.5 s frame was stale)
+=== spec.pdf streams inflated: no hidden tags; metadata Creator Chromium only. No tag strings in image/audio/video metadata.
+=== tool-home upload memo-b.m4a (same bytes) + transcribe -> identical transcript ("RM-8-Z" at 5.06 ...)
+=== human listened to memo.m4a at 34 s: Whisper's "RH-5-H" is "RZ-5-H" -> tag R-Z5H, not R-H5H; list.json rebuilt
+=== claim-challenge step one, try 2 (claim2-answer.json, R-Z5H) -> progress: "no guesses in it. one of them answered you. / Not solved yet: step two is the build." receipt <masked> (raw in receipts.json)
+=== start-challenge repeat -> no update field, same brief
+=== GET feed -> 200, updatedAt 2026-11-10T11:32:00Z (was 11:07), same 7 incidents
+=== Challenge page (signed in) now shows "Product answered your list": "dates month first, 10/12, the way the boards show them. R-Z8K holds, R-Z9L goes." — product. No answer on R-H2L/R-Z6L or R-K5H/5214.
+=== screenshot.png banner pixels (80,90) (500,95) (900,125) -> #1f9e8f (R-R8X)
+=== night-status Worker written (src/index.js), node --test 5/5 pass; wrangler dev :8799 -> / 200 and /status.json 200, ACAO *, cache-control public, max-age=30, updatedAt 2026-11-10T11:36:00Z = live feed, 7 rows newest first, dates 10/12
+=== human: "Deploy, last night only" -> wrangler.toml RANGE=last-night; npx wrangler deploy -> https://night-status.patrykmatychniak.workers.dev, version 403b251f-3aac-43b9-801a-573a3369e950
+=== node check-live.mjs -> 15/15 PASS (public 200/200, R-K9R R-R8X R-R6H R-M8Z R-H4X R-H9M R-Z5H R-L9X R-Z4M R-K6X R-Z8K, R-H2L chosen: 6 rows, 5208 dropped; 453 ms)
+=== claim-challenge step two {receipt:<masked>, buildUrl:"https://night-status.patrykmatychniak.workers.dev"}
+reply: status "solved", solvedAt 2026-11-10T11:42:08.000Z, note "you built what was agreed. the rest went back as questions."
+=== Bash tool: curl download of the pack -> "/usr/bin/bash: line 1: /mingw64/bin/curl: Permission denied" (exit 126); used PowerShell Invoke-WebRequest instead

@@ -1,0 +1,9 @@
+name = "night-status"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+workers_dev = true
+
+[vars]
+FEED_URL = "https://hq.mega.dev/challenges/status-for-the-night/api/incidents/7a5169564388"
+# R-H2L vs R-Z6L open with product; human chose "last-night" (spec R-H2L) on 2026-11-10. "all" = every feed row
+RANGE = "last-night"

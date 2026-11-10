@@ -43,3 +43,4 @@ S01E02 is where this came from: the record held two unlabelled summaries, so the
 | S02E03 | schema first | `mega-s02e03` | solved 2026-11-05; MCP server tool-home on Worker (still running, course holds a grant); whole tool result ≤1024 B, errors name the input |
 | S02E04 | two places | `mega-s02e04` | solved 2026-11-06; job 1 via local claude -p, job 2 via cloud session (repo made public); join needs time-zone conversion; cloud result came home by paste |
 | S02E05 | while you're away | `mega-s02e05` | solved 2026-11-09; Cloudflare Worker away-agent (still running) answers on HTTPS, gated acts need the owner's code; status log "round" must be a number; ntfy from Workers flaky |
+| S03E01 | status for the night | `mega-s03e01` | solved 2026-11-10; skill `capture` in ~/.agents/skills (linked); Worker night-status (still running); Whisper misheard a spoken tag, human ear fixed it; product answers conflicts on the Challenge page |
