@@ -30,7 +30,7 @@ Decisions: `docs/adr/`, one file per decision. When the human decides how someth
 
 ## Issues
 
-Issues live in patmat94/mega-course. One place per plan, never a mix.
+Issues live in patmat94/mega-course. One place per plan, never a mix. `gh` is blocked on this PC: file issues through the built-in browser (prefilled `issues/new?title=&body=` pages, signed in as patmat94), take each number from the page after Create, and check the issue list for gaps and duplicates afterwards. The `lib/wake/` plan is issues #1–#11 (2026-11-10).
 
 Every issue carries `Source:` and `Done when:`. Nothing else.
 
