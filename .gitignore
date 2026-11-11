@@ -46,3 +46,6 @@ mega-s03e02/claim-answer.json
 mega-s03e02/sched-prod/sched-prod/.sched/
 mega-s03e02/download/
 .claude/skills/triage
+
+# ask skill drafts hold other people's words
+asks/
