@@ -18,7 +18,8 @@ open issue carries exactly one mark: `agent-ready` or `needs-human`. Nothing shi
 ## 1. Collect
 
 Run the collector (backlog + every channel) so each request is a file. Keep the raw request text
-in the body. Run it again at the end: requests keep arriving.
+in the body. Requests keep arriving in batches: run it again after every pass, as the last step
+before you hand the tracker in, and again after every refusal before you change any decision.
 
 ## 2. Read all requests together before marking any
 
@@ -35,10 +36,10 @@ Group them. Look for:
   request keeps its own issue for the first; each other problem gets a new issue that carries the
   same request id in `sources` and says "Split from <request id>". Never leave two problems under
   one mark.
-- **Withdrawn** ("scratch my request", "we decided to keep it"): the withdrawn request's issue
-  closes `obsolete`, cites the withdrawal, and takes the withdrawal's id into its own `sources`;
-  the withdrawal gets no issue of its own (it is not a duplicate: it asks for nothing). Nothing
-  withdrawn stays open, marked or not.
+- **Asks for nothing** (a withdrawal "scratch my request", a thank-you, "it works now"): never a
+  duplicate, because a duplicate repeats an ask. It gets no issue of its own; its id goes into the
+  `sources` of the issue it acts on, and that issue follows it: a withdrawn request closes
+  `obsolete` and cites the withdrawal. Nothing withdrawn stays open, marked or not.
 - **A new request can change an earlier mark**: when a later request says a client relies on what
   an `agent-ready` issue would change, that issue becomes `needs-human`. Re-check earlier marks
   after every new batch.
@@ -103,5 +104,7 @@ Script the check, don't eyeball it:
 - every closed issue has a valid `reason` (and `duplicate-of` when duplicate) and cites an id;
 - every `agent-ready` body has Intent, Acceptance with a "not" case, Boundaries, "Allowed by AUT-…";
 - every `needs-human` body has Question, ≥2 Options, Recommendation, Why with an id;
-- every `blocked-by` key exists.
-Then run the collector once more; if anything new came in, triage it and check again.
+- every `blocked-by` key exists;
+- no closed `duplicate` is a request that asks for nothing.
+Then run the collector once more, right before the hand-in; if anything new came in, triage it
+and check again. Hand in only after a poll that brought nothing new.

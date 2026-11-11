@@ -50,6 +50,9 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 - Check every tag or value that came only from speech by ear before the first claim: listen at each cited second, or ask the human to. A second transcription run is not a check. Why: in S03E01 Whisper wrote "RH-5-H" for R-Z5H twice, and the first list was refused (`docs/adr/0010-spoken-tags-by-ear-and-reread-page.md`).
 - After a claim comes back `progress`, re-read the signed-in Challenge page and call `start-challenge` again before the next step, then apply what changed. Why: in S03E01 product's answer to a conflict was only on the page, and the claim reply only hinted at it (same ADR).
 
+- Right before each claim, and after each refused claim, poll every live request source once more (collector, channel, feed, page); claim only after a poll that brought nothing new. Why: in S03E02 a client's withdrawal arrived after four empty polls, and the first claim was refused (`docs/adr/0011-poll-before-claim-and-no-duplicate-without-an-ask.md`).
+- Never close a request that asks for nothing (a withdrawal, a thank-you) as a duplicate: put its id in the `sources` of the issue it acts on. Why: a duplicate repeats an ask; in S03E02 the course refused the withdrawal closed as duplicate and accepted it in the withdrawn issue's sources (same ADR).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.

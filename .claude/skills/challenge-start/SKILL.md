@@ -29,6 +29,8 @@ Copy [ticket.md](ticket.md) from this folder and fill it from the start-challeng
 
 ## 4. Before every claim: tick Acceptance
 
+When the Challenge feeds you a live stream (a collector, a channel, a feed, a page that grows), poll it once more as the last step before you build the claim body, and again after every refused claim before you change anything. If the poll brings something new, apply it and rerun your checks first. The `recheck-sources` Stop hook does not cover this: it runs when a turn stops, not before a claim (S03E02: a withdrawal arrived after four empty polls, first claim refused; ADR 0011).
+
 A hook on `claim-challenge` (`.claude/hooks/claim-gate.mjs`) denies the claim while any Acceptance line in the ticket.md of the folder whose `receipts.json` holds that `challengeId` is unticked. A line that can only be ticked once the claim answers (e.g. "claim-challenge returns solved") carries `(after claim)` and is skipped. Check each line against the real result (run the count, open the link, read the issue's state), tick it, and claim only when all are ticked. When a claim is refused, add the missing check as a new Acceptance line and a line in Notes.
 
 When the answer rests on speech (a memo, a call, a video's audio), add the Acceptance line "Every spoken tag or value was checked by ear, not only by transcript" and tick it only after you or the user listened at each second you cite. A transcript swaps letters, and a second run repeats the same mistake (S03E01: "RH-5-H" for R-Z5H, first claim refused).

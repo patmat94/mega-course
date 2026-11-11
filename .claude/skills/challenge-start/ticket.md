@@ -33,6 +33,8 @@
 - [ ] Every public link checked from outside: 200, right content, nothing that must be gone (S01E04).
 - [ ] Every spoken tag or value was checked by ear, not only by transcript (S03E01).
 - [ ] After each accepted step, the signed-in Challenge page was re-read and its answers applied (S03E01).
+- [ ] The live request stream was polled right before this claim and brought nothing new (S03E02).
+- [ ] No request that asks for nothing (a withdrawal, a thank-you) is closed as a duplicate (S03E02).
 -->
 
 - [ ] Tickets and tokens are masked in `log.txt`; the raw ones are only in `receipts.json`.
