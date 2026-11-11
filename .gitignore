@@ -39,3 +39,10 @@ mega-s03e01/night-status/node_modules/
 mega-s03e01/night-status/.wrangler/
 mega-s03e01/pack/
 mega-s03e01/wrangler-dev.log
+
+# S03E02: receipts, claim body and collector cursors hold the session key
+mega-s03e02/receipts.json
+mega-s03e02/claim-answer.json
+mega-s03e02/sched-prod/sched-prod/.sched/
+mega-s03e02/download/
+.claude/skills/triage

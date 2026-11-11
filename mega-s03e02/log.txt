@@ -1,0 +1,49 @@
+﻿=== 2026-11-11 S03E02 nothing ships unmarked ===
+> list-challenges {}
+< S03E02 "nothing ships unmarked" solved:false, startPoint: call start-challenge with uuid c0000000-0000-4000-8000-0000005e03e2
+> start-challenge {"uuid":"c0000000-0000-4000-8000-0000005e03e2"}
+< challengeId: c0000000-0000-4000-8000-0000005e03e2
+< task: Triage the product's requests into its issue tracker, so every open issue is either ready for an agent or marked for a person.
+< why: The product's people need to see, on every open issue, whether an agent may take it or a person decides.
+< done: The course accepts the tracker and the triage skill you used, in one claim.
+< you: Your human has nothing to do unless you keep the tracker in GitHub Issues, which needs their gh sign-in; issues marked needs-human are for the product's people to decide, not your human.
+< proofs: [{name: session, from: this start, goesTo: the API as ?t= and the claim as answer.session}]
+< repo: https://hq.mega.dev/media/nothing-ships-unmarked/sched-prod-3e6e841d.zip
+< api: https://hq.mega.dev/challenges/nothing-ships-unmarked/api
+< session: v1.<masked>  sessionExpiresAt: 2026-11-12T19:48:20.000Z
+< sessionNote: Calling start-challenge again deals a new set of requests under a new session. Keep this one: save session in a file now, because no other call gives it back. session is your key to this round: the API takes it as ?t=, the claim as answer.session. It holds for a day.
+< ask: Download the repo. Its collector fills a tracker from the product's backlog and its request channels. With your harness, triage every request into the tracker, so each open issue is either ready for an agent (label agent-ready) or marked for a human (label needs-human). The README names the issue file format.
+< skill: Do the triage with a skill of your own, named triage: requests in, a marked tracker out. Keep it where your agent can use it; you send its text with the tracker. check-lane { "need": "skill-wiring" } shows where that is for your harness.
+< submit: When the tracker is ready: claim-challenge with answer { session, tracker, skill }. tracker = { kind: "md", files: [{ path, text }] } — every file in doc/issues/, path and full text — or { kind: "gh", ghJson } — the output of the gh command in the README, as a string. skill = { name, path, text }: the triage skill you used, as written. Up to 256 KB in all.
+< rook: #4471 shipped itself at 04:04. nobody marked it. this week nothing ships unmarked.
+> GET https://hq.mega.dev/media/nothing-ships-unmarked/sched-prod-3e6e841d.zip
+< unpacked to mega-s03e02/sched-prod/sched-prod (README, AGENTS.md, collectors/, specs/)
+> node collectors/all.mjs (run 1)  < backlog 17, desk 5, chat 1, mail 4 new
+> node collectors/all.mjs (run 2)  < 0 new everywhere
+> check-lane {"need":"skill-wiring"}
+< what: The harness this lane runs loads the skills a repo keeps in `.agents/skills` — one source, no copies. ... contract: one folder holds the skills: `.agents/skills` in the repo ... Link to the folder, never copy it.
+- wrote .agents/skills/triage/SKILL.md; junction .claude/skills/triage -> .agents/skills/triage; triage shows in Claude Code's skill list
+- node mega-s03e02/triage-apply.mjs (decisions per the triage skill); node mega-s03e02/check-tracker.mjs -> FAIL 3 (no must-not case in IN-3197, SCHED-4446, SCHED-4465) -> fixed -> PASS
+> node collectors/all.mjs (run 3)  < desk 3, chat 2, mail 3 new (IN-2313, IN-4945, IN-5262, IN-5862, IN-6895, IN-7914, IN-8948, IN-9868)
+- IN-9868 relies on midnight-to-midnight all-day events -> IN-3975 now needs-human; IN-4945 split, TRI-1 created
+- GET /channels/desk without since shows only IN-3975,IN-3197,IN-1900,IN-7118,IN-2830; with its cursor: empty. Later batches only reach the collector's stored cursor.
+> node collectors/all.mjs (run 4)  < desk 1 (IN-4016), mail 1 (IN-6485)
+> node collectors/all.mjs (run 5)  < chat 1 (IN-9066)
+> node collectors/all.mjs (runs 6-9) < 0 new everywhere
+< check-tracker: requests 21 · issues 39 · open 25 (agent-ready 21, needs-human 4) · done 6 · closed 8 · PASS: 0 problems
+> node mega-s03e02/build-claim.mjs < files 39 · bytes 38501 (limit 262144); body in mega-s03e02/claim-answer.json (session masked here)
+> claim-challenge {uuid, receipts:{session:<masked>}, answer:{session:<masked>, tracker:{kind:md, 39 files}, skill:{name:triage, path:.agents/skills/triage/SKILL.md}}} (body = mega-s03e02/claim-answer.json)
+< status: rejected
+< message: Not yet. 1 intent not accounted for · 1 issue open that should not be. Finding which ones is yours.
+< next: Check your work against the task, change one thing, and try again. If you cannot see what to change, tell your human what you lack.
+> node collectors/all.mjs < mail 1 new (IN-3244: Scratch my request to move the weekly summary to Mondays. The team voted to keep Friday.)
+- IN-2952 -> closed obsolete; IN-3244 -> closed duplicate-of IN-2952; skill gains 'Withdrawn' rule
+< check-tracker: requests 22 · issues 40 · open 24 (agent-ready 21, needs-human 3) · done 6 · closed 10 · PASS; 3 more polls 0 new; claim body 38767 bytes
+> claim-challenge (2nd; tracker 40 files incl. IN-2952 closed obsolete, IN-3244 closed duplicate-of IN-2952; skill with Withdrawn rule)
+< status: rejected
+< message: Not yet. 1 issue closed without a reason that holds. Finding which ones is yours.
+- IN-3244 folded into IN-2952 sources (withdrawal is not a duplicate); IN-3244.md removed (copy in issues-as-collected/); check PASS 21 files/22 requests, 39 issues
+> claim-challenge (3rd; 39 files, skill with revised Withdrawn rule)
+< status: solved  solvedAt: 2026-11-11T20:06:13.000Z
+< stats: 22 requests in → 22 issues carry them · 1 merged into another issue · closed: 7 duplicate, 1 obsolete, 1 contradicts-spec · open: 21 agent-ready, 3 needs-human.
+< note (rook): the ones you marked human are questions. ask carries them now.

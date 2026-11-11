@@ -77,6 +77,8 @@ found: claude at ~\.local\bin\claude.exe
 - in S03E01 product answered a list conflict on the signed-in Challenge page ("Product answered your list"), not in the claim reply; re-read the page after an accepted step · source: mega-s03e01/log.txt:54 · how: read
 - in the built-in browser, video frames come out right only with seek, a 1 s wait, then a screenshot; quick seeks gave a stale frame, and javascript_tool loses async loops and window state after the call returns · source: mega-s03e01/log.txt:47 · how: read
 - the S03E01 status page Worker night-status is deployed at https://night-status.patrykmatychniak.workers.dev and reads the ops feed live; RANGE=last-night was the human's choice · source: mega-s03e01/night-status/wrangler.toml:9 · how: ran
+- the S03E02 channel API shows only the first batch of requests on a read without a cursor; later batches reach only the collector's stored cursor, and one arrived after the first claim · source: mega-s03e02/log.txt:29 · how: read
+- in S03E02 the course refused a withdrawal ("scratch my request") closed as duplicate ("1 issue closed without a reason that holds"); it accepted the withdrawal's id in the withdrawn issue's sources, closed obsolete · source: mega-s03e02/log.txt:44 · how: read
 - the Bash tool here gets "Permission denied" running curl (/mingw64/bin/curl); PowerShell Invoke-WebRequest works for downloads and PUT uploads · source: mega-s03e01/log.txt:61 · how: ran
 
 ## Receipts
