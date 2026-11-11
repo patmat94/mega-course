@@ -3,7 +3,7 @@
 Personal folder for MEGA.dev course challenges.
 
 Read first: `KEEP.md`, then this file.
-Decisions: `docs/adr/`, one file per decision. When the human decides how something is done here, it goes in a new file there.
+Decisions: `docs/adr/`, one file per decision. When the human decides how something is done here, it goes in a new file there. Each ADR has a `**Status:**` line under its title: `accepted`, or `superseded by NNNN`. A new ADR that replaces an old one changes the old one's Status.
 
 ## Commands
 

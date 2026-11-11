@@ -16,6 +16,10 @@
 
 - <!-- Only nearby work someone would plausibly do by mistake (e.g. a second repo, editing the course's own data). -->
 
+**Boundaries:** <!-- What this Challenge must not touch or do. -->
+
+**Fails if:** <!-- Evidence that would still mean a miss. -->
+
 ## Acceptance
 
 - [ ] <!-- One check per line, verifiable with a command, a count or a look. Take each from the ticket, `submit`, `deliver` or the page. -->

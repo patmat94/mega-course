@@ -1,5 +1,7 @@
 # 0006 · Tool servers: build every tool with the hands skill, and let access be taken back
 
+**Status:** accepted
+
 ## Decision
 
 Every tool an agent calls that is built or changed here (an MCP tool, a Worker tool, a wrapped CLI, script or API) follows the **hands** skill, `.claude/skills/hands/` (version 1451720afc1f, from the S02E03 artifact):

@@ -1,5 +1,7 @@
 # 0009 · One shared wake module for Workers that outside services call
 
+**Status:** accepted
+
 ## Decision
 
 1. Workers that an outside service wakes (a course ping, a mail webhook, a signed HTTPS call) use one module, `lib/wake/` at the repo root. Each Worker imports it by relative path, and wrangler bundles it at deploy. It is never copied into a lesson folder.

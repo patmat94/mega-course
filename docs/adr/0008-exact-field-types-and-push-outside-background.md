@@ -1,5 +1,7 @@
 # 0008 · Send fields with the example's exact types; run phone pushes where a failure shows
 
+**Status:** accepted
+
 ## Decision
 
 1. **Copy field types from the example, not only field names.** Before a request body goes to the course or any API, each field's JSON type (number, string, boolean, array, object) must match the example or schema the contract gives. A field the contract shows as `2` is sent as `2`, never `"2"`; a list is sent as an array, never as a joined string. Data that comes back from storage (KV, a file, a query) is converted to the contract's type where the body is built, not where it is stored. Before the send, check the built body against the example: for every field, `typeof` matches. Where the agent generates the body (a status log, a register answer), that check runs in its tests.

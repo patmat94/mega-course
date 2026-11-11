@@ -1,5 +1,7 @@
 # 0004 · Mega start runs in the first session of the day
 
+**Status:** accepted
+
 ## Decision
 
 A hook (`.claude/hooks/daily-mega-start.mjs`) handles two events, both wired in `.claude/settings.json`:

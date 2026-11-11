@@ -1,5 +1,7 @@
 # 0010 · Check spoken tags by ear before the first claim; re-read the Challenge page after each accepted step
 
+**Status:** accepted
+
 ## Decision
 
 1. **A tag or value that came only from speech is checked by ear before the first claim.** A transcript is a draft. List each spoken tag with its file and second. Then listen at those seconds, or ask the human to, and confirm or correct each one letter by letter. A second transcription run is not a check. When a claim says a tag is unknown or missing, suspect the spoken tags first. The `capture` skill (step 3b) and the `challenge-start` skill (step 4, an Acceptance line) carry this rule.

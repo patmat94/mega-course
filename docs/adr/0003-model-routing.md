@@ -1,5 +1,7 @@
 # 0003 · Which model and effort a worker runs at
 
+**Status:** accepted
+
 ## Decision
 
 A worker (AGENTS.md step 4) or a subagent picks its model and effort from this table. Its closing comment's `worker:` line shows what it actually ran at.

@@ -1,5 +1,7 @@
 # 0005 · Verify in proportion to impact
 
+**Status:** accepted
+
 ## Decision
 
 Every change is verified in proportion to its impact, and the report says what was run. A one-line note gets a re-read; a hook, a request body or a worker gets run against a real case before it is called done. The check happens with the change, not later at the claim.

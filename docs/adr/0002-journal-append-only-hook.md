@@ -1,5 +1,7 @@
 # 0002 · Lesson journals are append-only
 
+**Status:** accepted
+
 ## Decision
 
 A PreToolUse hook (`.claude/hooks/log-append-only.mjs`, wired in `.claude/settings.json` on `Edit|MultiEdit|Write`) guards every `mega-sXXeYY/log.txt`. It works out what the file would hold after the call and denies the call unless the current content is still there, unchanged, at the start. Only appends pass. A new or empty log passes, and so do log files deeper in a lesson (for example `repo/log.txt`). Line endings and a leading BOM are ignored when comparing, because the logs mix CRLF and LF. If the hook fails, it denies the call.

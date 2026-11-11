@@ -1,5 +1,7 @@
 # 0007 · Remote workers: check the repo is reachable, and plan the way home before the hand-off
 
+**Status:** accepted
+
 ## Decision
 
 Before work is handed to a worker that runs off this machine (a cloud Claude Code session, a CI run, an SSH host):
