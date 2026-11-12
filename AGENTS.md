@@ -53,6 +53,9 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 - Right before each claim, and after each refused claim, poll every live request source once more (collector, channel, feed, page); claim only after a poll that brought nothing new. Why: in S03E02 a client's withdrawal arrived after four empty polls, and the first claim was refused (`docs/adr/0011-poll-before-claim-and-no-duplicate-without-an-ask.md`).
 - Never close a request that asks for nothing (a withdrawal, a thank-you) as a duplicate: put its id in the `sources` of the issue it acts on. Why: a duplicate repeats an ask; in S03E02 the course refused the withdrawal closed as duplicate and accepted it in the withdrawn issue's sources (same ADR).
 
+- A ship line for a change to an existing answer names the issue and every reader in `open risks`, and keeps them after the record is signed; only "unsigned" leaves. Why: in S03E03 a line rewritten to "none" after the owner signed was refused (`shiplog_risk`); a signature settles the choice, not who sees it (`docs/adr/0012-ship-line-keeps-readers-and-unclear-answers-are-asked-again.md`).
+- When an owner answer cannot be read as one of the record's options, build nothing and ask again in the issue, quoting what arrived. Why: a guess is the agent deciding the owner's call, and in S03E03 nothing forced the agent to ask again (same ADR).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.

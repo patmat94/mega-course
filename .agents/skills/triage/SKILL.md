@@ -160,12 +160,22 @@ recommendation; it does not let you skip the owner.
   `live: ✗` and say in the issue what failed.
 
 ### After the owner answers (`/answer <n>` from `by: owner` in the thread)
+0. **Is the answer clear?** It counts only when it is from `by: owner`, reads `/answer <n>` and `<n>` is
+   one of the record's option numbers. Anything else (no number, two numbers, a number the record does
+   not have, free text that could fit two options, an answer from anyone but the owner): build nothing,
+   leave the record `proposed` and `needs-human` on, and comment once in the issue quoting what arrived,
+   saying why it cannot be read, and listing the options again with "Answer with `/answer <n>`". Ship
+   line stays `asked`. Never pick the option the answer most likely meant: a guess is the agent
+   deciding the owner's call.
 1. `PUT` the record again with `status: accepted` and **Decision** filled in (option, "owner, in
    issue #<n>", the answer's `at`).
 2. Build option `<n>` (a `decline` option builds nothing), as in Build.
 3. Comment in the issue asking the owner to sign the record on their round page.
-4. Ship line for the result (`shipped` / `declined`), and in `open risks` the record id while it is
-   unsigned: `<record id> unsigned, owner reads it`.
+4. Ship line for the result (`shipped` / `declined`). `open risks` names the issue and every reader of
+   the change (see Ship line), plus the record id while it is unsigned:
+   `#<n> <what changed> — read by <readers>; <record id> unsigned, owner reads it`.
+5. Once the owner signs, post the line again without the unsigned part and **keep the readers**. A
+   signature settles the choice, not who sees it.
 
 ### Ship line (exactly; a later line for the same issue replaces the earlier one)
 
@@ -174,6 +184,14 @@ recommendation; it does not let you skip the owner.
 ```
 
 `verb` = shipped · declined · closed · asked · waiting. `live: ✓` only after the live check passed.
+
+`open risks` is `none` only when the change reaches no reader beyond what the contract already
+promised (a decline, a close with no change, a new call nobody reads yet). A change to what an existing
+answer carries (a field added, dropped, renamed or reshaped) names the issue and every reader of that
+answer, by the names the contract gives them (e.g. `#2 suggestions field on every incident — read by
+the status page, the on-call board and the support console`). The readers stay in the line after the
+record is accepted and signed; only the "unsigned" part leaves. Never rewrite a line to `none` because
+a record was signed (S03E03: the course refused the round, `shiplog_risk`).
 
 ### Close the issue
 Close it when the work is done: shipped and live, declined, or closed with no change. An `asked`
