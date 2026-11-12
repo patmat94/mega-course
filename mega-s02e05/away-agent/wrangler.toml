@@ -10,5 +10,7 @@ id = "f202b6820dce4c6aaa77eca73e5debac"
 [observability]
 enabled = true
 
-[vars]
-NTFY_TOPIC = "away-a5049d800bd68be3277aec08"
+# Secrets (never in this file): SIGNING_KEY, ADMIN_TOKEN, NTFY_TOKEN, NTFY_TOPIC.
+# NTFY_TOPIC is a secret, not a var: the repo is public and an ntfy topic is open to anyone who knows it.
+# The old topic, which stood here until 2026-11-12, is in git history and retired.
+# Locally NTFY_TOPIC comes from .dev.vars (git-ignored); deployed, from `wrangler secret put NTFY_TOPIC`.
