@@ -49,3 +49,10 @@ mega-s03e02/download/
 
 # ask skill drafts hold other people's words
 asks/
+
+# S03E03: own local git repo (holds the planted admin token example), receipts hold the tracker token
+mega-s03e03/receipts.json
+mega-s03e03/sched-prod-api/
+mega-s03e03/starter-dl/
+mega-s03e03/run/
+mega-s03e03/run-test/

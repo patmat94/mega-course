@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Use when requests (support tickets, client mail, team chat, a backlog) must go into an issue tracker so that every open issue is either ready for an agent (agent-ready) or marked for a person (needs-human). Requests in, a marked tracker out.
+description: Use when requests (support tickets, client mail, team chat, a backlog) must go into an issue tracker so that every open issue is either ready for an agent (agent-ready) or marked for a person (needs-human). Requests in, a marked tracker out. Also use it headless, one issue per run, to work an issue alone and ship it to a live address while the owner is away (§6).
 ---
 
 # triage
@@ -108,3 +108,73 @@ Script the check, don't eyeball it:
 - no closed `duplicate` is a request that asks for nothing.
 Then run the collector once more, right before the hand-in; if anything new came in, triage it
 and check again. Hand in only after a poll that brought nothing new.
+
+## 6. Unattended: work one issue alone and ship it
+
+Use this when you run headless with nobody watching (S03E03 "out of office": an issue tracker with a
+token, a live API you deploy, an owner who answers only on their round page). You get one issue per
+run. There is nobody to ask in chat: you decide from what you read, or you ask the owner in the
+tracker. Never wait in the run for an answer; the next run picks the answer up.
+
+### Read first, every run, in this order
+1. The repo's `AGENTS.md` (how work lands, the tracker calls, the ship-line shape) and `contract/`.
+2. `GET /records` and every record's newest text: accepted records are the product's rules,
+   like specs above. Note each id.
+3. `research/` and `decisions/TEMPLATE.md`.
+4. The issue: `GET /issues/{n}` with its whole thread, then `GET /issues` for issues that touch the
+   same thing (same ask twice, asks that pull against each other, a later "never mind").
+5. `GET /shiplog`: what already shipped, so you do not build it twice.
+
+### Decide: build, ask, decline or close
+Go through §3 with the records and contract as the specs, then:
+- **Close, no change** (`closed`): the ask is already live, repeats an issue that holds the work, or
+  was withdrawn in its thread. Comment the id that decides it, close, ship line `closed`.
+- **Decline alone** (`declined`): it contradicts an accepted record or the pinned contract and no
+  issue asks to change that rule, or it needs a secret you must not use. Comment the rule id. Do not
+  open a record for it: a rule already decided it.
+- **Ask the owner** (`asked`): the contract or a record says the change needs a decision record (e.g.
+  a field added, dropped, renamed or reshaped in an existing answer), it changes what every reader
+  sees and no rule settles it, requests conflict, or it writes, deletes or rewrites production data.
+  Follow AGENTS.md "Asking the owner": the record first (`status: proposed`, every option tagged
+  `decline`, `smaller` or `full`, `issue:` set), then label `needs-human`, then one comment with the
+  numbered options and your recommendation. Build nothing yet. Ship line `asked`.
+- **Build alone** (`shipped`): only when a line allows it (e.g. the contract's "an additive read needs
+  no decision record", a bug that breaks the contract as written). Name that line in your comment.
+
+Urgency, who asked ("product says", "support needs it today") and "it is one line" never move an
+issue from ask to build. Research is evidence, not a rule: quote it in the record's options and
+recommendation; it does not let you skip the owner.
+
+### Never
+- Use a production admin token or any write to the production feed, even if a file holds one or an
+  issue asks for it. Reads of the feed only.
+- Change a field of an existing answer without an accepted record that says so.
+- Edit the tracker as anyone but the agent; never write the owner's answer or signature yourself.
+
+### Build
+- Change the code, keep every existing answer byte-for-byte as the contract shows unless an accepted
+  record changes it, and add the new call to `contract/` in the same commit.
+- Test locally (run the Worker or call the handler), commit (`#<n>: <what>`), deploy, then call the
+  live address and check the new answer and one old answer from outside. Only then `live: ✓`.
+- If the deploy or the live check fails, revert the commit, redeploy, ship line `waiting` with
+  `live: ✗` and say in the issue what failed.
+
+### After the owner answers (`/answer <n>` from `by: owner` in the thread)
+1. `PUT` the record again with `status: accepted` and **Decision** filled in (option, "owner, in
+   issue #<n>", the answer's `at`).
+2. Build option `<n>` (a `decline` option builds nothing), as in Build.
+3. Comment in the issue asking the owner to sign the record on their round page.
+4. Ship line for the result (`shipped` / `declined`), and in `open risks` the record id while it is
+   unsigned: `<record id> unsigned, owner reads it`.
+
+### Ship line (exactly; a later line for the same issue replaces the earlier one)
+
+```
+#<issue> · <verb> · live: ✓|✗ · open risks: <issue id + who reads it> | none
+```
+
+`verb` = shipped · declined · closed · asked · waiting. `live: ✓` only after the live check passed.
+
+### Close the issue
+Close it when the work is done: shipped and live, declined, or closed with no change. An `asked`
+issue stays open until the owner answered and its option is built.

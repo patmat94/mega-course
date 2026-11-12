@@ -18,6 +18,7 @@ A step marked "last run" was run for real on that date, with its output under Ke
 | tool-home | S02E03 | OAuth, owner passphrase | Workers AI on transcribe | [tool-home.md](tool-home.md) |
 | away-agent | S02E05 | HMAC signature; admin token; owner's code for gated acts | no | [away-agent.md](away-agent.md) |
 | night-status | S03E01 | none (public page) | no | [night-status.md](night-status.md) |
+| sched-prod-api | S03E03 | none (public reads) | no | [sched-prod-api.md](sched-prod-api.md) |
 | wake-demo | lib/wake | HMAC signature; admin token | no | [wake-demo.md](wake-demo.md) |
 | mcp-fun | practice | none (public) | no | [mcp-fun.md](mcp-fun.md) |
 
