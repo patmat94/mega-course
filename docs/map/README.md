@@ -11,11 +11,16 @@ A step marked "last run" was run for real on that date, with its output under Ke
 
 ## Mapped
 
-| Worker | File |
-|---|---|
-| tool-home | [tool-home.md](tool-home.md) |
-| wake-demo | [wake-demo.md](wake-demo.md) |
+| Worker | Built in | Sign-in or signature | Spends money | File |
+|---|---|---|---|---|
+| rig-pulse | S01E05 | Standard Webhooks signature | Anthropic API per ping | [rig-pulse.md](rig-pulse.md) |
+| mail-agent | S02E02 | Svix signature | Anthropic API per trusted mail, no cap | [mail-agent.md](mail-agent.md) |
+| tool-home | S02E03 | OAuth, owner passphrase | Workers AI on transcribe | [tool-home.md](tool-home.md) |
+| away-agent | S02E05 | HMAC signature; admin token; owner's code for gated acts | no | [away-agent.md](away-agent.md) |
+| night-status | S03E01 | none (public page) | no | [night-status.md](night-status.md) |
+| wake-demo | lib/wake | HMAC signature; admin token | no | [wake-demo.md](wake-demo.md) |
+| mcp-fun | practice | none (public) | no | [mcp-fun.md](mcp-fun.md) |
 
-## Not mapped yet
+All seven passed How to verify step 1 on 2026-11-12.
 
-Named as still running in the Lessons table of CLAUDE.md: rig-pulse (S01E05), mail-agent (S02E02), away-agent (S02E05), night-status (S03E01). mcp-fun (weather-fun) is deployed too (KEEP.md). Their findings stay in KEEP.md until each gets a file here.
+A new Worker gets its file here when it is deployed; a Worker that is deleted keeps its file with a line at the top saying when.
