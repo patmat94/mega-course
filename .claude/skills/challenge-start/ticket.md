@@ -24,7 +24,7 @@
 
 - [ ] <!-- One check per line, verifiable with a command, a count or a look. Take each from the ticket, `submit`, `deliver` or the page. -->
 - [ ] Every outside action (repo, issue, push, message) had the user's yes first.
-<!-- The claim gate denies a claim while any line here is unticked. Mark a line that can only be ticked after the claim with "(after claim)". -->
+<!-- The claim gate denies a claim while any line here is unticked, or while a ticked line does not end with evidence that exists: "· evidence: log.txt:47" (that line, not blank) or "· evidence: check-helped.mjs" (a file or folder), several comma-separated; paths from the lesson folder or the repo root (ADR 0013). Mark a line that can only be ticked after the claim with "(after claim)"; it needs no evidence. -->
 
 <!-- Lines earlier lessons were refused for, keep the ones that apply:
 - [ ] Signed or tagged with the start-challenge ticket, not a name (S01E03).

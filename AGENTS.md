@@ -56,6 +56,8 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 - A ship line for a change to an existing answer names the issue and every reader in `open risks`, and keeps them after the record is signed; only "unsigned" leaves. Why: in S03E03 a line rewritten to "none" after the owner signed was refused (`shiplog_risk`); a signature settles the choice, not who sees it (`docs/adr/0012-ship-line-keeps-readers-and-unclear-answers-are-asked-again.md`).
 - When an owner answer cannot be read as one of the record's options, build nothing and ask again in the issue, quoting what arrived. Why: a guess is the agent deciding the owner's call, and in S03E03 nothing forced the agent to ask again (same ADR).
 
+- End every ticked Acceptance line with `· evidence: <pointer>` (`log.txt:47`, or a file or folder path); the claim gate denies a tick whose pointer is missing or does not exist. Why: a tick without a pointer is a claim from memory (`docs/adr/0013-acceptance-ticks-point-at-evidence.md`).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.

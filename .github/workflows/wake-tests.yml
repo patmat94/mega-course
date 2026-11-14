@@ -1,0 +1,22 @@
+# Runs the shared wake module's tests on GitHub's machines, so a push is checked
+# without this PC. No dependencies to install: Node 24 runs the .ts tests directly.
+name: wake tests
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      # Quoted glob: a bare folder path is read as one file and fails (lib/wake/WAKE.md § Tests).
+      - run: node --test "lib/wake/test/*.test.ts"
