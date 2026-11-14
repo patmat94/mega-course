@@ -54,6 +54,8 @@ found: claude at ~\.local\bin\claude.exe
 - in the built-in browser, video frames come out right only with seek, a 1 s wait, then a screenshot; quick seeks gave a stale frame, and javascript_tool loses async loops and window state after the call returns · source: mega-s03e01/log.txt:47 · how: read
 - the Bash tool here gets "Permission denied" running curl (/mingw64/bin/curl); PowerShell Invoke-WebRequest works for downloads and PUT uploads · source: mega-s03e01/log.txt:61 · how: ran
 - a weekly scheduled task keep-pruning-pass (Claude desktop app on this PC, Mondays 09:00 local, saved in Auto mode) runs the KEEP.md pruning pass from docs/keep-pass/HOW.md and leaves its changes uncommitted; it runs only while the app is open, or at the next launch · source: docs/keep-pass/HOW.md:3 · how: ran
+- Playwright 1.64.1 needs ffmpeg build 1013 to record video, and this PC has only ffmpeg-1011 and chromium-1234 in ~/AppData/Local/ms-playwright; Playwright 1.62.1 matches both, so it records and runs Chromium with no download · source: mega-s03e04/log.txt:35 · how: ran
+- a new Netlify site on this account starts behind a Netlify login (sso_login_context "all", every request 401) and with a "Powered by Netlify" badge (built_with_badge_enabled true) that covered a page button; updateSite sso_login_context "non_production" and built_with_badge_enabled false fixed both · source: mega-s03e04/log.txt:31 · how: ran
 
 ## Receipts
 
@@ -139,6 +141,19 @@ Scheduled task "keep-pruning-pass" created.
 **Task file:** C:\Users\p.matychniak\.claude\scheduled-tasks\keep-pruning-pass\SKILL.md
 **Schedule:** At 09:00 AM, only on Monday
 **Next run:** in 3 days
+```
+
+command: node record.mjs https://sched-prod-board-pm-s03e04.netlify.app/ step1 (mega-s03e04, Playwright 1.64.1)
+```
+browserContext.newPage: Executable doesn't exist at C:\Users\p.matychniak\AppData\Local\ms-playwright\ffmpeg-1013\ffmpeg-win64.exe
+```
+
+command: netlify api getSite --data '{"site_id":"b068b921-31a5-4354-a125-edaa424647e3"}' (new site, before the fix)
+```
+sso_login true
+sso_login_context "all"
+account_sso_login true
+account_sso_login_context "all"
 ```
 
 ## Archive

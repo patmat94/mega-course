@@ -34,6 +34,13 @@ The page must be safe to be public. Check it for markers, tokens and real data b
 | Lesson | Site | Link |
 |---|---|---|
 | S01E04 | incredible-sherbet-1ca2e8 (`d85e5716-e621-4972-826c-e4c1a861296c`) | https://incredible-sherbet-1ca2e8.netlify.app |
+| S03E04 | sched-prod-board-pm-s03e04 (`b068b921-31a5-4354-a125-edaa424647e3`) | https://sched-prod-board-pm-s03e04.netlify.app |
+
+A new site on this account starts behind a Netlify login and with a "Powered by Netlify" badge. After the user's yes to a public link, set both per site (S03E04):
+
+```sh
+netlify api updateSite --data '{"site_id":"<id>","body":{"sso_login_context":"non_production","built_with_badge_enabled":false}}'
+```
 
 ## Undo
 

@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "s03e04-board",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8734", "--bind", "127.0.0.1", "--directory", "mega-s03e04/dist"],
+      "port": 8734
+    }
+  ]
+}

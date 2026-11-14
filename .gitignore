@@ -56,3 +56,17 @@ mega-s03e03/sched-prod-api/
 mega-s03e03/starter-dl/
 mega-s03e03/run/
 mega-s03e03/run-test/
+
+# S03E04: own local git repo (config.js holds the session), receipts hold the session and receipts
+mega-s03e04/receipts.json
+mega-s03e04/board/
+mega-s03e04/starter-dl/
+mega-s03e04/dist/
+mega-s03e04/rec/
+mega-s03e04/node_modules/
+mega-s03e04/claim*.json
+mega-s03e04/replay-dl/
+mega-s03e04/replay-out.json
+mega-s03e04/replay-err.txt
+# S03E04: reports and claim bodies hold the raw ack receipts
+mega-s03e04/report-step*.md
