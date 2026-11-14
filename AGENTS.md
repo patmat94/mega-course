@@ -58,6 +58,9 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 
 - End every ticked Acceptance line with `· evidence: <pointer>` (`log.txt:47`, or a file or folder path); the claim gate denies a tick whose pointer is missing or does not exist. Why: a tick without a pointer is a claim from memory (`docs/adr/0013-acceptance-ticks-point-at-evidence.md`).
 
+- Write every receipt to a file the moment it arrives: a script that acks, claims or submits appends each receipt to a `*.jsonl` file as the reply comes in, never at the end of the run. Why: in S03E04 a recording run crashed after two acks and lost both receipts, because the script wrote them only at the end (`docs/adr/0014-receipts-saved-on-arrival.md`).
+- Prove a shipped web change with the prove skill (`.claude/skills/prove/`): `build-id.mjs` before recording and before sending, then `record-flow.mjs`. It records presses but not API replies, so take receipts with your own listener. Why: the S03E04 recorder, build stamp and hook check were one-off scripts; prove does the first two for any project (same ADR).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.

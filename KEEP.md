@@ -56,6 +56,7 @@ found: claude at ~\.local\bin\claude.exe
 - a weekly scheduled task keep-pruning-pass (Claude desktop app on this PC, Mondays 09:00 local, saved in Auto mode) runs the KEEP.md pruning pass from docs/keep-pass/HOW.md and leaves its changes uncommitted; it runs only while the app is open, or at the next launch · source: docs/keep-pass/HOW.md:3 · how: ran
 - Playwright 1.64.1 needs ffmpeg build 1013 to record video, and this PC has only ffmpeg-1011 and chromium-1234 in ~/AppData/Local/ms-playwright; Playwright 1.62.1 matches both, so it records and runs Chromium with no download · source: mega-s03e04/log.txt:35 · how: ran
 - a new Netlify site on this account starts behind a Netlify login (sso_login_context "all", every request 401) and with a "Powered by Netlify" badge (built_with_badge_enabled true) that covered a page button; updateSite sso_login_context "non_production" and built_with_badge_enabled false fixed both · source: mega-s03e04/log.txt:31 · how: ran
+- the prove skill (.claude/skills/prove, 379b12710900) runs on this PC: its four self-tests pass, and record-flow.mjs records with the Playwright 1.62.1 in mega-s03e04 (run it from that folder); it does not capture API reply bodies, so receipts need a listener of your own · source: mega-s03e04/log.txt:74 · how: ran
 
 ## Receipts
 
@@ -154,6 +155,13 @@ sso_login true
 sso_login_context "all"
 account_sso_login true
 account_sso_login_context "all"
+```
+
+command: node ../.claude/skills/prove/scripts/record-flow.mjs --url https://sched-prod-board-pm-s03e04.netlify.app/ --flow flows/watch-board.json (in mega-s03e04)
+```
+Recorded 00:11.325 of https://sched-prod-board-pm-s03e04.netlify.app/
+  video     evidence\watch-board-2026-11-14-19-39-21\video.webm
+  build     "11971488633b7da1c79d40f282af515dde88b1c4" at the start, "11971488633b7da1c79d40f282af515dde88b1c4" at the end
 ```
 
 ## Archive

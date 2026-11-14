@@ -70,3 +70,5 @@ mega-s03e04/replay-out.json
 mega-s03e04/replay-err.txt
 # S03E04: reports and claim bodies hold the raw ack receipts
 mega-s03e04/report-step*.md
+# prove recordings: video, trace and timeline can hold page data
+mega-s03e04/evidence/

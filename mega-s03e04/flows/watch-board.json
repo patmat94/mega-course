@@ -1,0 +1,6 @@
+{ "name": "watch-board", "steps": [
+  { "do": "waitFor", "selector": "[data-testid=incident-row]", "note": "incidents loaded" },
+  { "do": "watch", "ms": 9000, "note": "board left open; new incidents should arrive at the top" },
+  { "do": "waitFor", "selector": "[data-testid=build-sha]", "timeout": 3000 },
+  { "do": "screenshot", "name": "end" }
+] }
