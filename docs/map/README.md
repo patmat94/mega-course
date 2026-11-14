@@ -1,10 +1,12 @@
 # Feature map: live Workers
 
-One file per Worker that is deployed and still running. Each file has four sections:
+One file per Worker that is deployed and still running. Each file has these sections:
 
 - **Role**: what the Worker is for and who calls it.
 - **How to get there**: its URL, its source folder, its config and where its secrets live (never the secrets).
 - **How to verify**: steps that run against the live Worker, cheapest first. Each says what it sends and what a pass looks like. The first step of each file sends nothing that changes state.
+- **Agreement**: what it should do, one signal that shows it working, and when it should be turned off. Proposed by the agent on 2026-11-14; not signed by the human yet.
+- **Last week**: what its logs showed for the week before the read, with the date of the read. Workers Logs (`[observability]`) cannot be read with this machine's wrangler token, so the logs read are the Worker's own KV and D1 rows; four Workers keep none.
 - **Keep in mind**: findings about this Worker, in KEEP.md's line shape (`- <finding> · source: <file>:<where> · how: ran | read | told`). They were moved here from KEEP.md; their receipts moved with them.
 
 A step marked "last run" was run for real on that date, with its output under Keep in mind.

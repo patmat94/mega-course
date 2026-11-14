@@ -19,6 +19,27 @@ The S02E02 mail agent. AgentMail calls its webhook for each mail to the inbox `p
 2. **Signature tests, offline.** `npm test` in `mega-s02e02/mail-agent` (`test/svix.test.ts`).
 3. **Live end to end — sends real mail and spends API credit; ask first.** `node scripts/e2e.mjs send "<subject>" "<text>"`, then `node scripts/e2e.mjs wait <thread_id>`. Pass: a reply in the same thread.
 
+## Agreement
+
+Proposed by the agent on 2026-11-14 from this file and the lesson records; the human has not signed it yet.
+
+- **Should do:** answer mail from `ALLOWED_SENDERS` in the same thread; send nothing at all to anyone else.
+- **Signal it works:** each webhook writes a dedupe key `msg:<message-id>` in KV `SEEN` (7-day TTL, `src/index.ts:183`), and a trusted mail gets a reply in its thread (How to verify step 3).
+- **Turn off when:** it spends with no cap, so turn it off as soon as no lesson needs the inbox, and at once if any reply goes to an untrusted sender: `npx --no-install wrangler delete` in `mega-s02e02/mail-agent`, after the human's yes.
+
+## Last week (2026-11-07 to 2026-11-14), read on 2026-11-14
+
+- Source: KV `SEEN` keys (`wrangler kv key list --binding SEEN --remote`). Each key lives 7 days, so expiry minus 7 days is when the mail came in. Three keys, three mails reached the webhook: 2026-11-10 11:06:07Z, 2026-11-10 11:32:39Z and 2026-11-14 19:06:46Z.
+- The keys do not say who sent each mail or whether a reply went out. No lesson record here explains the mail of 2026-11-14 19:06Z: look in the AgentMail inbox.
+- Live version 28429773, created 2026-11-03: not redeployed this week. Workers Logs is on in wrangler.toml, but this machine's wrangler token cannot read it.
+
+```
+3 keys
+msg:<010001a1c522f765-fea2432d-ceb7-478a-8a42-9deb51be89c0-0 2026-11-17T11:06:07.000Z ""
+msg:<010001a1c53b4133-1cee5e31-8bb6-4ea0-802b-39be38341c86-0 2026-11-17T11:32:39.000Z ""
+msg:<010001a1db747081-d5b0243f-cc04-4bb8-a5c7-877a62a7028e-0 2026-11-21T19:06:46.000Z ""
+```
+
 ## Keep in mind
 
 - in S02E02 the course counts any reply to a sender other than rook@mail.mega.dev as answering, a polite decline too, and fails the round · source: mega-s02e02/log.txt:78 · how: ran

@@ -19,6 +19,25 @@ The shared wake module (`lib/wake/`, ADR 0009) wired into one deployed Worker. A
 3. **Local end to end.** In `lib/wake/demo`: `node test/e2e-local.mjs` against `wrangler dev` with a fake ntfy. Pass: a push that fails once is retried and notified.
 4. **Live end to end — sends a real push to the human's phone; ask first.** In `lib/wake/demo`: `node test/e2e-remote.mjs`. Signs a call to `/course`, then polls `/log` until a `notified` row. Pass: 202, a row per push attempt, a 2xx `notified` row. ntfy.sh may refuse for many minutes first.
 
+## Agreement
+
+Proposed by the agent on 2026-11-14 from this file and the lesson records; the human has not signed it yet.
+
+- **Should do:** take a signed `POST /course` with 202, queue it, and push the human through ntfy, retrying until a 2xx and writing one log row per attempt.
+- **Signal it works:** `/log` (KV `log:`) holds a `notified` row with status 200 for each `received` job.
+- **Turn off when:** a real Worker built on `lib/wake/` takes over as the reference, or the log shows a job with no `notified` row after a day. Until then the human chose to keep it (issue #10).
+
+## Last week (2026-11-07 to 2026-11-14), read on 2026-11-14
+
+- Source: KV `wake-demo-kv`, all 29 `log:` keys (`wrangler kv key list`, then `wrangler kv bulk get`). Rows expire after 7 days (`lib/wake/log.ts:4`), so the 2026-11-10 rows are gone on 2026-11-17.
+- Two jobs, both test calls from the laptop, both notified: e5025902641bf7fa on 2026-11-10 (8 attempts, 200 at 10:49:57Z) and f66435e3079c35e8 on 2026-11-12 (15 attempts, 200 at 21:22:30Z). No other traffic.
+- Live version 0a3e4955, created 2026-11-12T20:26:52Z (the secret change).
+
+```
+2026-11-10T10:49:58.110Z {"at":"2026-11-10T10:49:58.110+00:00","event":"notified","kind":"push","id":"e5025902641bf7fa.push.1","attempt":8,"status":200,"about":"cour
+2026-11-12T21:22:30.909Z {"at":"2026-11-12T21:22:30.909+00:00","event":"notified","kind":"push","id":"f66435e3079c35e8.push.1","attempt":15,"status":200,"about":"cou
+```
+
 ## Keep in mind
 
 - on 2026-11-10 ntfy.sh refused the deployed wake-demo Worker's push 7 times (429, 429, 522, 522, 429, 429, 429) and accepted attempt 8 at 10:49:57Z, about 18.5 min after the call; the queue retried it with no manual re-ping · source: lib/wake/demo/test/e2e-remote.mjs:38 · how: ran

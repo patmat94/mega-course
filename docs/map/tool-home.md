@@ -19,6 +19,22 @@ MCP server built in S02E03. Keeps notes (memo_write, memo_search), stores files 
 2. **Every tool against its contract, signed in.** In `mega-s02e03/tool-home`: `npm run check-tools -- https://tool-home.patrykmatychniak.workers.dev --yes`. Signs in through `test/stdio-proxy.mjs` with the passphrase, calls each tool with its good and wrong samples, revokes its token at the end. Pass: exit 0. Writes a sample memo and spends a little Workers AI on transcribe.
 3. **End to end.** `node test/e2e.mjs` in the same folder (read it first for its target and what it writes).
 
+## Agreement
+
+Proposed by the agent on 2026-11-14 from this file and the lesson records; the human has not signed it yet.
+
+- **Should do:** serve memo_write, memo_search, upload and transcribe to signed-in clients only, every tool result ≤1024 B; let the owner take access back at `/grants`.
+- **Signal it works:** `/plan` → 200 and an unsigned `POST /mcp` → 401 with `www-authenticate: Bearer` (How to verify step 1); signed-in clients keep getting fresh access grants.
+- **Turn off when:** the course no longer needs its grant and no session here lists `tool-home` as an MCP server. Revoke the course's grant at `/grants` first, then delete. Until then it stays.
+
+## Last week (2026-11-07 to 2026-11-14), read on 2026-11-14
+
+- Source: read-only counts with `wrangler d1 execute tool-home --remote`.
+- Memos: none written this week (25 in all, newest 2026-11-05T09:47Z).
+- Files: 5 uploads on 2026-11-10 between 11:15Z and 11:28Z (323270, 228375, 517, 323270, 517 B): the S03E01 pack.
+- Grants: access grants expiring on 11-09, 11-10, 11-11, 11-12 and 11-14, and one refresh grant expiring 2026-12-14, so a client signed in or refreshed today. Expired access rows stay in the table: nothing prunes them.
+- No new OAuth clients since 2026-11-05. Live version 314f4d2b, created 2026-11-05.
+
 ## Keep in mind
 
 - the S02E03 MCP server tool-home is deployed at https://tool-home.patrykmatychniak.workers.dev/mcp and added to Claude Code as tool-home, local scope of mega-course · source: mega-s02e03/log.txt:30 · how: read

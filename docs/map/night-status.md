@@ -18,6 +18,20 @@ The S03E01 status page. Reads the course's ops feed live on each request and sho
 2. **Unit tests, offline.** `npm test` in `mega-s03e01/night-status` (against `mega-s03e01/feed-1.json`).
 3. **Live against the accepted list.** `node mega-s03e01/check-live.mjs` (GETs the page, status.json and the course feed; checks every accepted tag in `list.json`). Pass: 15/15, as at the solve.
 
+## Agreement
+
+Proposed by the agent on 2026-11-14 from this file and the lesson records; the human has not signed it yet.
+
+- **Should do:** show last night's incidents from the course's ops feed, read live on each request, as a page and as `/status.json`.
+- **Signal it works:** `GET /status.json` → 200 with an `updatedAt` from the last day.
+- **Turn off when:** the course feed stops answering (`/status.json` errors, or `updatedAt` does not move for a week), or the human stops reading it. Undo: `npx --no-install wrangler delete` in `mega-s03e01/night-status`.
+
+## Last week (2026-11-07 to 2026-11-14), read on 2026-11-14
+
+- No stored log (no `[observability]`, no KV); `wrangler tail` is live only. Who read the page this week is unknown.
+- Probe on 2026-11-14: `/status.json` → 200 with `"updatedAt": "2026-11-14T19:55:00Z"`, so the feed is still live.
+- Live version 403b251f, created 2026-11-10T11:41Z (the S03E01 deploy).
+
 ## Keep in mind
 
 - the S03E01 status page Worker night-status is deployed at https://night-status.patrykmatychniak.workers.dev and reads the ops feed live; RANGE=last-night was the human's choice · source: mega-s03e01/night-status/wrangler.toml:9 · how: ran

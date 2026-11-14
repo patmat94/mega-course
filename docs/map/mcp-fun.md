@@ -18,6 +18,20 @@ A weather MCP server built as a practice piece (not a lesson Worker). Three tool
 2. **Type check, offline.** `npm run typecheck` in `mcp-fun`.
 3. **One tool call.** In a Claude Code session in this repo, call `weather-fun` `day_briefing` for a place; or `claude mcp list` shows `weather-fun ... ✔ Connected`.
 
+## Agreement
+
+Proposed by the agent on 2026-11-14 from this file and the lesson records; the human has not signed it yet.
+
+- **Should do:** answer `day_briefing`, `hourly_window` and `find_place` over Streamable HTTP from Open-Meteo, with no sign-in and no state.
+- **Signal it works:** `claude mcp list` shows `weather-fun ... ✔ Connected`, or `GET /` → 200 with the server name.
+- **Turn off when:** `weather-fun` is removed from Claude Code's config here. It is public with no sign-in, but costs nothing.
+
+## Last week (2026-11-07 to 2026-11-14), read on 2026-11-14
+
+- Workers Logs is on in wrangler.toml, but this machine's wrangler token cannot read it; there is no other log. Calls this week are unknown.
+- Probe on 2026-11-14: `GET /` → 200 `mcp-fun-weather 1.0.0`.
+- Live version a73d4ccc, created 2026-11-04T22:18Z.
+
 ## Keep in mind
 
 - wrangler 4.157 asks for @cloudflare/workers-types ^5 as a peer; with workers-types ^4 npm install fails (ERESOLVE), so mcp-fun uses ^5 · source: mcp-fun/package.json:11 · how: ran

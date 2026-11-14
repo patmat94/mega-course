@@ -18,6 +18,27 @@ The S02E05 Worker. The course sends signed messages to `POST /course`; it answer
 2. **Local end to end.** Start `wrangler dev` (port 8787), then `node test/e2e.mjs` in `mega-s02e05/away-agent`. It signs with a local test key and sinks replies on 127.0.0.1:8799.
 3. **Live push — reaches the human's phone; ask first.** `POST /testping` with the admin token, then read `/log`.
 
+## Agreement
+
+Proposed by the agent on 2026-11-14 from this file and the lesson records; the human has not signed it yet.
+
+- **Should do:** answer the course's signed messages at their replyUrl within 10 minutes, do free acts alone, hold gated acts behind the owner's code, and push the human through ntfy for each hold.
+- **Signal it works:** for each `decide` row in KV `log:`, a `reply` row with status 202, and a `ping` row that ends at 200.
+- **Turn off when:** S02E05 is solved (2026-11-09) and new Workers start from wake-demo (ADR 0009), so once the human confirms the course will not send another round. It holds a signing key and an admin token. Undo: `npx --no-install wrangler delete` in `mega-s02e05/away-agent`.
+
+## Last week (2026-11-07 to 2026-11-14), read on 2026-11-14
+
+- Source: KV `STATE`, prefix `log:` (`wrangler kv key list`, then `wrangler kv bulk get` on the 14 keys since 11-07; 57 `log:` keys in all, kept with no TTL).
+- 2026-11-09 15:29Z–15:52Z: the S02E05 round. Two course messages (rook, scout), three replies, all 202. The `release_hold` push failed 6 times (522 ×5, 429 ×1) from 15:42Z and got 200 at 15:50:53Z.
+- 2026-11-12 20:27Z and 20:28Z: two test pings after the topic rotation, both 429, and no later 200. away-agent does not retry, so no test push from it reached the new topic.
+- Nothing after 2026-11-12. Live version 528de282, created 2026-11-12T20:26:19Z (the secret change).
+
+```
+  "log:2026-11-09T15:50:53.447Z:590847f7": "{\"kind\":\"ping\",\"title\":\"Needs you: release_hold\",\"status\":200}",
+  "log:2026-11-12T20:27:31.631Z:590c5c1c": "{\"kind\":\"ping\",\"title\":\"away-agent test ping (from Cloudflare)\",\"status\":429}",
+  "log:2026-11-12T20:28:41.922Z:7c0306d8": "{\"kind\":\"ping\",\"title\":\"away-agent test ping (from Cloudflare)\",\"status\":429}",
+```
+
 ## Keep in mind
 
 - until 2026-11-12 the ntfy topic was a plain var in the committed wrangler.toml of the public repo, so anyone could read or push to it; on 2026-11-12 it was rotated to a new topic kept only as the secret NTFY_TOPIC (and as wake-demo's NTFY_URL), and the old topic, still in git history, is retired · source: mega-s02e05/away-agent/wrangler.toml:13 · how: ran

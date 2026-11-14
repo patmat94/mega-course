@@ -19,6 +19,20 @@ The S01E05 Worker. The course sends it signed pings (Standard Webhooks headers);
 2. **Type check, offline.** `npm run typecheck` in `mega-s01e05/pulse-agent`. There are no tests.
 3. **A signed ping** needs `PING_KEY`, which is only on Cloudflare, so only the course can send one.
 
+## Agreement
+
+Proposed by the agent on 2026-11-14 from this file and the lesson records; the human has not signed it yet.
+
+- **Should do:** answer the course's signed pings as two agents, `pulse` (may `answer` only) and `test-writer` (may `test` only), and nothing else.
+- **Signal it works:** `GET /.well-known/mega-pulse.json` → 200 with exactly those two may-lists (How to verify step 1).
+- **Turn off when:** no lesson after S01E05 (solved 2026-11-02) names it. It holds an Anthropic key and spends on every accepted ping, so it is the first candidate: `npx --no-install wrangler delete` in `mega-s01e05/pulse-agent`, after the human's yes.
+
+## Last week (2026-11-07 to 2026-11-14), read on 2026-11-14
+
+- No stored log: no `[observability]` in wrangler.toml and no log in the code; `wrangler tail` shows live traffic only. Whether the course pinged it this week is unknown.
+- Live version 08c6651e, created 2026-11-02T13:55:58Z: not redeployed this week (`wrangler deployments list`).
+- Manifest probe on 2026-11-14 → 200, may-lists unchanged.
+
 ## Keep in mind
 
 - set each agent's may-only to exactly what it does; permissions are checked before pings are sent, so any extra action blocks all progress · source: human · how: told

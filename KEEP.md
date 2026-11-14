@@ -58,7 +58,38 @@ found: claude at ~\.local\bin\claude.exe
 - a new Netlify site on this account starts behind a Netlify login (sso_login_context "all", every request 401) and with a "Powered by Netlify" badge (built_with_badge_enabled true) that covered a page button; updateSite sso_login_context "non_production" and built_with_badge_enabled false fixed both · source: mega-s03e04/log.txt:31 · how: ran
 - the prove skill (.claude/skills/prove, 379b12710900) runs on this PC: its four self-tests pass, and record-flow.mjs records with the Playwright 1.62.1 in mega-s03e04 (run it from that folder); it does not capture API reply bodies, so receipts need a listener of your own · source: mega-s03e04/log.txt:74 · how: ran
 
+## Friction
+
+Each time the repo or the machine gets in the way: one line, what was blocked, what it cost, and the way round if one was found. Same line shape as Findings.
+
+- the Bash tool cannot run curl ("Permission denied"); cost: a failed download in S03E01 and a switch to PowerShell Invoke-WebRequest for every HTTP call since · source: mega-s03e01/log.txt:61 · how: read
+- reading the Workers' logs for the week was blocked twice: wrangler's OAuth token has no Workers Observability or analytics scope, and calling Cloudflare's GraphQL analytics API with that token was denied by the auto-mode classifier as unauthorized access; cost: no request counts or Workers Logs for any Worker, so four of eight Workers have no log for the week; way round: their own KV and D1 rows through wrangler kv and wrangler d1 · source: docs/map/README.md:10 · how: ran
+
 ## Receipts
+
+from: Claude Code auto-mode classifier, PowerShell call to api.cloudflare.com/client/v4/graphql with wrangler's OAuth token (2026-11-14)
+```
+Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Unauthorized Access].
+```
+
+command: npx --no-install wrangler whoami (mega-s02e05/away-agent, wrangler 4.158.0; scope list, 2026-11-14)
+```
+- user (read)
+- offline_access 
+- account (read)
+- workers (write)
+- workers_kv (write)
+- workers_routes (write)
+- workers_scripts (write)
+- workers_tail (read)
+- d1 (write)
+- pages (write)
+- zone (read)
+- ssl_certs (write)
+- ai (write)
+- queues (write)
+- pipelines (write)
+```
 
 command: echo '{"session_id":"t1"}' | node .claude/hooks/recheck-sources.mjs (before the fix)
 ```
