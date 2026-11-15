@@ -61,6 +61,8 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 - Write every receipt to a file the moment it arrives: a script that acks, claims or submits appends each receipt to a `*.jsonl` file as the reply comes in, never at the end of the run. Why: in S03E04 a recording run crashed after two acks and lost both receipts, because the script wrote them only at the end (`docs/adr/0014-receipts-saved-on-arrival.md`).
 - Prove a shipped web change with the prove skill (`.claude/skills/prove/`): `build-id.mjs` before recording and before sending, then `record-flow.mjs`. It records presses but not API replies, so take receipts with your own listener. Why: the S03E04 recorder, build stamp and hook check were one-off scripts; prove does the first two for any project (same ADR).
 
+- Before a success metric decides a release call, check at least one replay or call against the event log, so you know every way to do the measured action leaves a row. Scan replays every 0.1 s and quote what each frame shows. Recount from raw rows, not from a generated summary. Why: in S03E05 both summaries called the releases wins, while operators finished the work in a sched-admin or sched-desk tab for 1.4 s that the log never saw (`docs/adr/0015-metric-checked-against-replays-before-a-release-call.md`).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.

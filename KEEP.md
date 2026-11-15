@@ -57,6 +57,7 @@ found: claude at ~\.local\bin\claude.exe
 - Playwright 1.64.1 needs ffmpeg build 1013 to record video, and this PC has only ffmpeg-1011 and chromium-1234 in ~/AppData/Local/ms-playwright; Playwright 1.62.1 matches both, so it records and runs Chromium with no download · source: mega-s03e04/log.txt:35 · how: ran
 - a new Netlify site on this account starts behind a Netlify login (sso_login_context "all", every request 401) and with a "Powered by Netlify" badge (built_with_badge_enabled true) that covered a page button; updateSite sso_login_context "non_production" and built_with_badge_enabled false fixed both · source: mega-s03e04/log.txt:31 · how: ran
 - the prove skill (.claude/skills/prove, 379b12710900) runs on this PC: its four self-tests pass, and record-flow.mjs records with the Playwright 1.62.1 in mega-s03e04 (run it from that folder); it does not capture API reply bodies, so receipts need a listener of your own · source: mega-s03e04/log.txt:74 · how: ran
+- in the built-in browser, a canvas diff of a replay at 0.1 s steps and 160x90 found 1.4 s tab flashes that a 0.2 s, 64x36 scan of the same files missed; one video per javascript_tool call stays under its 45 s limit · source: mega-s03e05/log.txt:149 · how: ran
 
 ## Friction
 

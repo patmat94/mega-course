@@ -72,3 +72,10 @@ mega-s03e04/replay-err.txt
 mega-s03e04/report-step*.md
 # prove recordings: video, trace and timeline can hold page data
 mega-s03e04/evidence/
+
+# S03E05: receipts hold the session, owner code and batch receipt; course packs are downloads
+mega-s03e05/receipts.json
+mega-s03e05/claim1-body.json
+mega-s03e05/dl/
+mega-s03e05/pack/
+mega-s03e05/batch2/

@@ -1,0 +1,18 @@
+﻿== 0010 auto-close, rows 6498 incidents 3222
+control: incidents=1628 openAt06=337 (not resolved by an operator: 310) medianTTR(resolved|auto)=24.35 medianTTR(resolved only)=24.35 n=1628 reopened=27 (1.66%) autoClosed=0 autoReopened=0 autoNeverResolved=0
+flag: incidents=1594 openAt06=256 (not resolved by an operator: 422) medianTTR(resolved|auto)=26.69 medianTTR(resolved only)=23.11 n=1402 reopened=27 (1.69%) autoClosed=192 autoReopened=4 autoNeverResolved=192
+auto-closed by source {"calendar-sync":{"n":32,"reo":0,"res":0},"notify":{"n":35,"reo":2,"res":0},"rota-feed":{"n":43,"reo":1,"res":0},"payments-hook":{"n":35,"reo":0,"res":0},"booking-worker":{"n":47,"reo":1,"res":0}}
+sample auto-closed incidents:
+ev-035016 22:15:46 incident_opened calendar-sync | ev-035111 23:00:46 incident_auto_closed 
+ev-035175 23:36:57 incident_opened notify | ev-035282 00:21:57 incident_auto_closed 
+ev-035205 23:51:17 incident_opened rota-feed | ev-035310 00:36:17 incident_auto_closed 
+reopened without auto-close 50 by arm {"control":27,"flag":23}
+
+== 0011 bulk-ack, rows 9281 incidents 3078
+control: incidents=1553 badNightInc=1325 median open->ack(bad)=8.58 | ack->resolve all=19.90 bad=19.98 | missed=26 (1.67%) | bulk-acked=0 ack->res bulk=NaN single=19.90 missedInBulk=0 | open->resolve=30.10
+flag: incidents=1525 badNightInc=1347 median open->ack(bad)=6.05 | ack->resolve all=20.03 bad=19.92 | missed=21 (1.38%) | bulk-acked=789 ack->res bulk=20.10 single=19.88 missedInBulk=9 | open->resolve=26.67
+page_missed details [{"event_id":"ev-048754","ts":"2026-10-29T22:22:57Z","site_id":"site-192","arm":"control","night":"2026-10-29","incident_id":"inc-56519","operator_id":"op-81","event":"page_missed","detail":""},{"event_id":"ev-049247","ts":"2026-10-29T23:28:39Z","site_id":"site-018","arm":"flag","night":"2026-10-29","incident_id":"inc-56663","operator_id":"op-62","event":"page_missed","detail":""},{"event_id":"ev-049362","ts":"2026-10-29T23:45:43Z","site_id":"site-102","arm":"control","night":"2026-10-29","incident_id":"inc-56705","operator_id":"op-62","event":"page_missed","detail":""}]
+ev-048589 22:02:26 incident_opened payments-hook op-83 | ev-048637 22:09:10 incident_acked bulk:3 op-83 | ev-048698 22:17:24 incident_resolved  op-83
+ev-048592 22:02:29 incident_opened payments-hook op-85 | ev-048621 22:06:45 incident_acked bulk:3 op-85 | ev-048836 22:31:50 incident_resolved  op-85
+ev-048602 22:04:26 incident_opened calendar-sync op-49 | ev-048649 22:10:56 incident_acked bulk:3 op-49 | ev-048731 22:20:03 incident_resolved  op-49
+bulk ack groups 263 same source 263 mixed sources 0

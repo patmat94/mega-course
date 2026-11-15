@@ -6,6 +6,18 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8734", "--bind", "127.0.0.1", "--directory", "mega-s03e04/dist"],
       "port": 8734
+    },
+    {
+      "name": "s03e05-pack",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8735", "--bind", "127.0.0.1", "--directory", "mega-s03e05/pack/signals"],
+      "port": 8735
+    },
+    {
+      "name": "s03e05-batch2",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8736", "--bind", "127.0.0.1", "--directory", "mega-s03e05/batch2/signals"],
+      "port": 8736
     }
   ]
 }

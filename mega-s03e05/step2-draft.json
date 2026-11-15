@@ -1,0 +1,21 @@
+{
+  "step": 2,
+  "groups": [
+    {
+      "name": "auto-close: quiet incidents closed while work went on in sched-desk",
+      "signals": ["replay-06", "replay-08", "ev-039191", "ev-045246"],
+      "verb": "revert",
+      "who": "agent",
+      "confidence": "high",
+      "note": "Open at 06:00 falls 337 to 256 (-24%), but only because 192 incidents were auto-closed and none of them was ever resolved: incidents not resolved by an operator by 06:00 rise 310 to 422. Counting auto-close as the close, median time to resolve is 26.69 vs 24.35 min (+9.6%), past the 5% guardrail. replay-06 (site-096 op-30 inc-51777): '00:19:20 auto-closed, quiet 45 minutes' with booking queue depth 1,484 (ev-039191); at 23.0-24.4 s a 'sched-desk 2.1 ticket tk-b86d23 op-30' tab, subject 'booking queue stalled', site 'site-096', state new to open. replay-08 (site-138 op-38 inc-54759): '01:10:39 auto-closed, quiet 45 minutes' at depth 1,553 (ev-045246); at 20.2-21.6 s 'sched-desk 2.1 ticket tk-49f1c6 op-38', 'booking queue stalled', 'site-138', new to open. The work moved off the board, so 0010's cost of being wrong happened and reopens (1.69% vs 1.66%) don't show it. 0010 treats a broken guardrail as a bug: set auto_close_quiet to 0."
+    },
+    {
+      "name": "bulk acknowledge: faster first response, guardrails hold",
+      "signals": ["replay-05", "replay-07", "ev-058660", "ev-058662", "ev-058664", "ev-065853", "ev-065855", "ev-065857"],
+      "verb": "expand",
+      "who": "owner",
+      "confidence": "high",
+      "note": "Bad-night median open to ack 6.05 vs 8.58 min (-29.5%, target 20%). Missed pages 1.38% vs 1.67%, ack to resolve 20.03 vs 19.90 min (+0.7%, limit 5%). All 263 bulk groups share one source. replay-05 (site-281 op-60): 'Selected 3 incidents, same cause', '22:46:09 3 incidents acknowledged by op-60' (ev-058660/62/64), then 'inc-59747 resolved' 22:51:45, 'inc-59751 resolved' 22:55:45, 'incident resolved' 22:59:45. replay-07 (site-164 op-77): '23:44:42 3 incidents acknowledged by op-77' (ev-065853/55/57), resolved 23:50:18, 23:54:18, 23:58:18. A dense frame scan of both shows no second tab. 0011's decision already says expand to 100% when the target is met and no guardrail is crossed."
+    }
+  ]
+}
