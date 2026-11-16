@@ -34,6 +34,7 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ## Keep in mind
 
+- the lab check F1–F3 in agents/lab/expectations.md, sent from outside with no token or signature, passed 3 of 3 on 2026-11-16, run by a subagent that read only agents/lab and not the source · source: agents/lab/reports/mcp-fun-2026-11-16.md:5 · how: read
 - wrangler 4.157 asks for @cloudflare/workers-types ^5 as a peer; with workers-types ^4 npm install fails (ERESOLVE), so mcp-fun uses ^5 · source: mcp-fun/package.json:11 · how: ran
 - the weather MCP Worker mcp-fun is deployed at https://mcp-fun.patrykmatychniak.workers.dev/mcp (public, no auth) and added to Claude Code as weather-fun, local scope · source: mcp-fun/MISUSE-NOTES.md:5 · how: ran
 - the Open-Meteo geocoder returns no result for "Warszawa" with countryCode PL; "Warsaw" works · source: mcp-fun/runs/05.jsonl:9 · how: ran

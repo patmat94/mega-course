@@ -33,4 +33,5 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ## Keep in mind
 
+- the lab check S1–S3 in agents/lab/expectations.md, sent from outside with no token or signature, passed 3 of 3 on 2026-11-16, run by a subagent that read only agents/lab and not the source · source: agents/lab/reports/sched-prod-api-2026-11-16.md:5 · how: read
 - the S03E03 Worker sched-prod-api-production is deployed and reads the round's feed live; undo with `npx --no-install wrangler delete --env production` · source: mega-s03e03/log.txt (wrangler deploy) · how: ran

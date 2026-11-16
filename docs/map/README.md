@@ -26,6 +26,6 @@ A step marked "last run" was run for real on that date, with its output under Ke
 
 All eight were probed on 2026-11-16 (`docs/keep-pass/2026-11-16.md`): every GET passed, and sched-prod-api passed in full; the unsigned POSTs of rig-pulse, mail-agent and tool-home were not sent, because the Claude Code auto-mode classifier refused that call. Before that, all passed step 1 on 2026-11-12.
 
-Every day at 08:30 local the scheduled task worker-heartbeat GETs each Worker once (`agents/heartbeat/heartbeat.mjs`, list in `agents/heartbeat/workers.json`) and appends one row per Worker to `agents/heartbeat/heartbeat.jsonl`. A Worker added here also goes in `workers.json`. Outside tests against written expectations live in `agents/lab/` (away-agent so far).
+Every day at 08:30 local the scheduled task worker-heartbeat GETs each Worker once (`agents/heartbeat/heartbeat.mjs`, list in `agents/heartbeat/workers.json`) and appends one row per Worker to `agents/heartbeat/heartbeat.jsonl`. A Worker added here also goes in `workers.json`. Outside tests against written expectations live in `agents/lab/`: three per Worker, all eight passed on 2026-11-16 (`agents/lab/reports/`). A Worker added here also gets its lines in `agents/lab/expectations.md`.
 
 A new Worker gets its file here when it is deployed; a Worker that is deleted keeps its file with a line at the top saying when.

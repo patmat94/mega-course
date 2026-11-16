@@ -37,6 +37,7 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ## Keep in mind
 
+- the lab check T1–T3 in agents/lab/expectations.md, sent from outside with no token or signature, passed 3 of 3 on 2026-11-16, run by a subagent that read only agents/lab and not the source · source: agents/lab/reports/tool-home-2026-11-16.md:5 · how: read
 - the S02E03 MCP server tool-home is deployed at https://tool-home.patrykmatychniak.workers.dev/mcp and added to Claude Code as tool-home, local scope of mega-course · source: mega-s02e03/log.txt:30 · how: read
 - in S02E03 the course caps a whole tools/call result at 1024 B and refuses tool errors that do not name the bad input and say what is wrong with it · source: mega-s02e03/log.txt:41 · how: read
 - in S02E03 the course hands an 8.5 MB file to upload; it cannot pass through a model as a tool argument, so tool-home's upload returns a one-time PUT upload_url when content is left out · source: mega-s02e03/log.txt:57 · how: read

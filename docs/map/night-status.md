@@ -34,6 +34,7 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ## Keep in mind
 
+- the lab check N1–N3 in agents/lab/expectations.md, sent from outside with no token or signature, passed 3 of 3 on 2026-11-16, run by a subagent that read only agents/lab and not the source · source: agents/lab/reports/night-status-2026-11-16.md:5 · how: read
 - the S03E01 status page Worker night-status is deployed at https://night-status.patrykmatychniak.workers.dev and reads the ops feed live; RANGE=last-night was the human's choice · source: mega-s03e01/night-status/wrangler.toml:9 · how: ran
 
 ### Receipts

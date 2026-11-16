@@ -40,6 +40,7 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ## Keep in mind
 
+- the lab check W1–W3 in agents/lab/expectations.md, sent from outside with no token or signature, passed 3 of 3 on 2026-11-16, run by a subagent that read only agents/lab and not the source · source: agents/lab/reports/wake-demo-2026-11-16.md:5 · how: read
 - on 2026-11-10 ntfy.sh refused the deployed wake-demo Worker's push 7 times (429, 429, 522, 522, 429, 429, 429) and accepted attempt 8 at 10:49:57Z, about 18.5 min after the call; the queue retried it with no manual re-ping · source: lib/wake/demo/test/e2e-remote.mjs:38 · how: ran
 - after the 2026-11-12 topic rotation, ntfy.sh refused wake-demo's push for job f66435e3079c35e8 14 times (522 ×5, then 429 and 522 mixed, then 429 ×6) and accepted attempt 15 at 21:22:30Z, about 55 min after the 20:27:32Z call; the queue retried with no manual re-ping, and the message is on the new topic · source: lib/wake/demo/src/index.ts:50 · how: ran
 - the human confirmed that wake-demo's ping (10:49:57Z) arrived on their phone, on away-agent's ntfy topic · source: human · how: told

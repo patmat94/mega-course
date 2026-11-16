@@ -35,6 +35,7 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ## Keep in mind
 
+- the lab check R1–R3 in agents/lab/expectations.md, sent from outside with no token or signature, passed 3 of 3 on 2026-11-16, run by a subagent that read only agents/lab and not the source · source: agents/lab/reports/rig-pulse-2026-11-16.md:5 · how: read
 - set each agent's may-only to exactly what it does; permissions are checked before pings are sent, so any extra action blocks all progress · source: human · how: told
 
 ### Receipts

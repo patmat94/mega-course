@@ -42,6 +42,7 @@ msg:<010001a1db747081-d5b0243f-cc04-4bb8-a5c7-877a62a7028e-0 2026-11-21T19:06:46
 
 ## Keep in mind
 
+- the lab check M1–M3 in agents/lab/expectations.md, sent from outside with no token or signature, passed 3 of 3 on 2026-11-16, run by a subagent that read only agents/lab and not the source · source: agents/lab/reports/mail-agent-2026-11-16.md:5 · how: read
 - in S02E02 the course counts any reply to a sender other than rook@mail.mega.dev as answering, a polite decline too, and fails the round · source: mega-s02e02/log.txt:78 · how: ran
 - Anthropic's web_fetch tool returned example.com as text with headings and links removed · source: mega-s02e02/log.txt:51 · how: ran
 - example.com on 2026-11-03 has no heading and no link, only a title and one paragraph · source: mega-s02e02/log.txt:54 · how: ran
