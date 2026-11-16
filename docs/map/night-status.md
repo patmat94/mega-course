@@ -14,7 +14,7 @@ The S03E01 status page. Reads the course's ops feed live on each request and sho
 
 ## How to verify
 
-1. **Probe, changes nothing.** `GET /` → 200 HTML page; `GET /status.json` → 200 with `updatedAt` and `incidents`. Pass: both. Last run 2026-11-12: passed (receipt below).
+1. **Probe, changes nothing.** `GET /` → 200 HTML page; `GET /status.json` → 200 with `updatedAt` and `incidents`. Pass: both. Last run 2026-11-16: passed (receipt below).
 2. **Unit tests, offline.** `npm test` in `mega-s03e01/night-status` (against `mega-s03e01/feed-1.json`).
 3. **Live against the accepted list.** `node mega-s03e01/check-live.mjs` (GETs the page, status.json and the course feed; checks every accepted tag in `list.json`). Pass: 15/15, as at the solve.
 
@@ -38,10 +38,10 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ### Receipts
 
-command: How to verify step 1 (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
+command: How to verify step 1, 2026-11-16 (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
 ```
 GET https://night-status.patrykmatychniak.workers.dev/ -> 200 <!doctype html> <html lang="en"> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1"> <title>status for the night<
-GET https://night-status.patrykmatychniak.workers.dev/status.json -> 200 { "updatedAt": "2026-11-12T20:20:00Z", "incidents": [ { "id": "5214", "line": "sched-prod", "opened": "2026-10-12T03:48:00Z", "closed": "2026-10-12T04:04:00Z", 
+GET https://night-status.patrykmatychniak.workers.dev/status.json -> 200 { "updatedAt": "2026-11-16T09:11:00Z", "incidents": [ { "id": "5214", "line": "sched-prod", "opened": "2026-10-12T03:48:00Z", "c
 ```
 
 command: npx --no-install wrangler deploy (mega-s03e01/night-status)

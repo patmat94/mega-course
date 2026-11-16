@@ -15,7 +15,7 @@ MCP server built in S02E03. Keeps notes (memo_write, memo_search), stores files 
 ## How to verify
 
 1. **Probe, no sign-in, changes nothing.** From PowerShell:
-   `Invoke-WebRequest https://tool-home.patrykmatychniak.workers.dev/plan` → 200, and a POST to `/mcp` with no token → 401 with a `www-authenticate: Bearer ...` header. Pass: both. Shows the Worker is up and sign-in is still on. Last run 2026-11-12: passed (receipt below).
+   `Invoke-WebRequest https://tool-home.patrykmatychniak.workers.dev/plan` → 200, and a POST to `/mcp` with no token → 401 with a `www-authenticate: Bearer ...` header. Pass: both. Shows the Worker is up and sign-in is still on. Last run 2026-11-16: the GET passed; the POST with no token was not sent, because the Claude Code auto-mode classifier refused the probe call (receipt below). Last full pass 2026-11-12.
 2. **Every tool against its contract, signed in.** In `mega-s02e03/tool-home`: `npm run check-tools -- https://tool-home.patrykmatychniak.workers.dev --yes`. Signs in through `test/stdio-proxy.mjs` with the passphrase, calls each tool with its good and wrong samples, revokes its token at the end. Pass: exit 0. Writes a sample memo and spends a little Workers AI on transcribe.
 3. **End to end.** `node test/e2e.mjs` in the same folder (read it first for its target and what it writes).
 
@@ -48,10 +48,9 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ### Receipts
 
-command: How to verify step 1 (PowerShell Invoke-WebRequest, GET /plan, then POST /mcp with a tools/list body and no token)
+command: How to verify step 1, 2026-11-16, GET only (PowerShell Invoke-WebRequest, GET /plan, then POST /mcp with a tools/list body and no token)
 ```
-GET https://tool-home.patrykmatychniak.workers.dev/plan -> 200 <!doctype html><html lang="en"><head><meta charset="utf-8"><
-POST https://tool-home.patrykmatychniak.workers.dev/mcp -> 401 www-authenticate: Bearer resource_metadata="https://tool-home.patrykmatychniak.workers.dev/.well-known/oauth-protected-resource/mcp", scope="mcp"
+GET https://tool-home.patrykmatychniak.workers.dev/plan -> 200 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"> <title>Tool Home — plan</title><s
 ```
 
 from: mcp__tool-home__memo_search {query:""} in this Claude Code session, after deploy 5707f363

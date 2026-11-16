@@ -15,7 +15,7 @@ The S01E05 Worker. The course sends it signed pings (Standard Webhooks headers);
 
 ## How to verify
 
-1. **Probe, no signature, changes nothing.** `GET /.well-known/mega-pulse.json` → 200 with `pulse` may `["answer"]` and `test-writer` may `["test"]`; `POST /` with no webhook headers → 400. Pass: both. Last run 2026-11-12: passed (receipt below).
+1. **Probe, no signature, changes nothing.** `GET /.well-known/mega-pulse.json` → 200 with `pulse` may `["answer"]` and `test-writer` may `["test"]`; `POST /` with no webhook headers → 400. Pass: both. Last run 2026-11-16: the GET passed; the unsigned POST was not sent, because the Claude Code auto-mode classifier refused the probe call (receipt below). Last full pass 2026-11-12.
 2. **Type check, offline.** `npm run typecheck` in `mega-s01e05/pulse-agent`. There are no tests.
 3. **A signed ping** needs `PING_KEY`, which is only on Cloudflare, so only the course can send one.
 
@@ -39,8 +39,7 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ### Receipts
 
-command: How to verify step 1 (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
+command: How to verify step 1, 2026-11-16, GET only (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
 ```
 GET https://rig-pulse.patrykmatychniak.workers.dev/.well-known/mega-pulse.json -> 200 {"owner":"own-3dbe522d7ed13d7d","agents":{"pulse":{"wakes":"pulse","may":["answer"]},"test-writer":{"wakes":"test","may":["test"]}}}
-POST https://rig-pulse.patrykmatychniak.workers.dev/ -> 400 
 ```

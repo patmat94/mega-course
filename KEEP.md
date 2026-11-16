@@ -37,9 +37,7 @@ found: claude at ~\.local\bin\claude.exe
 - `claude -p` started in the background inside a `while read` loop reads the loop's stdin (the other prompts) unless run with `< /dev/null` · source: mcp-fun/runs/bad-stdin/03.jsonl:25 · how: ran
 - the current MCP spec revision on 2026-11-04 is 2026-07-28 (stateless, no initialize, server/discover, Mcp-Method/Mcp-Name headers); the one before is 2025-11-25 · source: mega-s02e03/log.txt:13 · how: read
 - piping a secret from Windows PowerShell 5.1 into `wrangler secret put` stores it with a line break; pipe from bash with node `process.stdout.write(...trim())` instead · source: mega-s02e03/log.txt:27 · how: read
-- a cloud Claude Code session started from the desktop app clones patmat94/mega-course first; while the repo was private it failed with "Authentication failed while accessing the repository" · source: mega-s02e04/log.txt:81 · how: read
 - patmat94/mega-course was made public by the human on 2026-11-06 so a cloud worker could start · source: human · how: told
-- a cloud session's result does not reach the session that started it (not in list_sessions, no note); in S02E04 the human pasted its final message · source: mega-s02e04/log.txt:83 · how: read
 - the S02E04 job links expired 2026-11-07T15:30:09Z, so job 1 can be rerun only against the replay stub mega-s02e04/replay/job1-stub.mjs · source: mega-s02e04/receipts.json:7 · how: read
 - the S02E04 join eval (10 cases, crew's one-clock.mjs) scored pass^3 100% (10/10) on 2026-11-09; with three expectations broken it scored 7/10 · source: mega-s02e04/eval/RESULTS.md:13 · how: ran
 - the original S02E04 job-1 worker session 25e684bf made 5 tool calls (ToolSearch, then search, read, redact, submit); log.txt lists only the 4 MCP calls; its transcript token totals equal job1-worker.json · source: mega-s02e04/job1-worker.json:1 · how: ran
@@ -58,6 +56,8 @@ found: claude at ~\.local\bin\claude.exe
 - a new Netlify site on this account starts behind a Netlify login (sso_login_context "all", every request 401) and with a "Powered by Netlify" badge (built_with_badge_enabled true) that covered a page button; updateSite sso_login_context "non_production" and built_with_badge_enabled false fixed both · source: mega-s03e04/log.txt:31 · how: ran
 - the prove skill (.claude/skills/prove, 379b12710900) runs on this PC: its four self-tests pass, and record-flow.mjs records with the Playwright 1.62.1 in mega-s03e04 (run it from that folder); it does not capture API reply bodies, so receipts need a listener of your own · source: mega-s03e04/log.txt:74 · how: ran
 - in the built-in browser, a canvas diff of a replay at 0.1 s steps and 160x90 found 1.4 s tab flashes that a 0.2 s, 64x36 scan of the same files missed; one video per javascript_tool call stays under its 45 s limit · source: mega-s03e05/log.txt:149 · how: ran
+- a daily scheduled task worker-heartbeat (Claude desktop app on this PC, 08:30 local) runs agents/heartbeat/heartbeat.mjs, which GETs each Worker in agents/heartbeat/workers.json and appends one row per Worker to agents/heartbeat/heartbeat.jsonl; it was not saved in Auto mode, so a run may pause for approval; it shows whether a Worker answers, not whether anyone used it · source: agents/heartbeat/heartbeat.mjs:1 · how: ran
+- the first heartbeat run, on 2026-11-16, found all 8 Workers up · source: agents/heartbeat/heartbeat.jsonl:1 · how: ran
 
 ## Friction
 
@@ -65,6 +65,8 @@ Each time the repo or the machine gets in the way: one line, what was blocked, w
 
 - the Bash tool cannot run curl ("Permission denied"); cost: a failed download in S03E01 and a switch to PowerShell Invoke-WebRequest for every HTTP call since · source: mega-s03e01/log.txt:61 · how: read
 - reading the Workers' logs for the week was blocked twice: wrangler's OAuth token has no Workers Observability or analytics scope, and calling Cloudflare's GraphQL analytics API with that token was denied by the auto-mode classifier as unauthorized access; cost: no request counts or Workers Logs for any Worker, so four of eight Workers have no log for the week; way round: their own KV and D1 rows through wrangler kv and wrangler d1 · source: docs/map/README.md:10 · how: ran
+- the auto-mode classifier refused a PowerShell call that probed rig-pulse, mail-agent and tool-home with unsigned POSTs (the map files' step 1, which changes nothing); cost: those three POST probes were not sent in the 2026-11-16 pass, only their GETs; way round: none found, the human can allow it or send them by hand · source: docs/keep-pass/2026-11-16.md:57 · how: ran
+- the Bash tool cannot run timeout (/usr/bin/timeout: Permission denied), like curl; cost: one rerun of the prove self-tests in the 2026-11-16 pass; way round: run without timeout, or set the tool call's own timeout · source: docs/keep-pass/2026-11-16.md:58 · how: ran
 
 ## Receipts
 
@@ -176,6 +178,29 @@ Scheduled task "keep-pruning-pass" created.
 **Next run:** in 3 days
 ```
 
+command: mcp__scheduled-tasks__create_scheduled_task worker-heartbeat (cron 30 8 * * *)
+```
+Scheduled task "worker-heartbeat" created.
+
+**Task file:** C:\Users\p.matychniak\.claude\scheduled-tasks\worker-heartbeat\SKILL.md
+**Schedule:** At 08:30 AM, every day
+**Next run:** in 22 hours
+```
+
+command: node agents/heartbeat/heartbeat.mjs (2026-11-16, first run)
+```
+up   rig-pulse       200 283ms
+up   mail-agent      200 234ms
+up   tool-home       200 173ms
+up   away-agent      200 159ms
+up   night-status    200 418ms
+up   sched-prod-api  200 290ms
+up   wake-demo       200 233ms
+up   mcp-fun         200 224ms
+heartbeat: 8 of 8 up
+exit=0
+```
+
 command: node record.mjs https://sched-prod-board-pm-s03e04.netlify.app/ step1 (mega-s03e04, Playwright 1.64.1)
 ```
 browserContext.newPage: Executable doesn't exist at C:\Users\p.matychniak\AppData\Local\ms-playwright\ffmpeg-1013\ffmpeg-win64.exe
@@ -196,6 +221,16 @@ Recorded 00:11.325 of https://sched-prod-board-pm-s03e04.netlify.app/
   build     "11971488633b7da1c79d40f282af515dde88b1c4" at the start, "11971488633b7da1c79d40f282af515dde88b1c4" at the end
 ```
 
+from: Claude Code auto-mode classifier, PowerShell Invoke-WebRequest probes of the live Workers incl. unsigned POSTs to rig-pulse /, mail-agent /webhooks, tool-home /mcp (2026-11-16)
+```
+Permission for this action was denied by the Claude Code auto mode classifier. Reason: [Destructive or Unwanted Actions].
+```
+
+command: node ../.claude/skills/prove/scripts/address-check.mjs --self-test, wrapped in timeout 120 (Bash tool, mega-s03e04, 2026-11-16)
+```
+/usr/bin/bash: line 1: /usr/bin/timeout: Permission denied
+```
+
 ## Archive
 
 Retired findings: no longer needed for new work, kept for the record. Each says why it was retired. Not read as findings.
@@ -207,6 +242,8 @@ Retired findings: no longer needed for new work, kept for the record. Each says 
 - in S03E01 product answered a list conflict on the signed-in Challenge page ("Product answered your list"), not in the claim reply; re-read the page after an accepted step · source: mega-s03e01/log.txt:54 · how: read · retired: the rule is in AGENTS.md and docs/adr/0010 (re-read the page after progress)
 - the S03E02 channel API shows only the first batch of requests on a read without a cursor; later batches reach only the collector's stored cursor, and one arrived after the first claim · source: mega-s03e02/log.txt:29 · how: read · retired: S03E02 is solved; the rule is in AGENTS.md and docs/adr/0011
 - in S03E02 the course refused a withdrawal ("scratch my request") closed as duplicate ("1 issue closed without a reason that holds"); it accepted the withdrawal's id in the withdrawn issue's sources, closed obsolete · source: mega-s03e02/log.txt:44 · how: read · retired: S03E02 is solved; the rule is in AGENTS.md and docs/adr/0011
+- a cloud Claude Code session started from the desktop app clones patmat94/mega-course first; while the repo was private it failed with "Authentication failed while accessing the repository" · source: mega-s02e04/log.txt:81 · how: read · retired: S02E04 is solved; the rule (check a remote worker can reach its repo first) is in AGENTS.md and docs/adr/0007
+- a cloud session's result does not reach the session that started it (not in list_sessions, no note); in S02E04 the human pasted its final message · source: mega-s02e04/log.txt:83 · how: read · retired: S02E04 is solved; the rule (write the way home into the brief) is in AGENTS.md and docs/adr/0007
 
 from: mega-challenge claim-challenge (S02E05 status log, round as number)
 ```

@@ -1,0 +1,8 @@
+{"at":"2026-11-16T09:20:12.927Z","worker":"rig-pulse","url":"https://rig-pulse.patrykmatychniak.workers.dev/.well-known/mega-pulse.json","status":200,"ms":283,"ok":true,"why":""}
+{"at":"2026-11-16T09:20:13.166Z","worker":"mail-agent","url":"https://mail-agent.patrykmatychniak.workers.dev/","status":200,"ms":234,"ok":true,"why":""}
+{"at":"2026-11-16T09:20:13.339Z","worker":"tool-home","url":"https://tool-home.patrykmatychniak.workers.dev/plan","status":200,"ms":173,"ok":true,"why":""}
+{"at":"2026-11-16T09:20:13.498Z","worker":"away-agent","url":"https://away-agent.patrykmatychniak.workers.dev/","status":200,"ms":159,"ok":true,"why":""}
+{"at":"2026-11-16T09:20:13.918Z","worker":"night-status","url":"https://night-status.patrykmatychniak.workers.dev/status.json","status":200,"ms":418,"ok":true,"why":""}
+{"at":"2026-11-16T09:20:14.209Z","worker":"sched-prod-api","url":"https://sched-prod-api-production.patrykmatychniak.workers.dev/incidents","status":200,"ms":290,"ok":true,"why":""}
+{"at":"2026-11-16T09:20:14.442Z","worker":"wake-demo","url":"https://wake-demo.patrykmatychniak.workers.dev/","status":200,"ms":233,"ok":true,"why":""}
+{"at":"2026-11-16T09:20:14.666Z","worker":"mcp-fun","url":"https://mcp-fun.patrykmatychniak.workers.dev/","status":200,"ms":224,"ok":true,"why":""}

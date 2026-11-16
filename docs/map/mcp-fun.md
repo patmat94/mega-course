@@ -14,7 +14,7 @@ A weather MCP server built as a practice piece (not a lesson Worker). Three tool
 
 ## How to verify
 
-1. **Probe, changes nothing.** `GET /` → 200 `mcp-fun-weather 1.0.0: MCP endpoint at /mcp (Streamable HTTP)`; `GET /mcp` → 405. Pass: both. Last run 2026-11-12: passed (receipt below).
+1. **Probe, changes nothing.** `GET /` → 200 `mcp-fun-weather 1.0.0: MCP endpoint at /mcp (Streamable HTTP)`; `GET /mcp` → 405. Pass: both. Last run 2026-11-16: passed (receipt below).
 2. **Type check, offline.** `npm run typecheck` in `mcp-fun`.
 3. **One tool call.** In a Claude Code session in this repo, call `weather-fun` `day_briefing` for a place; or `claude mcp list` shows `weather-fun ... ✔ Connected`.
 
@@ -40,9 +40,9 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 ### Receipts
 
-command: How to verify step 1 (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
+command: How to verify step 1, 2026-11-16 (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
 ```
-GET https://mcp-fun.patrykmatychniak.workers.dev/ -> 200 mcp-fun-weather 1.0.0: MCP endpoint at /mcp (Streamable HTTP)
+GET https://mcp-fun.patrykmatychniak.workers.dev/ -> 200 mcp-fun-weather 1.0.0: MCP endpoint at /mcp (Streamable HTTP) 
 GET https://mcp-fun.patrykmatychniak.workers.dev/mcp -> 405
 ```
 

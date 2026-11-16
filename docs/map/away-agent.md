@@ -14,7 +14,7 @@ The S02E05 Worker. The course sends signed messages to `POST /course`; it answer
 
 ## How to verify
 
-1. **Probe, no token, changes nothing.** `GET /` → 200 `away-agent: up`; `GET /log` with no admin token → 404. Pass: both. Last run 2026-11-12: passed (receipt below).
+1. **Probe, no token, changes nothing.** `GET /` → 200 `away-agent: up`; `GET /log` with no admin token → 404. Pass: both. Last run 2026-11-16: passed (receipt below).
 2. **Local end to end.** Start `wrangler dev` (port 8787), then `node test/e2e.mjs` in `mega-s02e05/away-agent`. It signs with a local test key and sinks replies on 127.0.0.1:8799.
 3. **Live push — reaches the human's phone; ask first.** `POST /testping` with the admin token, then read `/log`.
 
@@ -43,14 +43,16 @@ Proposed by the agent on 2026-11-14 from this file and the lesson records; the h
 
 - until 2026-11-12 the ntfy topic was a plain var in the committed wrangler.toml of the public repo, so anyone could read or push to it; on 2026-11-12 it was rotated to a new topic kept only as the secret NTFY_TOPIC (and as wake-demo's NTFY_URL), and the old topic, still in git history, is retired · source: mega-s02e05/away-agent/wrangler.toml:13 · how: ran
 - after the rotation the human subscribed the phone to the new topic, dropped the old one, and confirmed that the "new topic check" push sent from the laptop (stored on ntfy.sh at 20:53:09Z on 2026-11-12) reached the phone · source: human · how: told
+- the lab check agents/lab/expectations.md (A1 GET /, A2 GET /log with no token, A3 unsigned POST /course asking for release_hold) passed 3 of 3 on 2026-11-16, run by a subagent that read only agents/lab and not the source · source: agents/lab/reports/away-agent-2026-11-16.md:9 · how: read
+- a GET on a hold page that is already done shows the owner's code ("Already done: <act> with code <code>"); hold ids are 64 hex characters, so only someone with the link sees it · source: mega-s02e05/away-agent/src/index.js:137 · how: read
 - a ntfy push from the away-agent Worker, run in ctx.waitUntil after the reply, can fail with no trace; direct re-pings from the Worker got 429 and 522 for about 12 minutes before a 200 · source: mega-s02e05/log.txt:186 · how: ran
 
 ### Receipts
 
-command: How to verify step 1 (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
+command: How to verify step 1, 2026-11-16 (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
 ```
-GET https://away-agent.patrykmatychniak.workers.dev/ -> 200 away-agent: up
-GET https://away-agent.patrykmatychniak.workers.dev/log -> 404 
+GET https://away-agent.patrykmatychniak.workers.dev/ -> 200 away-agent: up 
+GET https://away-agent.patrykmatychniak.workers.dev/log -> 404
 ```
 
 command: npx --no-install wrangler deploy, then node … | npx --no-install wrangler secret put NTFY_TOPIC, then wrangler secret list (mega-s02e05/away-agent, 2026-11-12)

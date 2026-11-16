@@ -15,7 +15,7 @@ The S03E03 incidents API, built by the unattended agent during the round. Serves
 
 ## How to verify
 
-1. **Probe, changes nothing.** `node mega-s03e03/agent/livecheck.mjs /incidents /incidents/INC-6948 /nope` → 200, 200, 404. Last run 2026-11-12: passed (`mega-s03e03/log.txt`, final poll).
+1. **Probe, changes nothing.** `node mega-s03e03/agent/livecheck.mjs /incidents /incidents/INC-6948 /nope` → 200, 200, 404. Last run 2026-11-16: passed, 200, 200, 404 (`docs/keep-pass/2026-11-16.md`). Before: 2026-11-12 (`mega-s03e03/log.txt`, final poll).
 
 ## Agreement
 

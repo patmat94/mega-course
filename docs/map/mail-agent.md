@@ -15,7 +15,7 @@ The S02E02 mail agent. AgentMail calls its webhook for each mail to the inbox `p
 
 ## How to verify
 
-1. **Probe, no signature, changes nothing.** `GET /` → 200 `mail agent: ok`; `POST /webhooks` with an unsigned `{}` → 401. Pass: both. Last run 2026-11-12: passed (receipt below).
+1. **Probe, no signature, changes nothing.** `GET /` → 200 `mail agent: ok`; `POST /webhooks` with an unsigned `{}` → 401. Pass: both. Last run 2026-11-16: the GET passed; the unsigned POST was not sent, because the Claude Code auto-mode classifier refused the probe call (receipt below). Last full pass 2026-11-12.
 2. **Signature tests, offline.** `npm test` in `mega-s02e02/mail-agent` (`test/svix.test.ts`).
 3. **Live end to end — sends real mail and spends API credit; ask first.** `node scripts/e2e.mjs send "<subject>" "<text>"`, then `node scripts/e2e.mjs wait <thread_id>`. Pass: a reply in the same thread.
 
@@ -49,10 +49,9 @@ msg:<010001a1db747081-d5b0243f-cc04-4bb8-a5c7-877a62a7028e-0 2026-11-21T19:06:46
 
 ### Receipts
 
-command: How to verify step 1 (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
+command: How to verify step 1, 2026-11-16, GET only (PowerShell Invoke-WebRequest, no token or signature; body text cut to 160 characters)
 ```
-GET https://mail-agent.patrykmatychniak.workers.dev/ -> 200 mail agent: ok
-POST https://mail-agent.patrykmatychniak.workers.dev/webhooks -> 401 
+GET https://mail-agent.patrykmatychniak.workers.dev/ -> 200 mail agent: ok 
 ```
 
 command: claim-challenge (S02E02 status check, round 1)

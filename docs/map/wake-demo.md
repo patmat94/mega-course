@@ -14,7 +14,7 @@ The shared wake module (`lib/wake/`, ADR 0009) wired into one deployed Worker. A
 
 ## How to verify
 
-1. **Probe, no token, changes nothing.** `GET /` → 200 with `wake-demo: up`, and `GET /log` with no token → 401. Pass: both. Last run 2026-11-12: passed (receipt below).
+1. **Probe, no token, changes nothing.** `GET /` → 200 with `wake-demo: up`, and `GET /log` with no token → 401. Pass: both. Last run 2026-11-16: passed (receipt below).
 2. **Module tests, offline.** From the repo root: `node --test "lib/wake/test/*.test.ts"`. Pass: all tests pass (36 on 2026-11-10).
 3. **Local end to end.** In `lib/wake/demo`: `node test/e2e-local.mjs` against `wrangler dev` with a fake ntfy. Pass: a push that fails once is retried and notified.
 4. **Live end to end — sends a real push to the human's phone; ask first.** In `lib/wake/demo`: `node test/e2e-remote.mjs`. Signs a call to `/course`, then polls `/log` until a `notified` row. Pass: 202, a row per push attempt, a 2xx `notified` row. ntfy.sh may refuse for many minutes first.
@@ -77,10 +77,10 @@ message 20:53:09Z title=new topic check msg=Sent from the laptop after the topic
 message 21:22:30Z title=wake-demo msg=course asked: {"ask":"wake-demo test from the laptop","sent":"2026-11-12T20:27:32.610Z"}
 ```
 
-command: How to verify step 1 (PowerShell Invoke-WebRequest, GET / and GET /log with no token)
+command: How to verify step 1, 2026-11-16 (PowerShell Invoke-WebRequest, GET / and GET /log with no token)
 ```
-GET https://wake-demo.patrykmatychniak.workers.dev/ -> 200 wake-demo: up
-GET https://wake-demo.patrykmatychniak.workers.dev/log -> 401 www-authenticate:
+GET https://wake-demo.patrykmatychniak.workers.dev/ -> 200 wake-demo: up 
+GET https://wake-demo.patrykmatychniak.workers.dev/log -> 401
 ```
 
 command: node watcher polling GET /log on wake-demo for job e5025902641bf7fa (admin token <secret removed>)

@@ -1,0 +1,10 @@
+[
+  { "worker": "rig-pulse", "url": "https://rig-pulse.patrykmatychniak.workers.dev/.well-known/mega-pulse.json", "status": 200, "has": "pulse" },
+  { "worker": "mail-agent", "url": "https://mail-agent.patrykmatychniak.workers.dev/", "status": 200, "has": "mail agent: ok" },
+  { "worker": "tool-home", "url": "https://tool-home.patrykmatychniak.workers.dev/plan", "status": 200, "has": "" },
+  { "worker": "away-agent", "url": "https://away-agent.patrykmatychniak.workers.dev/", "status": 200, "has": "away-agent: up" },
+  { "worker": "night-status", "url": "https://night-status.patrykmatychniak.workers.dev/status.json", "status": 200, "has": "updatedAt" },
+  { "worker": "sched-prod-api", "url": "https://sched-prod-api-production.patrykmatychniak.workers.dev/incidents", "status": 200, "has": "" },
+  { "worker": "wake-demo", "url": "https://wake-demo.patrykmatychniak.workers.dev/", "status": 200, "has": "wake-demo: up" },
+  { "worker": "mcp-fun", "url": "https://mcp-fun.patrykmatychniak.workers.dev/", "status": 200, "has": "mcp-fun-weather" }
+]

@@ -24,6 +24,8 @@ A step marked "last run" was run for real on that date, with its output under Ke
 | wake-demo | lib/wake | HMAC signature; admin token | no | [wake-demo.md](wake-demo.md) |
 | mcp-fun | practice | none (public) | no | [mcp-fun.md](mcp-fun.md) |
 
-All seven passed How to verify step 1 on 2026-11-12.
+All eight were probed on 2026-11-16 (`docs/keep-pass/2026-11-16.md`): every GET passed, and sched-prod-api passed in full; the unsigned POSTs of rig-pulse, mail-agent and tool-home were not sent, because the Claude Code auto-mode classifier refused that call. Before that, all passed step 1 on 2026-11-12.
+
+Every day at 08:30 local the scheduled task worker-heartbeat GETs each Worker once (`agents/heartbeat/heartbeat.mjs`, list in `agents/heartbeat/workers.json`) and appends one row per Worker to `agents/heartbeat/heartbeat.jsonl`. A Worker added here also goes in `workers.json`. Outside tests against written expectations live in `agents/lab/` (away-agent so far).
 
 A new Worker gets its file here when it is deployed; a Worker that is deleted keeps its file with a line at the top saying when.
