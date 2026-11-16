@@ -79,3 +79,10 @@ mega-s03e05/claim1-body.json
 mega-s03e05/dl/
 mega-s03e05/pack/
 mega-s03e05/batch2/
+
+# S04E01: receipts hold the ticket; vars.json holds the practice key and ticket; starter zip is a download
+mega-s04e01/receipts.json
+mega-s04e01/payout-agent.zip
+mega-s04e01/starter/host-desk/vars.json
+mega-s04e01/runs/
+mega-s04e01/starter/host-desk/state/

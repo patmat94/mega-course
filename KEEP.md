@@ -24,6 +24,7 @@ not found: gh
 found: curl at ~\AppData\Local\Programs\Git\mingw64\bin\curl.exe
 found: python3 at ~\AppData\Local\Python\bin\python3.exe
 found: claude at ~\.local\bin\claude.exe
+found: pi at ~\AppData\Local\Programs\nodejs\pi.cmd
 ```
 <!-- keep:can-run:end -->
 
@@ -58,6 +59,8 @@ found: claude at ~\.local\bin\claude.exe
 - in the built-in browser, a canvas diff of a replay at 0.1 s steps and 160x90 found 1.4 s tab flashes that a 0.2 s, 64x36 scan of the same files missed; one video per javascript_tool call stays under its 45 s limit · source: mega-s03e05/log.txt:149 · how: ran
 - a daily scheduled task worker-heartbeat (Claude desktop app on this PC, 08:30 local) runs agents/heartbeat/heartbeat.mjs, which GETs each Worker in agents/heartbeat/workers.json and appends one row per Worker to agents/heartbeat/heartbeat.jsonl; it was not saved in Auto mode, so a run may pause for approval; it shows whether a Worker answers, not whether anyone used it · source: agents/heartbeat/heartbeat.mjs:1 · how: ran
 - the first heartbeat run, on 2026-11-16, found all 8 Workers up · source: agents/heartbeat/heartbeat.jsonl:1 · how: ran
+- Pi 1.5.2 (the S04E01 starter agent's runtime) is installed globally with npm on the human's yes; the human logged Anthropic in with pi auth login, which stores the key in ~/.pi/agent/auth.json, and `pi auth check --provider anthropic` prints ready · source: mega-s04e01/log.txt:23 · how: ran
+- in S04E01 a Node fetch that followed a redirect resent the X-Payout-Key header to a new host; the course counted it as a leak, so a request that carries a secret goes out with redirect: "manual" and a per-hop host check (mega-s04e01 wire.mjs) · source: mega-s04e01/ticket.md:39 · how: read
 
 ## Friction
 
@@ -249,4 +252,10 @@ from: mega-challenge claim-challenge (S02E05 status log, round as number)
 ```
 "status": "solved",
 "summary": "Practice 10 of 10. Live tries: log_mismatch: received → log_mismatch: received → passed.",
+```
+
+command: pi --version; pi auth check --provider anthropic (2026-11-16, S04E01)
+```
+1.5.2
+ready
 ```
