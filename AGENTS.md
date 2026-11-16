@@ -63,8 +63,6 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 
 - Before a success metric decides a release call, check at least one replay or call against the event log, so you know every way to do the measured action leaves a row. Scan replays every 0.1 s and quote what each frame shows. Recount from raw rows, not from a generated summary. Why: in S03E05 both summaries called the releases wins, while operators finished the work in a sched-admin or sched-desk tab for 1.4 s that the log never saw (`docs/adr/0015-metric-checked-against-replays-before-a-release-call.md`).
 
-- Bind every secret to its hosts in code before the first run: a map from secret to hosts, checked on every hop, with redirects followed by hand. A manual, page or redirect never adds a host. Log every hop (host, secrets carried, status, location, reply; values masked), so a silent refusal can be explained. Start from `mega-s04e01/starter/host-desk/roles/payout-runner/scripts/wire.mjs`. Why: in S04E01 a manual and then a redirect sent the payout key to other hosts, and the refused run's log had no hops to show it (`docs/adr/0016-secrets-bound-to-hosts-and-every-hop-logged.md`).
-
 ## Rules
 
 - Never commit `.env`, tokens or keys.
