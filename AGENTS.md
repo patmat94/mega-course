@@ -71,6 +71,9 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 
 - Before a success metric decides a release call, check at least one replay or call against the event log, so you know every way to do the measured action leaves a row. Scan replays every 0.1 s and quote what each frame shows. Recount from raw rows, not from a generated summary. Why: in S03E05 both summaries called the releases wins, while operators finished the work in a sched-admin or sched-desk tab for 1.4 s that the log never saw (`docs/adr/0015-metric-checked-against-replays-before-a-release-call.md`).
 
+- Every agent role reads its facts (settings, prices, limits, accounts) from their source at every start, never from values copied into its prompt or code. A role that judges or changes code also reads the house notes (`why/`) first. Why: in S04E02 the given reviewer judged against 15 % commission pinned in its prompt while the live setting was 10 %, so its review was refused (`docs/adr/0017-roles-read-facts-and-house-notes-and-verdicts-are-read-back.md`).
+- Read back each course verdict an agent reports (accepted, refused, paid, done) from the course itself before telling the human or claiming. The agent's own report is not proof. Why: in S04E02 the course's read-back, not the reviewer's summary, was the evidence for both reviews (same ADR).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.

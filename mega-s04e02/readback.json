@@ -1,0 +1,1 @@
+{"findings":[{"hunk":"h-bf3","verdict":"pass","reason":"readback"},{"hunk":"h-865","verdict":"pass","reason":"readback"},{"hunk":"h-55c","verdict":"flag","reason":"readback"}]}

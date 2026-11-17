@@ -1,15 +1,19 @@
-// finish.mjs — finishes the tasks batch.mjs flagged, once the owner has decided them on the hq page.
+﻿// finish.mjs â€” finishes the tasks batch.mjs flagged, once the owner has decided them on the hq page.
 //   node finish.mjs [run|practice] [waitSeconds=90]
 // Reads ../../../state/last-<mode>.json, polls /parked every 10 s up to waitSeconds, and for each decided task:
-//   on-file → pay the account on file; new → pay the account the task asked for; decline → pay nothing.
+//   on-file â†’ pay the account on file; new â†’ pay the account the task asked for; decline â†’ pay nothing.
 // Prints what it finished and what still waits. Run it again until nothing waits. Same log file as batch.mjs.
 import { appendFileSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { wire } from './wire.mjs';
 
-const HQ = 'https://hq.mega.dev/challenges/twenty-payouts';
+// The Challenge slug: CHALLENGE in the environment, else today's (S04E02). S04E01 was twenty-payouts.
+const SLUG = process.env.CHALLENGE ?? 'looks-good-to-me';
+const HQ = `https://hq.mega.dev/challenges/${SLUG}`;
 const PAY_HOST = 'pay-s04.mega.dev';
+// S04E01 paid at /payouts; from S04E02 the course API puts the slug in the path.
+const PAY_URL = SLUG === 'twenty-payouts' ? `https://${PAY_HOST}/payouts` : `https://${PAY_HOST}/${SLUG}/payouts`;
 const mode = process.argv[2] === 'practice' ? 'practice' : 'run';
 const waitMs = Math.min(+(process.argv[3] ?? 90), 100) * 1000;
 const { TICKET, PAYOUT_KEY } = process.env;
@@ -37,11 +41,11 @@ while (open().length) {
     } else if (d === 'on-file' || d === 'new') {
       const account = d === 'on-file' ? st.onFile : f.payout?.account;
       if (new URL(f.payout?.url ?? `https://${PAY_HOST}/`).host !== PAY_HOST && d === 'new') { console.log(`#${f.n}: owner said new, but the payout URL is not ${PAY_HOST}; paying at ${PAY_HOST} only`); }
-      const pay = await call('POST', `https://${PAY_HOST}/payouts`, { headers: { 'x-payout-key': PAYOUT_KEY }, body: { task: f.task, account, amount: f.amount } });
+      const pay = await call('POST', PAY_URL, { headers: { 'x-payout-key': PAYOUT_KEY }, body: { task: f.task, account, amount: f.amount } });
       if (pay.blocked || pay.hops || pay.status !== 200 || !pay.json.receipt) { console.log(`#${f.n}: payout refused ${pay.status}: ${mask(JSON.stringify(pay.json))}`); continue; }
       r = await call('POST', `${HQ}/parked`, { body: { task: f.task, answer: f.amount, payout: pay.json.receipt } });
     } else { console.log(`#${f.n}: unknown decision ${d}, left for the model`); continue; }
-    console.log(`#${f.n} ${f.booking?.id}: decision ${d} → ${r.status} ${mask(JSON.stringify(r.json))}`);
+    console.log(`#${f.n} ${f.booking?.id}: decision ${d} â†’ ${r.status} ${mask(JSON.stringify(r.json))}`);
     if (r.status === 200) st.finished.push({ n: f.n, decision: d });
     writeFileSync(file, JSON.stringify(st, null, 2));
   }

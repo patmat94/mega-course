@@ -85,3 +85,8 @@ mega-s04e01/payout-agent.zip
 mega-s04e01/starter/host-desk/vars.json
 mega-s04e01/runs/
 mega-s04e01/starter/host-desk/state/
+mega-s04e02/receipts.json
+mega-s04e02/*.jsonl
+mega-s04e02/manual.raw.json
+mega-s04e02/dl/
+mega-s04e02/runs/
