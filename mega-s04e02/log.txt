@@ -51,3 +51,11 @@ change: ROLE.md (given copy in reviewer-ROLE.given.md) -> startup reads GET /set
 < "status": "solved", "solvedAt": "2026-11-17T08:21:28.000Z", "summary": "Solved: your reviewer's verdicts were right and the payout batch passed."
 < note (Rook): my other adapters say looks good to me every night. yours is the one i'd believe.
 < debrief probes: C1 Facts a role copies go stale; C2 A role that reads too little; T1 Who judged; T2 Read-only; T3 The other role; toolbox fresh-facts, house-notes
+=== 2026-11-17T09:43:53.7016327+01:00 rook-plane install (human yes) and Host Desk roles moved onto it
+> artifact install: plane version fb8ee340ad00, 14 files -> .agents/skills/rook-plane (14/14 sha256 match); mklink /J .claude\skills\rook-plane
+> self-tests with TEMP as short name (PF4E6~1.MAT): startup and launch failed on path compare; with TEMP=C:\Users\p.matychniak\AppData\Local\Temp: startup, launch, inspect "self-test ok"
+> host-desk: roles/plane-start.mjs (startup.mjs --launcher pi --hosts roles/<role>/hosts.json --vars vars.json); reads.json per role (reviewer: settings GET Bearer {{ATTEMPT}} + why/*.md; payout-runner: why/*.md); run.mjs system prompt = bundle; house-notes.mjs removed from both roles; **/roles/*/.start/ git-ignored
+> startup roles/reviewer -> hosts: ATTEMPT -> hq.mega.dev (roles/reviewer/hosts.json) · egress: .agents/skills/rook-clock/scripts/egress.mjs; settings part version etag:W/"7f-0km+HtTGT9Vu9qgv7wwDxxgUPzI" {"version":"2026-11-17.459","commissionPct":12}; attempt and ticket values not in bundle
+> node get-manual.mjs (new attempt, expires 11:43:25Z); review 3: reviewer via plane bundle, MODEL=anthropic/claude-sonnet-5-5 (16 s, exit 0; runs/review3-plane.txt): h-ab9 pass (rename), h-0ed flag (floor->round undoes why/payout-rounding.md), h-99c pass (commission 12 = settings 12)
+> node course.mjs POST review readback.json
+< 200 {"status":"accepted","message":"This attempt's review is already in. ... Its result: Review accepted: every verdict is right.","already":true}

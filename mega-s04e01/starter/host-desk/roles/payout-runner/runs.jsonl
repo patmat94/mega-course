@@ -1,0 +1,1 @@
+{"at":"2026-11-17T08:42:42.622Z","role":"payout-runner","folder":"sha256:2b04b35794bdd5b7","reads":[{"name":"why","source":"why/*.md","version":"sha256:5310041fcbc03480"}],"launcher":"pi","bundle":"roles/payout-runner/.start/2026-11-17T08-42-42-622Z.md"}

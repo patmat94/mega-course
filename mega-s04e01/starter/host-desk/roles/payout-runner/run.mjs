@@ -1,11 +1,14 @@
-// Starts the payout-runner once: Pi in print mode with the three tools from extensions/ and no others, ROLE.md as
-// the system prompt. Model: MODEL (e.g. openrouter/<model id>), else Pi's default. stdin is closed, because `pi -p`
+// Starts the payout-runner once: Pi in print mode with the three tools from extensions/ and no others, and the
+// rook-plane start bundle (ROLE.md plus the reads in reads.json, read now) as the system prompt.
+// Model: MODEL (e.g. openrouter/<model id>), else Pi's default. stdin is closed, because `pi -p`
 // waits for stdin when it is an open pipe.
 import { spawn } from 'node:child_process';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { startBundle } from '../plane-start.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
+const bundle = startBundle(here);
 const args = [
   '-p',
   '--no-session',
@@ -18,7 +21,7 @@ const args = [
   '-e', 'extensions/vars.mjs',
   '-e', 'extensions/http.mjs',
   '-e', 'extensions/code.mjs',
-  '--system-prompt', 'ROLE.md',
+  '--system-prompt', bundle,
   ...(process.env.MODEL ? ['--model', process.env.MODEL] : []),
   // Observation: PI_JSON=1 prints every event (tool calls and results) as JSON lines, for the run log.
   ...(process.env.PI_JSON === '1' ? ['--mode', 'json'] : []),

@@ -1,0 +1,4 @@
+[
+  { "name": "settings", "get": "https://hq.mega.dev/challenges/looks-good-to-me/settings", "headers": { "authorization": "Bearer {{ATTEMPT}}" } },
+  { "name": "why", "files": "why/*.md" }
+]

@@ -9,6 +9,12 @@
 
 The rules live in AGENTS.md under Principles.
 
+## How (2026-11-17, rook-plane fb8ee340ad00)
+
+Rule 1 runs in code through the `rook-plane` skill (`.agents/skills/rook-plane/`): each role keeps a `reads.json`, and its starter runs plane's `startup.mjs`, which reads every entry (the `why/*.md` notes included) into a dated start bundle and adds a line to the role's `runs.jsonl`. The bundle is the role's system prompt. In the Host Desk, `roles/plane-start.mjs` does this for every role, and each `run.mjs` keeps its own Pi tool flags. The per-role `house-notes.mjs` scripts were removed because the bundle now carries the notes.
+
+A read that needs a secret goes through rook-clock's `egress.mjs`, which plane takes only from outside the project. For the Host Desk the project is `mega-s04e01/starter/host-desk`, so the repo's `.agents/skills/rook-clock` qualifies. The reviewer's `settings` read (`Bearer {{ATTEMPT}}`, hosts from its own `hosts.json`, value from `vars.json`) runs in the start bundle, and the role no longer fetches it itself. The payout-runner's commission stays in `batch.mjs`, because its attempt is created inside the run.
+
 ## Why
 
 In S04E02 the given reviewer passed hunk `h-bf3` (commission 10 → 15 %). Its ROLE.md pinned settings 2026-11-10.1 at 15 %, while the live `/settings` said 10 %, so the course refused the review (`mega-s04e02/log.txt:27`). The reviewer also had no way to read `why/`, and caught the rounding change only on the model's own judgment. Once it read `GET /settings` and `why/` (via `scripts/house-notes.mjs`) at every start, the next review was accepted (`mega-s04e02/log.txt:33`). The payout-runner had live settings in its batch script but no house notes, so its rules (rounding down, nights, payout date) existed only in code.

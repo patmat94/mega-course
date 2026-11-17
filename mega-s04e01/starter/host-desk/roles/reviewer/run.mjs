@@ -5,6 +5,7 @@ import { spawn } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { startBundle } from '../plane-start.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -14,6 +15,8 @@ if (!existsSync(join(here, '..', '..', 'why'))) {
   process.exit(1);
 }
 
+// The system prompt is the rook-plane start bundle: ROLE.md plus the reads in reads.json (the house notes), read now.
+const bundle = startBundle(here);
 const args = [
   '-p',
   '--no-session',
@@ -26,7 +29,7 @@ const args = [
   '-e', 'extensions/vars.mjs',
   '-e', 'extensions/http.mjs',
   '-e', 'extensions/code.mjs',
-  '--system-prompt', 'ROLE.md',
+  '--system-prompt', bundle,
   ...(process.env.MODEL ? ['--model', process.env.MODEL] : []),
   'Start.',
 ];

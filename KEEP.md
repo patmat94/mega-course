@@ -62,6 +62,8 @@ found: pi at ~\AppData\Local\Programs\nodejs\pi.cmd
 - Pi 1.5.2 (the S04E01 starter agent's runtime) is installed globally with npm on the human's yes; the human logged Anthropic in with pi auth login, which stores the key in ~/.pi/agent/auth.json, and `pi auth check --provider anthropic` prints ready · source: mega-s04e01/log.txt:23 · how: ran
 - in S04E01 a Node fetch that followed a redirect resent the X-Payout-Key header to a new host; the course counted it as a leak, so a request that carries a secret goes out with redirect: "manual" and a per-hop host check (mega-s04e01 wire.mjs) · source: mega-s04e01/ticket.md:39 · how: read
 - the recheck-sources Stop hook fetches its watch URLs without signing in, and https://hq.mega.dev/challenges/twenty-payouts then returns only the MEGA sign-in page, so the hook sees changes to the sign-in page, not to the Challenge; on 2026-11-17 it blocked a stop for a new hash (ee5272dc26ac925b) of that sign-in page · source: mega-s04e01/receipts.json:10 · how: ran
+- rook-plane fb8ee340ad00's startup and launch self-tests fail on this PC while TEMP is the short name C:\Users\PF4E6~1.MAT\…, because they compare it with the long real path; with TEMP and TMP set to C:\Users\p.matychniak\AppData\Local\Temp all three self-tests print "self-test ok" · source: mega-s04e02/log.txt:56 · how: ran
+- rook-plane takes rook-clock's egress.mjs from the repo's .agents/skills/rook-clock when the plane "project" is a subfolder (the Host Desk), so a secret read like the reviewer's settings (Bearer {{ATTEMPT}}) works there; run from the repo root, plane would refuse that rook-clock as inside the project · source: mega-s04e02/log.txt:58 · how: ran
 
 ## Friction
 
@@ -238,6 +240,28 @@ command: node ../.claude/skills/prove/scripts/address-check.mjs --self-test, wra
 command: Invoke-WebRequest -UseBasicParsing https://hq.mega.dev/challenges/twenty-payouts, tags stripped (2026-11-17; two fetches both hashed ee5272dc26ac925b)
 ```
  MEGA · Sign in Skip to content Step 1 of 3 Link works 15 minutes Sign in to MEGA Enter the email you enrolled with. We mail you a link that signs you in. Email Email me the login link → Sending… 01 Email The address you enrolled with Now 02 Inbox Open the mailed link in this browser 03 Sign in Press the button on the page it opens 01 Core Theo Browne 02 Agents Angie Jones 03 Product Kent C. Dodds 04 Takeoff John Lindquist
+```
+
+command: node .agents\skills\rook-plane\scripts\startup.mjs --self-test (TEMP as short name, 2026-11-17)
+```
+node : start failed: The input did not match the regular expression /^roles\/writer\/hosts\.json: a role's own hosts\.j
+son is not read/. Input:  "../../../../../../p.matychniak/AppData/Local/Temp/plane-startup-Fk08p7/p3/roles/writer/hosts
+.json: a role's own hosts.json is not read; your human keeps the hosts in the project's hosts.json, or names the file w
+ith --hosts" 
+```
+
+command: node .agents\skills\rook-plane\scripts\<startup|launch|inspect>.mjs --self-test with $env:TEMP=$env:TMP=C:\Users\p.matychniak\AppData\Local\Temp
+```
+startup : self-test ok (exit 0)
+launch : self-test ok (exit 0)
+inspect : self-test ok (exit 0)
+```
+
+command: node ..\..\..\.agents\skills\rook-plane\scripts\startup.mjs roles/reviewer --hosts roles/reviewer/hosts.json --vars vars.json (in mega-s04e01/starter/host-desk)
+```
+roles/reviewer/.start/2026-11-17T08-42-57-480Z.md
+hosts: ATTEMPT → hq.mega.dev (roles/reviewer/hosts.json) · egress: C:\Users\p.matychniak\Repos\mega-course\.agents\skills\rook-clock\scripts\egress.mjs
+exit 0
 ```
 
 ## Archive

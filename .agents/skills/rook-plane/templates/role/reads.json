@@ -1,0 +1,4 @@
+[
+  { "name": "settings", "get": "https://api.example.com/settings" },
+  { "name": "why", "files": "why/*.md" }
+]

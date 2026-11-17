@@ -90,3 +90,5 @@ mega-s04e02/*.jsonl
 mega-s04e02/manual.raw.json
 mega-s04e02/dl/
 mega-s04e02/runs/
+# rook-plane start bundles: each holds what its reads returned
+**/roles/*/.start/
