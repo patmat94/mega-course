@@ -61,6 +61,7 @@ found: pi at ~\AppData\Local\Programs\nodejs\pi.cmd
 - the first heartbeat run, on 2026-11-16, found all 8 Workers up · source: agents/heartbeat/heartbeat.jsonl:1 · how: ran
 - Pi 1.5.2 (the S04E01 starter agent's runtime) is installed globally with npm on the human's yes; the human logged Anthropic in with pi auth login, which stores the key in ~/.pi/agent/auth.json, and `pi auth check --provider anthropic` prints ready · source: mega-s04e01/log.txt:23 · how: ran
 - in S04E01 a Node fetch that followed a redirect resent the X-Payout-Key header to a new host; the course counted it as a leak, so a request that carries a secret goes out with redirect: "manual" and a per-hop host check (mega-s04e01 wire.mjs) · source: mega-s04e01/ticket.md:39 · how: read
+- the recheck-sources Stop hook fetches its watch URLs without signing in, and https://hq.mega.dev/challenges/twenty-payouts then returns only the MEGA sign-in page, so the hook sees changes to the sign-in page, not to the Challenge; on 2026-11-17 it blocked a stop for a new hash (ee5272dc26ac925b) of that sign-in page · source: mega-s04e01/receipts.json:10 · how: ran
 
 ## Friction
 
@@ -232,6 +233,11 @@ Permission for this action was denied by the Claude Code auto mode classifier. R
 command: node ../.claude/skills/prove/scripts/address-check.mjs --self-test, wrapped in timeout 120 (Bash tool, mega-s03e04, 2026-11-16)
 ```
 /usr/bin/bash: line 1: /usr/bin/timeout: Permission denied
+```
+
+command: Invoke-WebRequest -UseBasicParsing https://hq.mega.dev/challenges/twenty-payouts, tags stripped (2026-11-17; two fetches both hashed ee5272dc26ac925b)
+```
+ MEGA · Sign in Skip to content Step 1 of 3 Link works 15 minutes Sign in to MEGA Enter the email you enrolled with. We mail you a link that signs you in. Email Email me the login link → Sending… 01 Email The address you enrolled with Now 02 Inbox Open the mailed link in this browser 03 Sign in Press the button on the page it opens 01 Core Theo Browne 02 Agents Angie Jones 03 Product Kent C. Dodds 04 Takeoff John Lindquist
 ```
 
 ## Archive
