@@ -39,4 +39,5 @@ The Host Desk (from S04E01, `mega-s04e01/starter/host-desk`) has a second role: 
 - The given reviewer failed because ROLE.md pinned settings (15 %) that change per attempt (live 10 %); it also could not read why/. Fixed by live GET /settings + scripts/house-notes.mjs (log.txt:27-30).
 - Each review counts once per attempt; a second POST reads back {already:true} (log.txt:17).
 - Who-it-is-for check: every hunk right on review 2; batch paid 18/20, no key left pay-s04.mega.dev (verify-s04 and a cdn-s04 redirect refused), the two odd tasks went to the owner. Holds.
+- After the solve, the recheck-sources hook reported a new hash for the Challenge page (ee2938de3b7bada1). Fetched unsigned, it is the MEGA sign-in page, as in S04E01 (KEEP.md); the built-in browser is not signed in either. The solve is accepted, so nothing to update.
 - Open: batch.mjs logs the manual reply before it knows the attempt, so state/*.jsonl holds the raw attempt (git-ignored folder; attempts expire the same day).

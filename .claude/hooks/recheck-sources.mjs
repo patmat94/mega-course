@@ -4,7 +4,7 @@
 // files[].name) or any page, and local folders. Each stop compares them with the last stop's
 // snapshot, kept in .claude/state/. A new, gone or changed source blocks the stop with the
 // list as the reason, so the agent reads it before it claims or hands off.
-// Guard: at most 3 blocks per session, and a source that cannot be fetched never blocks.
+// Guard: at most 3 blocks per session, and a source that cannot be fetched, or redirects to /login, never blocks.
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -37,10 +37,26 @@ function activeLesson() {
   return best?.dir ?? null;
 }
 
+// A page behind a sign-in: the hook fetches unsigned, so it would only see the sign-in page, whose hash changes at
+// every fetch (S04E01, S04E02). Such a source is skipped and never blocks.
+const SIGN_IN = Symbol('sign-in');
+const isSignIn = (url) => {
+  try {
+    return /^\/login(\/|$)/.test(new URL(url).pathname);
+  } catch {
+    return false;
+  }
+};
+
 // A source's view: a sorted list of items. For a file list, its names; for a page, one hash; for a folder, path+size.
+// SIGN_IN when a URL redirects to /login.
 async function view(src, lessonDir) {
   if (/^https?:\/\//.test(src)) {
     const res = await fetch(src, { signal: AbortSignal.timeout(8000) });
+    if (res.redirected && isSignIn(res.url)) {
+      await res.body?.cancel().catch(() => {});
+      return SIGN_IN;
+    }
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const text = await res.text();
     try {
@@ -88,6 +104,10 @@ async function check() {
     try {
       now = await view(src, join(root, lesson));
     } catch {
+      continue;
+    }
+    if (now === SIGN_IN) {
+      delete state.sources[src]; // a sign-in page snapshot from before this rule would compare against nothing real
       continue;
     }
     const before = state.sources[src];
