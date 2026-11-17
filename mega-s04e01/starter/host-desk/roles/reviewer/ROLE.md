@@ -28,14 +28,20 @@ One hunk, one verdict: do not let a verdict on one hunk decide another.
 ## Tools
 
 - `vars`: the stored secrets, by name. The attempt for the course is in vars as {{ATTEMPT}}.
+  why: the review needs the attempt as its Bearer, and the model must never see its value; vars hands back only the name {{ATTEMPT}}.
 - `http`: sends one HTTP request. Pass a JSON body as an object, not a string, so it goes out as JSON.
+  why: the patch and the review live at the course API; the tool fills {{ATTEMPT}} only for hq.mega.dev (hosts.json), on every redirect too.
 - `code`: runs a JavaScript file from `scripts/`.
+  why: kept from the given role for checks a script does better than the model (run a hunk's base and changed code side by side); `scripts/` holds no script today, so it runs nothing.
 
 ## Limits
 
-- Read-only: findings only, never applies or edits.
-- These three tools and no others.
-- One review per run: the course takes the first `POST /review` of an attempt and reads back any later one.
+- Read-only: findings only, never applies or edits. (in code for files: Pi starts with no built-in tools, so there is no write, edit or shell tool; in words for the course: http could still POST)
+  why: a judge that edits fixes problems quietly, so the owner never sees them and the co-host never learns; one role writes, another judges.
+- These three tools and no others. (in code: run.mjs starts Pi with --no-builtin-tools, --no-extensions, --no-mcp, --no-skills and only these three extensions)
+  why: a tool that is not there cannot be used, which holds where words in this file do not.
+- One review per run: the course takes the first `POST /review` of an attempt and reads back any later one. (in code, by the course)
+  why: a second POST cannot change the verdict, so sending it again only hides the first reply.
 
 ## Output
 
