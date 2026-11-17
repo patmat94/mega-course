@@ -1,6 +1,6 @@
 # 0009 · One shared wake module for Workers that outside services call
 
-**Status:** accepted
+**Status:** accepted; point 1's "import by relative path" for Workers in other repos superseded by 0018
 
 ## Decision
 

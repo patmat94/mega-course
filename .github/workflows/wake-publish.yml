@@ -1,0 +1,38 @@
+# Publishes lib/wake as @patmat94/wake to GitHub Packages (docs/adr/0018-wake-as-a-versioned-package.md).
+# Runs only on a tag wake-v<version> that matches lib/wake/package.json, after the tests and type check pass.
+# Uses the repo's built-in GITHUB_TOKEN: no personal token can write packages.
+name: wake publish
+
+on:
+  push:
+    tags:
+      - "wake-v*"
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: lib/wake
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+          scope: "@patmat94"
+      - name: Tag matches package.json version
+        run: |
+          want="wake-v$(node -p "require('./package.json').version")"
+          [ "$GITHUB_REF_NAME" = "$want" ] || { echo "tag $GITHUB_REF_NAME does not match $want"; exit 1; }
+      # Quoted glob: a bare folder path is read as one file and fails (WAKE.md § Tests).
+      - run: node --test "test/*.test.ts"
+      - run: npx -y -p typescript@5.9.3 tsc -p tsconfig.build.json
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
