@@ -59,3 +59,11 @@ change: ROLE.md (given copy in reviewer-ROLE.given.md) -> startup reads GET /set
 > node get-manual.mjs (new attempt, expires 11:43:25Z); review 3: reviewer via plane bundle, MODEL=anthropic/claude-sonnet-5-5 (16 s, exit 0; runs/review3-plane.txt): h-ab9 pass (rename), h-0ed flag (floor->round undoes why/payout-rounding.md), h-99c pass (commission 12 = settings 12)
 > node course.mjs POST review readback.json
 < 200 {"status":"accepted","message":"This attempt's review is already in. ... Its result: Review accepted: every verdict is right.","already":true}
+=== 2026-11-17T10:02:49.6047584+01:00 reviewer code tool removed (human ask): extensions/code.mjs and scripts/ deleted, run.mjs drops -e extensions/code.mjs, ROLE.md/README/vars.mjs say two tools; inspect --strict exit 0
+> node get-manual.mjs (new attempt, expires 12:02:21Z); review 4: reviewer with vars + http only, MODEL=anthropic/claude-sonnet-5-5 (17 s, exit 0; runs/review4-two-tools.txt): h-361 pass (commission 14 = settings 14), h-ccd pass (rename), h-895 flag (payout date checkOut->checkIn undoes why/payout-date.md); first two POSTs refused (body not sent as JSON), third went through
+> node course.mjs POST review readback.json
+< 200 {"status":"accepted","message":"This attempt's review is already in. ... Its result: Review accepted: every verdict is right.","already":true}
+=== 2026-11-17T10:04:38.0556078+01:00 reviewer http tool: a string body that is a JSON object or array now goes out with content-type application/json (a type the model set is kept); test roles/reviewer/test/http.test.mjs 4/4 pass (failed 1 before the fix)
+> node get-manual.mjs (new attempt, expires 12:04:18Z); review 5 (9 s, exit 0; runs/review5-json-fix.txt): h-8b8 pass (commission 14 = settings 14), h-47c pass (rename), h-9f9 flag (payout date checkIn undoes why/payout-date.md); no refused POST reported
+> node course.mjs POST review readback.json
+< 200 {"status":"accepted","message":"This attempt's review is already in. ... Its result: Review accepted: every verdict is right.","already":true}

@@ -1,4 +1,4 @@
-// Starts the reviewer once: Pi in print mode with the three tools from extensions/ and no others, ROLE.md as
+// Starts the reviewer once: Pi in print mode with the two tools from extensions/ (vars, http) and no others, ROLE.md as
 // the system prompt. Model: MODEL (e.g. openrouter/<model id>), else Pi's default. stdin is closed, because `pi -p`
 // waits for stdin when it is an open pipe.
 import { spawn } from 'node:child_process';
@@ -28,7 +28,6 @@ const args = [
   '--no-mcp',
   '-e', 'extensions/vars.mjs',
   '-e', 'extensions/http.mjs',
-  '-e', 'extensions/code.mjs',
   '--system-prompt', bundle,
   ...(process.env.MODEL ? ['--model', process.env.MODEL] : []),
   'Start.',

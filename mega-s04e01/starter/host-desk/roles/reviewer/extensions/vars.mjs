@@ -1,7 +1,7 @@
 // vars: the agent's secret store. Values live in vars.json at the top of the Host Desk (one file for every role) and
 // never reach the model:
 // this tool lists names and hands back a reference, {{NAME}}. The http tool fills a reference in when it
-// sends a request; the code tool passes the values to your script as environment variables.
+// sends a request. (This role has no code tool; the payout-runner's passes the values to its scripts as environment variables.)
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';

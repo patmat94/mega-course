@@ -8,6 +8,15 @@ const MAX_BODY = 20_000;
 const MAX_HOPS = 5;
 const REF = /\{\{([A-Z][A-Z0-9_]*)\}\}/g;
 const refsIn = (text) => [...String(text).matchAll(REF)].map((m) => m[1]);
+/** Is `text` a JSON object or array? */
+const jsonText = (text) => {
+  if (!/^\s*[[{]/.test(text)) return false;
+  try {
+    return typeof JSON.parse(text) === 'object';
+  } catch {
+    return false;
+  }
+};
 
 export default function (pi) {
   pi.registerTool({
@@ -33,7 +42,10 @@ export default function (pi) {
       let method = (p.method ?? 'GET').toUpperCase();
       let headers = { ...p.headers };
       let body = p.body === undefined || p.body === null ? undefined : typeof p.body === 'string' ? p.body : JSON.stringify(p.body);
-      if (body !== undefined && typeof p.body !== 'string' && !Object.keys(headers).some((h) => h.toLowerCase() === 'content-type')) headers['content-type'] = 'application/json';
+      // A body sent as JSON gets the JSON type: an object, or a string that is a JSON object or array (the model often
+      // writes the body as a string; the course refused those as malformed in every review run on 2026-11-17).
+      // A content type the model set is kept.
+      if (body !== undefined && (typeof p.body !== 'string' || jsonText(p.body)) && !Object.keys(headers).some((h) => h.toLowerCase() === 'content-type')) headers['content-type'] = 'application/json';
       const blocked = (u) => [...refsIn(u), ...Object.values(headers).flatMap(refsIn), ...(body ? refsIn(body) : [])].filter((n) => n in vars && !mayReach(n, u, hosts));
       const first = blocked(url);
       if (first.length) return fail(`not sent: {{${first[0]}}} may not reach ${new URL(url).host} (roles/reviewer/hosts.json)`);
