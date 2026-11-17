@@ -8,7 +8,8 @@ mega-s01e04/wt/
 mega-s01e04/preview/
 # S01E05: receipts hold raw secrets (pingKey, ownerCode)
 mega-s01e05/receipts.json
-.claude/skills/split-plan
+# every entry in .claude/skills is a junction into .agents/skills (the one source); Git follows a junction and would commit a second copy
+.claude/skills/
 # S02E01: receipts hold the signed archive link
 mega-s02e01/receipts.json
 # S02E01: PGlite store data and packages
@@ -19,7 +20,6 @@ mega-s02e01/sessions/
 mega-s02e01/sessions-late/
 # recheck-sources hook snapshots
 .claude/state/
-.claude/skills/recall
 # S02E03: receipts hold raw note codes and signed connect links
 mega-s02e03/receipts.json
 # S02E04: receipts hold raw job links and receipts
@@ -45,7 +45,6 @@ mega-s03e02/receipts.json
 mega-s03e02/claim-answer.json
 mega-s03e02/sched-prod/sched-prod/.sched/
 mega-s03e02/download/
-.claude/skills/triage
 
 # ask skill drafts hold other people's words
 asks/

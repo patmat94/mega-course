@@ -26,6 +26,11 @@
           {
             "type": "command",
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/daily-mega-start.mjs\""
+          },
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/config-stamp.mjs\"",
+            "timeout": 15
           }
         ]
       }

@@ -8,7 +8,7 @@ Decisions: `docs/adr/`, one file per decision. When the human decides how someth
 ## Commands
 
 - Run: none — each lesson folder has its own commands.
-- Test: `node --test "lib/wake/test/*.test.ts"` (the shared wake module); lesson folders have their own.
+- Test: `node --test "lib/wake/test/*.test.ts"` (the shared wake module); `node --test ".claude/hooks/test/*.test.mjs"` (hooks); lesson folders have their own.
 - Typecheck or lint: none at the root; `lib/wake/WAKE.md` § Tests gives the strict `tsc` line.
 
 ## How work moves here
@@ -37,6 +37,14 @@ Every issue carries `Source:` and `Done when:`. Nothing else.
 ## Skills
 
 Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` inside. That folder is the one source for every harness on this repo. A harness that loads skills from somewhere else points there, with a link or a config entry. Never copy a skill: copies drift.
+
+- Pi finds `.agents/skills/` by itself.
+- Claude Code reads `.claude/skills/`, which holds only junctions into `.agents/skills/` and is git-ignored. A new skill goes into `.agents/skills/<name>/` first, then `mklink /J .claude\skills\<name> .agents\skills\<name>`.
+- Paths like `.claude/skills/hands/scripts/...` still work through the junction.
+
+## Run record
+
+`.claude/hooks/config-stamp.mjs` appends one line to `runs.jsonl` at every Claude Code session start: session id, time, git HEAD, whether the tree was dirty, and `config`, a sha256 of AGENTS.md then KEEP.md. To see the config a solve ran under, find its session id there and read `git show <head>:AGENTS.md`; `node .claude/hooks/config-stamp.mjs --print` shows the current values (`docs/adr/0016-one-skill-source-and-config-stamp.md`).
 
 ## Principles
 

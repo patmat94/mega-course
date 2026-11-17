@@ -9,7 +9,8 @@ Whenever the user works on the course or calls the `mega-challenge` tools, work 
 
 ## Layout
 
-- `.claude/skills/` — skills shared by every lesson. Artifacts a solved Challenge offers (via the `artifact` tool) are installed here, one folder per skill, not inside a lesson folder.
+- `.agents/skills/` — skills shared by every lesson, one folder per skill: the one source, which Pi also loads. Artifacts a solved Challenge offers (via the `artifact` tool) are installed here, not inside a lesson folder, then linked into `.claude/skills/` with `mklink /J .claude\skills\<name> .agents\skills\<name>` (that folder holds only junctions and is git-ignored).
+- `runs.jsonl` — one line per session start, written by `.claude/hooks/config-stamp.mjs`: session id, time, git HEAD, dirty flag and a sha256 of AGENTS.md then KEEP.md (`docs/adr/0016-one-skill-source-and-config-stamp.md`).
 - `mega-sXXeYY/` — one folder per Challenge, named by its code in lowercase (S01E01 → `mega-s01e01`). Create it when the Challenge starts.
 
 ## In each lesson folder
