@@ -155,9 +155,9 @@ The module decides the last try, not the queue: set the queue's `max_retries` in
 
 `lib/wake/demo/` is the worked example: `src/index.ts` routes `POST /course` to `ingress` and the queue to `consume`; `wrangler.toml` has the KV, the queue (`max_retries = 40`) and no secrets. Admin routes take the token as `Authorization: Bearer`, never in the URL. Check it locally with `node test/e2e-local.mjs` from that folder (13 checks, about 30 s).
 
-## From another repo (ADR 0018)
+## From another repo (ADR 0018, ADR 0019)
 
-Workers in this repo import by relative path. Other repos install `@patmat94/wake` from GitHub Packages, pinned to an exact version, and never copy the source. The package ships `dist/` (built from these files with `tsc -p tsconfig.build.json`) and this file. It is published only by `.github/workflows/wake-publish.yml` on a tag `wake-v<version>` equal to `version` in `package.json`; bump the version first.
+Workers in this repo import by relative path. Other repos install `@patmat94/wake` from GitHub Packages, pinned to an exact version, and never copy the source. The package ships `dist/` (built from these files with `tsc -p tsconfig.build.json`) and this file. It is published only by `.github/workflows/wake-publish.yml` on a tag `wake-v<version>` equal to `version` in `package.json`; bump the version first. The same workflow attaches the `npm pack` tarball to a GitHub Release named after the tag, so another repo can install with no token: `npm install https://github.com/patmat94/mega-course/releases/download/wake-v<version>/patmat94-wake-<version>.tgz` (ADR 0019).
 
 ## Tests (plan §§ 2–4)
 

@@ -1,6 +1,6 @@
 {
   "name": "@patmat94/wake",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared wake path for Cloudflare Workers: verify a signed call, dedupe, queue, answer 202, run jobs and retried pushes from the queue. Contract: WAKE.md.",
   "type": "module",
   "main": "./dist/index.js",

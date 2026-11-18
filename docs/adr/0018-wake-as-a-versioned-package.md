@@ -1,6 +1,6 @@
 # 0018 · lib/wake as a versioned package for other repos
 
-**Status:** accepted
+**Status:** accepted; point 2 extended by 0019 (a tarball on a GitHub Release, installed with no token)
 
 ## Context
 
