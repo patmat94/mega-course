@@ -18,6 +18,16 @@
             "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/log-append-only.mjs\""
           }
         ]
+      },
+      {
+        "matcher": "Read|Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/domain-wake.mjs\"",
+            "timeout": 90
+          }
+        ]
       }
     ],
     "SessionStart": [

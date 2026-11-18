@@ -1,0 +1,7 @@
+{
+  "name": "wake",
+  "agent": "wake-domain",
+  "model": "haiku",
+  "globs": ["lib/wake/**"],
+  "memories": "agents/wake/memories.md"
+}

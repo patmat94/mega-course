@@ -63,6 +63,7 @@ found: pi at ~\AppData\Local\Programs\nodejs\pi.cmd
 - in S04E01 a Node fetch that followed a redirect resent the X-Payout-Key header to a new host; the course counted it as a leak, so a request that carries a secret goes out with redirect: "manual" and a per-hop host check (mega-s04e01 wire.mjs) · source: mega-s04e01/ticket.md:39 · how: read
 - rook-plane fb8ee340ad00's startup and launch self-tests fail on this PC while TEMP is the short name C:\Users\PF4E6~1.MAT\…, because they compare it with the long real path; with TEMP and TMP set to C:\Users\p.matychniak\AppData\Local\Temp all three self-tests print "self-test ok" · source: mega-s04e02/log.txt:56 · how: ran
 - rook-plane takes rook-clock's egress.mjs from the repo's .agents/skills/rook-clock when the plane "project" is a subfolder (the Host Desk), so a secret read like the reviewer's settings (Bearer {{ATTEMPT}}) works there; run from the repo root, plane would refuse that rook-clock as inside the project · source: mega-s04e02/log.txt:58 · how: ran
+- a terminal `claude -p` in this repo without CLAUDE_CODE_GIT_BASH_PATH cannot run the project's hooks (they need Git Bash), so a Read that a PreToolUse hook matches is blocked; with the variable set, the domain-wake hook ran and its note reached the session · source: agents/wake/README.md:12 · how: ran
 
 ## Friction
 
@@ -261,6 +262,14 @@ command: node ..\..\..\.agents\skills\rook-plane\scripts\startup.mjs roles/revie
 roles/reviewer/.start/2026-11-17T08-42-57-480Z.md
 hosts: ATTEMPT → hq.mega.dev (roles/reviewer/hosts.json) · egress: C:\Users\p.matychniak\Repos\mega-course\.agents\skills\rook-clock\scripts\egress.mjs
 exit 0
+```
+
+command: claude -p "Use the Read tool once on lib/wake/ingress.ts ..." --model haiku --tools Read --strict-mcp-config --no-session-persistence (Bash tool, no CLAUDE_CODE_GIT_BASH_PATH, 2026-11-18)
+```
+NONE
+
+The Read of `lib/wake/ingress.ts` did not complete. A PreToolUse hook (`.claude/hooks/domain-wake.mjs`) failed because Git Bash isn't installed, so the call was blocked. I did not change the hook.
+exit=0 secs=13
 ```
 
 ## Archive

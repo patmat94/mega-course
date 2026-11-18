@@ -1,0 +1,80 @@
+{
+  "when": "2026-11-18T13:54:37.966Z",
+  "node": "v24.16.0",
+  "subject": [
+    "node",
+    "eval/subject-glossary.mjs"
+  ],
+  "casesFile": "eval/cases.jsonl",
+  "summary": {
+    "cases": 2,
+    "k": 3,
+    "pass_at_1": 1,
+    "pass_at_k": 1,
+    "pass_pow_k": 1
+  },
+  "perCase": [
+    {
+      "id": "night-checkout-day",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "3"
+      ],
+      "expected": "3"
+    },
+    {
+      "id": "rounding-down",
+      "passes": 3,
+      "of": 3,
+      "answers": [
+        "412"
+      ],
+      "expected": "412"
+    }
+  ],
+  "runs": [
+    {
+      "night-checkout-day": {
+        "answer": "3",
+        "ok": true,
+        "ms": 7171,
+        "exit": 0
+      },
+      "rounding-down": {
+        "answer": "412",
+        "ok": true,
+        "ms": 8851,
+        "exit": 0
+      }
+    },
+    {
+      "night-checkout-day": {
+        "answer": "3",
+        "ok": true,
+        "ms": 7468,
+        "exit": 0
+      },
+      "rounding-down": {
+        "answer": "412",
+        "ok": true,
+        "ms": 8135,
+        "exit": 0
+      }
+    },
+    {
+      "night-checkout-day": {
+        "answer": "3",
+        "ok": true,
+        "ms": 7608,
+        "exit": 0
+      },
+      "rounding-down": {
+        "answer": "412",
+        "ok": true,
+        "ms": 8193,
+        "exit": 0
+      }
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+// Host Desk glossary scenario checks. Each asks what a word means, through a case where the naive reading gives a different number.
+// Expected values worked out by hand from why/glossary.md, why/nights.md and why/payout-rounding.md, never by running the subject:
+// nights = check-out minus check-in in whole days (6 - 3 = 3, not 4); rounding = Math.floor to whole EUR (412.70 -> 412, not 413).
+{"id":"night-checkout-day","question":"A guest checks in on the 3rd and checks out on the 6th of the same month. How many nights does the stay have?","expected":"3"}
+{"id":"rounding-down","question":"A host's booked payout for a stay is 412.70 EUR. How many whole EUR does the host's payout send?","expected":"412"}
