@@ -39,6 +39,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # Same build as the package; public URL, no token to download (ADR 0019).
       - run: npm pack
-      - run: gh release create "$GITHUB_REF_NAME" patmat94-wake-*.tgz --title "$GITHUB_REF_NAME" --notes "@patmat94/wake $GITHUB_REF_NAME. Install: npm install https://github.com/$GITHUB_REPOSITORY/releases/download/$GITHUB_REF_NAME/$(ls patmat94-wake-*.tgz)"
+      - run: |
+          tgz=$(ls patmat94-wake-*.tgz)
+          gh release create "$GITHUB_REF_NAME" "$tgz" --title "$GITHUB_REF_NAME" --notes "@patmat94/wake $GITHUB_REF_NAME. Install with no token: npm install https://github.com/$GITHUB_REPOSITORY/releases/download/$GITHUB_REF_NAME/$tgz"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
