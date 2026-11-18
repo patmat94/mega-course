@@ -1,5 +1,6 @@
 # Publishes lib/wake as @patmat94/wake to GitHub Packages (docs/adr/0018-wake-as-a-versioned-package.md).
 # Runs only on a tag wake-v<version> that matches lib/wake/package.json, after the tests and type check pass.
+# Also attaches the npm pack tarball to a GitHub Release named after the tag, so other repos install it with no token (ADR 0019).
 # Uses the repo's built-in GITHUB_TOKEN: no personal token can write packages.
 name: wake publish
 
@@ -9,7 +10,7 @@ on:
       - "wake-v*"
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -36,3 +37,8 @@ jobs:
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Same build as the package; public URL, no token to download (ADR 0019).
+      - run: npm pack
+      - run: gh release create "$GITHUB_REF_NAME" patmat94-wake-*.tgz --title "$GITHUB_REF_NAME" --notes "@patmat94/wake $GITHUB_REF_NAME. Install: npm install https://github.com/$GITHUB_REPOSITORY/releases/download/$GITHUB_REF_NAME/$(ls patmat94-wake-*.tgz)"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
