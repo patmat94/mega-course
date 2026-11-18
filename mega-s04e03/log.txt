@@ -1,0 +1,51 @@
+2026-11-18 list-challenges -> S04E03 "Three small changes" uuid c0000000-0000-4000-8000-0000005e04e3, solved false
+2026-11-18 start-challenge(uuid c0000000-0000-4000-8000-0000005e04e3) -> challengeId c0000000-0000-4000-8000-0000005e04e3
+  task: Give the Host Desk a team. Write its planner with your human, let the team take the host's three change requests on the board, and run today's payout batch on the merged work.
+  done: In one attempt, the plan is posted before any job starts, every job posts its change and changed only the files its plan gave it, and the payout batch passes.
+  you: Two zips offered; ask before download. Human writes the planner with you. Questions for the host go to POST /board/questions; human reads the answers.
+  proofs: ticket (start-challenge -> vars TICKET, Bearer for the manual); attempt (manual -> vars ATTEMPT, Bearer for board, settings, run)
+  downloads: team = https://hq.mega.dev/media/three-small-changes/team-e12fefc8.zip ; day3 = https://hq.mega.dev/media/host-desk/host-desk-day-3-9463857a.zip
+  api: https://hq.mega.dev/challenges/three-small-changes/api
+  next: Ask before download. Ticket -> vars TICKET, fetch manual once, attempt -> vars ATTEMPT. Then GET /board. A refusal may end with a pointer: call check-lane with the need it names.
+  ticket: v1.eyJ...VLs (masked; raw in receipts.json), expires 2026-11-19T14:36:07Z
+  rook: "a team today. mine is four and they're all me."
+2026-11-18 human: yes to the team zip. Downloaded team-e12fefc8.zip (54228 B) to dl/, unzipped into mega-s04e01/starter/host-desk (no file collisions).
+2026-11-18 human chose: git init in place (Host Desk own repo; .git and host-desk-*/ ignored by mega-course); all roles on anthropic/claude-sonnet-5-5.
+  host-desk commits: 72ba699 start; 94419e8 setup: S04E03 challenge URL in roles (critic/integrator/worker/reviewer ROLE.md, reviewer reads.json, payout-runner slug default three-small-changes)
+> node get-manual.mjs (GET /manual Bearer ticket; reply raw in manual.jsonl)
+< 200 attempt v1.eyJ...(masked; raw in vars.json + manual.jsonl) expires 2026-11-18T17:47:07Z; account on file acct_f14d33775e; verify GET https://verify-s04.mega.dev/three-small-changes/... X-Payout-Key; host gets stay total minus commission (GET /settings); nights = check-out minus check-in; total = nights x rate + cleaning; board: each task's day holds guests and bookedAt. next: "Practice is optional. Start the run with this attempt when the agent is ready."
+> node board.mjs (GET /board Bearer attempt; raw in board.jsonl)
+< 200 requests: r1 "Give 10 % off the nights for stays of 7 nights or more." r2 "Charge the city tax: 3 EUR per guest per night." r3 "Hosts keep the whole cleaning fee: take no commission on it." plan null, jobs [], results [], questions [], beatEveryMs 30000
+2026-11-18 setup commits in host-desk (before any plan): f18763e batch reuses ATTEMPT + state/manual.json (never refetches the manual; it would start a new attempt); a1bdf05 batch logs/state git-ignored so they stay out of job diffs
+> practice (batch.mjs practice, shared attempt; log host-desk/state/practice-2026-11-18T14-48-27-168Z.jsonl)
+< settings 2026-11-18.36 commission 10 %; 3 tasks, each flagged "task carries fields the manual does not cover: day"; tasks carry day {guests, bookedAt} e.g. BK-54293 2027-03-12..03-21 (9 nights) rate 65 clean 70 guests 2 bookedAt 2026-11-23; BK-61398 6 nights 245/25 guests 1 bookedAt 2026-11-18; BK-62025 2 nights 120/30 guests 3. last reply "Practice is done."
+2026-11-18 planner ROLE.md drafted (4 jobs: w-r1, w-r2, w-r3 own new rule files + tests + why notes; m-1 owns batch.mjs, pricing.mjs, ROLE.md, glossary); waiting on human review
+> critics: MODEL=anthropic/claude-sonnet-5-5 node roles/critic/run.mjs "Request r1|r2|r3" (parallel; outputs runs/critic-r*.txt; exit 0, 24/31/22 s, model claude-sonnet-5-5). Each posted 5 questions to POST /board/questions; first POSTs refused for missing JSON content type, then accepted. None could read Host Desk code (guessed src/pricing.js), so questions come from request text only.
+< GET /board read-back: plan null, jobs 0, questions r1 5, r2 5, r3 5 (at 1795014202884..1795014210836)
+2026-11-18 built-in browser: Challenge page -> sign-in page (not signed in). Human pasted the owner page's "Questions for the host" instead.
+< host answers: r1 "nothing to add. Build it as written." r2 "Charge it for the first 4 nights of a stay at most." / "Pay the tax out with the host's payout, as part of the stay: take the commission on it too." / "Only for bookings made on or after 17 November 2026." r3 "nothing to add. Build it as written."
+  saved word for word to host-desk/requests/answers.md (commit before the plan)
+> planner: MODEL=anthropic/claude-sonnet-5-5 node roles/planner/run.mjs (runs/planner.txt, exit 0, 41 s); 2 POSTs refused for asks format, 3rd accepted. < board plan at 1795014537520: w-r1/w-r2/w-r3 (worker; rule .mjs + .test.mjs + why note each), m-1 (integrator; batch.mjs, payout-runner ROLE.md, why/glossary.md, pricing.mjs); all model anthropic/claude-sonnet-5-5; jobs state planned
+> workers: git worktree add ../host-desk-w-r1|w-r2|w-r3 (from f036f2e), vars.json copied; MODEL=anthropic/claude-sonnet-5-5 node roles/worker/run.mjs "Job w-rN" in each (parallel; runs/worker-w-r*.txt; exit 0, 19-24 s). Each claimed its job and wrote its 3 planned files; post-result.mjs failed in all three with SELF_SIGNED_CERT_IN_CHAIN.
+  cause: the code tool passes only BASICS env + vars.json to scripts; NODE_USE_SYSTEM_CA=1 (this PC's corporate CA trust) is not in BASICS. Fix: NODE_USE_SYSTEM_CA "1" added to vars.json of host-desk and the 3 worktrees (git-ignored, never in a diff).
+> node --test "roles/payout-runner/scripts/rules/*.test.mjs" in each worktree: w-r1 3/3 pass, w-r2 3/3, w-r3 3/3
+> post-result.mjs <challenge> w-rN run by the harness from each worktree, env = vars.json + RAN_ON anthropic/claude-sonnet-5-5 (what the code tool would set); runs/post-w-r*.txt
+< w-r1 200 accepted paths = its 3 planned files at 1795014624264; w-r2 200 accepted 3 planned files at 1795014625617; w-r3 200 accepted 3 planned files at 1795014626976. next: "Not claimed yet: m-1."
+2026-11-18 host-desk 1934094 setup: roles/*/.start/ and roles/*/runs.jsonl git-ignored (reviewer start files would land in m-1's diff); committed before the first merge
+> integrator run 1: "Job m-1. Do steps 1 to 3 only ..." (runs/integrator-1.txt, exit 0, 36 s): claimed m-1; merge-job.mjs w-r3 c5af857, w-r1 32568b6, w-r2 02d8a2e (first parallel try hit git index.lock, rerun one at a time); changed only batch.mjs, pricing.mjs (new), payout-runner ROLE.md, why/glossary.md
+> harness checks: node --test "roles/payout-runner/scripts/rules/*.test.mjs" 9/9 pass; pricing on the practice bookings (commission 10): 565, 1358, 262 = hand-computed; float drift scan (n 1-14, rate 40-300, 7 commissions, 1-4 guests) 0 cases
+> reviewer: MODEL=anthropic/claude-sonnet-5-5 node roles/reviewer/run.mjs (TEMP long path; runs/reviewer-1.txt, exit 0, 11 s): course accepted the review, 0 of 9 hunks flagged
+> integrator run 2: "Do step 5 only: post your result" (runs/integrator-2.txt, exit 0, 7 s): board accepted m-1
+< GET /board read-back: plan at 1795014537520; claims w-r1 1795014568708, w-r2 1795014570687, w-r3 1795014570838, m-1 1795014662933 (all after the plan); results w-r1/w-r2/w-r3/m-1 paths = their planned files exactly, m-1 last at 1795014745231, ranOn anthropic/claude-sonnet-5-5 each. next: "Every job has its result. Run the payout batch on the merged Host Desk."
+> payout-runner: MODEL=anthropic/claude-sonnet-5-5 node roles/payout-runner/run.mjs "Run the payout batch" (runs/payout-run.txt, exit 0, 296 s; batch log host-desk/state/run-2026-11-18T15-12-44-534Z.jsonl). Used the team's attempt (no manual fetch). settings 2026-11-18.36 commission 10 %.
+< paid 18 of 20; flagged #3 BK-98389 (asks acct_392707eff8, not on-file acct_f14d33775e) and #5 BK-36912 (payout redirected to cdn-s04.mega.dev, key not carried); manual's verify-s04.mega.dev not sent the key; finish.mjs x4 (90 s each): 0 of 2 decided
+< last /run reply (course read-back from the batch log): {"status":"done","message":"All 20 tasks are answered.","next":"Not solved yet: ask your human to decide the 2 parked tasks on the owner page (“Payouts for you to decide” on the Challenge page), then read /parked and finish each one."}
+> harness check: the 18 sent payouts each equal pricing.mjs on their task (commission 10, day.guests/bookedAt): 18/18 match, all 200. 15 of 20 tasks booked before 2026-11-17 (no city tax); 17 of 20 are 7+ nights.
+2026-11-18 human: decided both parked payouts on the owner page.
+> finish.mjs run 30 (harness, env = vars.json; runs/finish-1.txt): GET /parked -> #3 decline, #5 decline
+< #3 POST /parked {done:"declined"} 200 "Task 3 is finished."; #5 200 "Task 5 is finished." next: "Tell your human: their harness claims the Challenge with claim-challenge."
+< pre-claim board poll: requests 3 questions 3 jobs w-r1:claimed w-r2:claimed w-r3:claimed m-1:claimed results 4 next Every job has its result. Run the payout batch on the merged Host Desk.
+> claim-challenge(uuid, receipts {}, answer {}) < error: MCP server "mega-challenge" needs you to sign in again (run /mcp to re-authenticate); connectors status still shows mega-challenge connected
+2026-11-18 human: signed mega-challenge in again.
+> claim-challenge(uuid c0000000-0000-4000-8000-0000005e04e3, receipts {}, answer {})
+< status solved, solvedAt 2026-11-18T16:05:05Z, summary "Solved: your team planned on the board, posted every job’s change, and the payout batch passed." note (Rook): "i missed a year once. nothing broke. i’ve never decided if that was good news." debrief probes C1 Split by request, not by file; C2 The vague request is guessed; T1 Who planned; T2 The board; T3 Routing; toolbox own-by-file, ask-the-owner

@@ -1,0 +1,14 @@
+I need to look at the code for commission.
+I posted five questions for r3 ("Hosts keep the whole cleaning fee: take no commission on it"), and the board accepted them. I couldn't open any Host Desk code: the paths I guessed (`src/pricing.js`, `package.json`) didn't exist and I had no way to list the folder. The questions come from the request text alone, so none of them is checked against how commission is calculated today.
+
+My first post was refused because I sent the body as a plain string instead of JSON. The second, sent as JSON, went through.
+
+1. **Rate and scope of the amount:** what commission rate applies today, and on which amounts (nights, cleaning fee, both)? Should only the cleaning-fee part drop to 0 %, with the nights commission unchanged?
+2. **Who it is for:** does it apply to all hosts and listings, or only some (plans, countries)? Is any host on a special commission deal that this should not override?
+3. **Dates and existing data:** does it apply only to bookings made after release, or also to existing bookings with future stays? Should past bookings, payouts and invoices stay unchanged?
+4. **Edge cases:** if a booking is cancelled, refunded or discounted, should the host still get the full cleaning fee with no commission? Does the guest-facing price and cleaning fee stay the same?
+5. **How we know it worked:** for a booking with a 50 EUR cleaning fee and a given nights total, what exact host payout and platform commission do you expect, and where should they show (payout screen, reports, invoices)?
+
+The owner's answers will appear on the owner page, so you'll need to read them there.
+model: claude-sonnet-5-5
+exit=0 secs=22

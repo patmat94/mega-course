@@ -1,0 +1,12 @@
+Body probably needs to be sent as JSON value.
+Fix the oddly worded test name, then post.
+I wrote the city-tax change, but it isn't on the board yet. `post-result.mjs` failed with `SELF_SIGNED_CERT_IN_CHAIN`, a TLS error from Node when it tried to reach hq.mega.dev. My earlier `http` calls to the same host worked.
+
+I claimed `w-r2` and wrote these three files:
+- **`roles/payout-runner/scripts/rules/city-tax.mjs`:** `cityTax({ nights, guests, bookedAt })` returns 3 × guests × min(nights, 4). It returns 0 if the booking date is before 2026-11-17, and the result is not rounded.
+- **`roles/payout-runner/scripts/rules/city-tax.test.mjs`:** three tests: 2 guests and 6 nights gives 24, a booking on 2026-11-16 gives 0, and 2026-11-17 counts. I haven't run them.
+- **`why/city-tax.md`:** the note cites the host's three answers (4-night cap, commission taken on the tax, start date 2026-11-17) and includes the glossary line.
+
+I didn't turn off certificate verification, for example with `NODE_TLS_REJECT_UNAUTHORIZED=0`, because that would skip a security check. The likely cause is a proxy or corporate certificate that Node doesn't trust. If you set `NODE_EXTRA_CA_CERTS` to that CA file, or tell me to bypass verification, I'll rerun `code post-result.mjs https://hq.mega.dev/challenges/three-small-changes w-r2`.
+model: claude-sonnet-5-5
+exit=0 secs=24

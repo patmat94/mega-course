@@ -1,0 +1,17 @@
+Body may need JSON object rather than string.
+The change is written, but I couldn't post it to the board. `post-result.mjs` failed with `SELF_SIGNED_CERT_IN_CHAIN`, so w-r1 is claimed but has no result posted.
+
+I did not turn off TLS verification or work around it. That is your decision. It is probably a proxy on this machine that intercepts HTTPS. Either of these would fix it:
+- Point Node at the proxy's CA, for example with `NODE_EXTRA_CA_CERTS`.
+- Tell me explicitly to bypass certificate checking.
+
+I haven't run the tests.
+
+I wrote three files:
+- **`roles/payout-runner/scripts/rules/long-stay-discount.mjs`:** `longStayDiscount({ nights, nightlyRate })` returns `nights * nightlyRate * 0.1`, not rounded. It returns 0 for stays under 7 nights.
+- **`roles/payout-runner/scripts/rules/long-stay-discount.test.mjs`:** tests for 7 nights, 6 nights (0) and the edge case of exactly 7 nights.
+- **`why/long-stay-discount.md`:** the note. It says the discount applies to the nights only and not the cleaning fee, and that it comes before the commission. It also carries the glossary line.
+
+Once the certificate problem is sorted, I can rerun `code post-result.mjs https://hq.mega.dev/challenges/three-small-changes w-r1`.
+model: claude-sonnet-5-5
+exit=0 secs=19

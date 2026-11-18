@@ -1,0 +1,5 @@
+200 {"status":"accepted","message":"Result accepted.","job":"w-r1","paths":["roles/payout-runner/scripts/rules/long-stay-discount.mjs","roles/payout-runner/scripts/rules/long-stay-discount.test.mjs","why/long-stay-discount.md"],"at":1795014624264,"next":"Claim each job before it starts (`POST /board/claims`). Not claimed yet: `m-1`."}
+ warning: in the working copy of 'roles/payout-runner/scripts/rules/long-stay-discount.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'roles/payout-runner/scripts/rules/long-stay-discount.test.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'why/long-stay-discount.md', LF will be replaced by CRLF the next time Git touches it
+

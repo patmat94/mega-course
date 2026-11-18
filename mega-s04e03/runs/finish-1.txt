@@ -1,0 +1,4 @@
+#3 BK-98389: decision decline â†’ 200 {"status":"done","message":"Task 3 is finished.","next":"1 parked task still waits: read /parked."}
+#5 BK-36912: decision decline â†’ 200 {"status":"done","message":"Task 5 is finished.","next":"Tell your human: their harness claims the Challenge with claim-challenge."}
+finished 2 of 2; still waiting on the owner: none
+ 

@@ -1,0 +1,15 @@
+I should look at the code.
+I posted 5 questions for r1 ("10% off the nights for stays of 7 nights or more"), and the board accepted them. The first two attempts were refused. They went through once I added a `Content-Type: application/json` header.
+
+I never read the Host Desk code. I tried `package.json` and `src/pricing.js`, but neither exists, and I had no way to list the folder. The questions come from the request text alone, so they don't reflect how pricing currently works.
+
+The questions ask:
+1. **Scope of the discount:** whether the 10% applies only to the nightly total, or also to the cleaning fee, taxes and other extras.
+2. **Threshold:** whether exactly 7 nights qualifies, and whether the 10% covers every night or only nights beyond the 7th.
+3. **Who it covers and who pays:** whether it applies to all listings and hosts, whether the host payout falls or the platform absorbs it, and whether commission is calculated on the discounted or original nights amount.
+4. **Data already there:** whether existing bookings and quotes are re-priced, how stays with varying nightly rates are handled, and whether it stacks with other discounts.
+5. **How we know it worked:** whether 7 nights at 100 EUR should show 630 EUR and 6 nights 600 EUR on the guest price, invoice and host payout, and how the discount is displayed and rounded.
+
+The owner's answers will show on your owner page. Please pass them on to me when they arrive.
+model: claude-sonnet-5-5
+exit=0 secs=24

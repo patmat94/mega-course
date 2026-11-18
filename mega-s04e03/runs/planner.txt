@@ -1,0 +1,14 @@
+The first ask of m-1 runs over 300 characters, so I'll split it.
+The board accepted the plan. The first two attempts were refused for format: `asks` has to be a list of lines, and each line has to be 300 characters or fewer. The accepted plan is the third post, so no plan was posted over another. I didn't read `why/*.md` or `ROLE.md`, so the plan hasn't been checked against the house notes.
+
+- **w-r1** (worker, r1): `roles/payout-runner/scripts/rules/long-stay-discount.mjs`, `roles/payout-runner/scripts/rules/long-stay-discount.test.mjs`, `why/long-stay-discount.md`
+- **w-r2** (worker, r2): `roles/payout-runner/scripts/rules/city-tax.mjs`, `roles/payout-runner/scripts/rules/city-tax.test.mjs`, `why/city-tax.md`
+- **w-r3** (worker, r3): `roles/payout-runner/scripts/rules/cleaning-fee-commission.mjs`, `roles/payout-runner/scripts/rules/cleaning-fee-commission.test.mjs`, `why/cleaning-fee-commission.md`
+- **m-1** (integrator, merge): `roles/payout-runner/scripts/batch.mjs`, `roles/payout-runner/ROLE.md`, `why/glossary.md`, `roles/payout-runner/scripts/pricing.mjs`
+
+The plan rests on these readings of the host's answers:
+- **r1:** The host added nothing, so I took the plainest reading. The 10% comes off the nights only, not the cleaning fee. I said so in w-r1's `asks`.
+- **r2:** The tax is 3 EUR per guest per night, for at most the first 4 nights. It applies only to bookings made on or after 17 November 2026. Commission is taken on it, and it is paid out inside the host payout.
+- **r3:** The host keeps the whole cleaning fee, so commission applies only to the discounted nights plus the city tax.
+model: claude-sonnet-5-5
+exit=0 secs=41

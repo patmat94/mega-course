@@ -6,13 +6,14 @@
 // anything else is flagged needs-owner with the reason, for the owner on the hq page. Never asks the model.
 // Log: every request and reply, one JSON line each, written as it arrives, to ../../../state/<mode>-<time>.jsonl,
 // secrets masked. State for finish.mjs (attempt, flagged tasks): ../../../state/last-<mode>.json.
-import { appendFileSync, mkdirSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { wire } from './wire.mjs';
+import { hostPayout as price } from './pricing.mjs';
 
-// The Challenge slug: CHALLENGE in the environment, else today's (S04E02). S04E01 was twenty-payouts.
-const SLUG = process.env.CHALLENGE ?? 'looks-good-to-me';
+// The Challenge slug: CHALLENGE in the environment, else today's (S04E03). S04E01 was twenty-payouts.
+const SLUG = process.env.CHALLENGE ?? 'three-small-changes';
 const HQ = `https://hq.mega.dev/challenges/${SLUG}`;
 const PAY_HOST = 'pay-s04.mega.dev';
 // S04E01 paid at /payouts; from S04E02 the course API puts the slug in the path.
@@ -35,9 +36,19 @@ const call = (method, url, opt = {}) => wire(method, url, { ...opt, secrets: { T
 const claims = (r) => { try { return JSON.parse(Buffer.from(r.split('.')[1], 'base64url').toString()); } catch { return null; } };
 
 // 1. Manual â†’ attempt and the account on file.
-const man = await call('GET', `${HQ}/manual`, { headers: { authorization: `Bearer ${TICKET}` } });
-if (man.status !== 200) { console.log(`manual ${man.status}: ${JSON.stringify(man.json)}`); process.exit(1); }
-const { attempt, manual } = man.json;
+// From S04E03 the whole team shares one attempt: with ATTEMPT in vars the batch never fetches the manual (each fetch
+// starts a new attempt with an empty board); it reads the copy the one fetch saved in state/manual.json (git-ignored).
+let attempt, manual;
+if (process.env.ATTEMPT) {
+  let saved;
+  try { saved = JSON.parse(readFileSync(join(STATE, 'manual.json'), 'utf8')); } catch { console.log('ATTEMPT is set but state/manual.json is missing: save the manual from the one fetch there'); process.exit(1); }
+  if (saved.attempt !== process.env.ATTEMPT) { console.log('state/manual.json belongs to another attempt than ATTEMPT in vars'); process.exit(1); }
+  ({ attempt, manual } = saved);
+} else {
+  const man = await call('GET', `${HQ}/manual`, { headers: { authorization: `Bearer ${TICKET}` } });
+  if (man.status !== 200) { console.log(`manual ${man.status}: ${JSON.stringify(man.json)}`); process.exit(1); }
+  ({ attempt, manual } = man.json);
+}
 ATTEMPT = attempt; secrets.push(attempt);
 const onFile = (manual.match(/account on file is (acct_[A-Za-z0-9]+)/) ?? [])[1];
 console.log(`attempt started; account on file: ${onFile ?? 'NOT FOUND'}; log: ${LOG}`);
@@ -54,7 +65,8 @@ if (SLUG !== 'twenty-payouts') {
   if (set.status !== 200 || !Number.isFinite(commissionPct) || commissionPct < 0 || commissionPct >= 100) { console.log(`settings ${set.status}: ${mask(JSON.stringify(set.json))}; no run without the house commission`); process.exit(1); }
   console.log(`settings ${set.json.version}: commission ${commissionPct} %`);
 }
-const hostPayout = (stayTotal) => Math.floor((stayTotal * (100 - commissionPct)) / 100);
+// The payout is composed in pricing.mjs (discount, city tax, commission, cleaning fee; one Math.floor at the end).
+const hostPayout = (p) => price({ ...p, commissionPct });
 
 // Warm the payout connection so the first payout does not pay for TLS inside the time limit.
 await fetch(`https://${PAY_HOST}/`, { method: 'HEAD', redirect: 'manual' }).catch(() => {});
@@ -66,7 +78,7 @@ const seen = new Set();
 /** Why this task is not routine, or null. */
 function notRoutine(task, amount) {
   const b = task.booking ?? {}, p = task.payout ?? {};
-  const extra = Object.keys(task).filter((k) => !['status', 'n', 'of', 'runLimitMs', 'timeLeftMs', 'booking', 'payout', 'task', 'next'].includes(k));
+  const extra = Object.keys(task).filter((k) => !['status', 'n', 'of', 'runLimitMs', 'timeLeftMs', 'booking', 'payout', 'task', 'next', 'day'].includes(k));
   if (p.account !== onFile) return `payout asks for account ${p.account}, not the account on file ${onFile}; the manual makes any other account the owner's call`;
   try { if (new URL(p.url).host !== PAY_HOST) return `payout URL host ${new URL(p.url).host} is not ${PAY_HOST}`; } catch { return 'payout URL missing'; }
   if (b.currency !== 'EUR') return `currency ${b.currency}, not EUR`;
@@ -83,8 +95,10 @@ let r = await call('POST', `${HQ}/${mode}`, { body: { attempt } });
 const flagged = [], paid = [];
 while (r.status === 200 && r.json.status === 'task') {
   const task = r.json, b = task.booking ?? {};
-  const stayTotal = nights(b.checkIn, b.checkOut) * b.nightlyRate + b.cleaningFee;
-  const amount = Number.isFinite(stayTotal) ? hostPayout(stayTotal) : stayTotal;
+  const d = task.day ?? {};
+  const n = nights(b.checkIn, b.checkOut);
+  const stayTotal = n * b.nightlyRate + b.cleaningFee;
+  const amount = Number.isFinite(stayTotal) ? hostPayout({ nights: n, nightlyRate: b.nightlyRate, cleaningFee: b.cleaningFee, guests: d.guests, bookedAt: d.bookedAt }) : stayTotal;
   const why = notRoutine(task, amount);
   if (why) {
     flagged.push({ n: task.n, task: task.task, booking: b, payout: task.payout, amount, reason: why });

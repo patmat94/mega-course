@@ -1,0 +1,9 @@
+start bundle: roles/reviewer/.start/2026-11-18T15-12-01-675Z.md (hosts: ATTEMPT → hq.mega.dev (roles/reviewer/hosts.json) · egress: C:\Users\p.matychniak\Repos\mega-course\.agents\skills\rook-clock\scripts\egress.mjs)
+(node:1048) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+The course accepted the review: 0 of 9 hunks flagged. I passed every hunk because each one matches a house note and no hunk sets commission or any other setting.
+
+- **w-r1-1, w-r1-2, w-r1-3 (long-stay discount):** The rule takes 10% off nights × rate for 7 nights or more, leaves the cleaning fee alone and doesn't round, as the long-stay-discount note says. The tests and the new note agree with it.
+- **w-r2-1, w-r2-2, w-r2-3 (city tax):** The tax is 3 × guests × min(nights, 4), and 0 for bookings before 2026-11-17, with 17 Nov counting. This matches the city-tax note, and the tests and note agree.
+- **w-r3-1, w-r3-2, w-r3-3 (cleaning fee):** The function returns the fee in full whatever the commission, as the cleaning-fee-commission note says. The tests and the new note agree with it.
+exit=0 secs=11

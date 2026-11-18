@@ -64,6 +64,7 @@ found: pi at ~\AppData\Local\Programs\nodejs\pi.cmd
 - rook-plane fb8ee340ad00's startup and launch self-tests fail on this PC while TEMP is the short name C:\Users\PF4E6~1.MAT\…, because they compare it with the long real path; with TEMP and TMP set to C:\Users\p.matychniak\AppData\Local\Temp all three self-tests print "self-test ok" · source: mega-s04e02/log.txt:56 · how: ran
 - rook-plane takes rook-clock's egress.mjs from the repo's .agents/skills/rook-clock when the plane "project" is a subfolder (the Host Desk), so a secret read like the reviewer's settings (Bearer {{ATTEMPT}}) works there; run from the repo root, plane would refuse that rook-clock as inside the project · source: mega-s04e02/log.txt:58 · how: ran
 - a terminal `claude -p` in this repo without CLAUDE_CODE_GIT_BASH_PATH cannot run the project's hooks (they need Git Bash), so a Read that a PreToolUse hook matches is blocked; with the variable set, the domain-wake hook ran and its note reached the session · source: agents/wake/README.md:12 · how: ran
+- Pi's code tool in the Host Desk roles passes scripts only its BASICS env plus vars.json, so NODE_USE_SYSTEM_CA (this PC's corporate CA) is dropped and posts fail with SELF_SIGNED_CERT_IN_CHAIN; NODE_USE_SYSTEM_CA "1" in vars.json fixes it · source: mega-s04e03/log.txt:30 · how: ran
 
 ## Friction
 

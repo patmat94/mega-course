@@ -1,0 +1,5 @@
+200 {"status":"accepted","message":"Result accepted.","job":"w-r2","paths":["roles/payout-runner/scripts/rules/city-tax.mjs","roles/payout-runner/scripts/rules/city-tax.test.mjs","why/city-tax.md"],"at":1795014625617,"next":"Claim each job before it starts (`POST /board/claims`). Not claimed yet: `m-1`."}
+ warning: in the working copy of 'roles/payout-runner/scripts/rules/city-tax.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'roles/payout-runner/scripts/rules/city-tax.test.mjs', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'why/city-tax.md', LF will be replaced by CRLF the next time Git touches it
+

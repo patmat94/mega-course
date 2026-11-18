@@ -1,0 +1,15 @@
+I need to look at the code.
+Enough context; the code is payout-only. Posting questions.
+I posted 5 questions for r2 (the city tax of 3 EUR per guest per night), and the board accepted them. The first two attempts were refused because I sent the body without a JSON content type. I resent it with `Content-Type: application/json`.
+
+I couldn't open the pricing code. `src/pricing.js` doesn't exist, and I couldn't list the folder. The README only describes the payout-runner role. So the questions come from the request text alone, not from the code.
+
+1. **Who pays:** Is the tax added to the guest's total, or taken out of the host's payout? Should it show as its own line?
+2. **Who receives it:** Is the money held back and passed to the city, or paid to the host? Should commission be calculated on it? We assume not.
+3. **Guests and nights:** Does "per guest" include children and infants, or are some exempt? Is there a cap on taxed nights? Is 3 EUR the same for every city and currency?
+4. **Which bookings:** Does it apply only to new bookings from a start date, or also to existing and already-paid ones? Does booking date or stay date decide? Are guest counts stored for existing bookings?
+5. **How we know it worked:** Can the owner give an example booking (guests, nights, price) with the exact expected tax, total and payout? How do cancellations and refunds treat the tax?
+
+The owner's answers will show on your owner page. Please pass them back to me.
+model: claude-sonnet-5-5
+exit=0 secs=31

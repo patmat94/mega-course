@@ -74,6 +74,9 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 - Every agent role reads its facts (settings, prices, limits, accounts) from their source at every start, never from values copied into its prompt or code. A role that judges or changes code also reads the house notes (`why/`) first. Do it with the rook-plane skill (`.agents/skills/rook-plane/`): a `reads.json` per role, started through its `startup.mjs` bundle. Why: in S04E02 the given reviewer judged against 15 % commission pinned in its prompt while the live setting was 10 %, so its review was refused (`docs/adr/0017-roles-read-facts-and-house-notes-and-verdicts-are-read-back.md`).
 - Read back each course verdict an agent reports (accepted, refused, paid, done) from the course itself before telling the human or claiming. The agent's own report is not proof. Why: in S04E02 the course's read-back, not the reviewer's summary, was the evidence for both reviews (same ADR).
 
+- Before a team of roles starts its jobs, send one real post through each role's own script runner and check it reaches the course; put what the runner drops (a CA setting, a proxy) into what it does pass on (the git-ignored vars file), never into a planned file. Why: in S04E03 Pi's code tool dropped NODE_USE_SYSTEM_CA, so all three workers' posts failed with SELF_SIGNED_CERT_IN_CHAIN while the harness's own fetches worked (`docs/adr/0020-team-pre-run-script-post-and-logs-out-of-git.md`).
+- Git-ignore everything a run writes (batch logs, state, role start bundles, run lines) before the first job and the first merge, and untrack what git already tracks. Why: a job's change is its worktree's git diff, so a log or start file there becomes a file outside its plan; in S04E03 practice logs and reviewer start files would have landed in the integrator's result (same ADR).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.

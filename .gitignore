@@ -95,3 +95,10 @@ mega-s04e02/runs/
 
 # lib/wake package build output (built in CI by wake-publish.yml)
 lib/wake/dist/
+# S04E03: Host Desk is its own git repo; job worktrees sit beside it
+mega-s04e01/starter/host-desk/.git
+mega-s04e01/starter/host-desk-*/
+# S04E03: receipts and manual hold the raw ticket and attempt; dl is the course zip
+mega-s04e03/receipts.json
+mega-s04e03/manual.jsonl
+mega-s04e03/dl/

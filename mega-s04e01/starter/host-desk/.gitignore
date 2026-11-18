@@ -1,0 +1,12 @@
+vars.json
+parked.json
+.env*
+*.pem
+*.key
+night/
+state/manual.json
+state/practice-*.jsonl
+state/run-*.jsonl
+state/last-*.json
+roles/*/.start/
+roles/*/runs.jsonl

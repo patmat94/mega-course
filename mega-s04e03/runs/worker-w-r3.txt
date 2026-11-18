@@ -1,0 +1,16 @@
+Body probably needs to be a JSON value rather than a string.
+I wrote the change for w-r3, but I couldn't post it to the board. `post-result.mjs` failed with `SELF_SIGNED_CERT_IN_CHAIN`, so the result isn't posted yet.
+
+I claimed the job first, then made these changes:
+- **`roles/payout-runner/scripts/rules/cleaning-fee-commission.mjs`:** `cleaningFeePayout({ cleaningFee, commissionPct })` returns the whole `cleaningFee`, whatever the commission, and doesn't round it.
+- **`roles/payout-runner/scripts/rules/cleaning-fee-commission.test.mjs`:** three tests, with commission 0, commission 15, and a fee of 0. I haven't run them.
+- **`why/cleaning-fee-commission.md`:** a note covering the decision, the reason, where it fits (after the commission), and the glossary line.
+
+The Node script's HTTPS connection to `hq.mega.dev` hit a self-signed certificate in the chain. This is probably a corporate proxy or similar on your network. I haven't turned off certificate checking (for example with `NODE_TLS_REJECT_UNAUTHORIZED=0`), because that would bypass a security control.
+
+To finish, you could do one of these:
+- Run the post from a network where the certificate validates.
+- Set `NODE_EXTRA_CA_CERTS` to the proxy's CA file, then I'll re-run `code post-result.mjs https://hq.mega.dev/challenges/three-small-changes w-r3`.
+- Tell me explicitly to bypass verification for this host, if you accept that risk.
+model: claude-sonnet-5-5
+exit=0 secs=24

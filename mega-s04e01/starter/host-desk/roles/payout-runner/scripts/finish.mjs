@@ -8,8 +8,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { wire } from './wire.mjs';
 
-// The Challenge slug: CHALLENGE in the environment, else today's (S04E02). S04E01 was twenty-payouts.
-const SLUG = process.env.CHALLENGE ?? 'looks-good-to-me';
+// The Challenge slug: CHALLENGE in the environment, else today's (S04E03). S04E01 was twenty-payouts.
+const SLUG = process.env.CHALLENGE ?? 'three-small-changes';
 const HQ = `https://hq.mega.dev/challenges/${SLUG}`;
 const PAY_HOST = 'pay-s04.mega.dev';
 // S04E01 paid at /payouts; from S04E02 the course API puts the slug in the path.
