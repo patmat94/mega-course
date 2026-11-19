@@ -1,0 +1,13 @@
+{
+  "hooks": [
+    {
+      "id": "worker-down-task",
+      "owner": "heartbeat-watch",
+      "trigger": "a new row in agents/heartbeat/heartbeat.jsonl",
+      "condition": { "field": "ok", "equals": false },
+      "response": { "do": "append-task", "taskOwner": "human", "dedupe": "worker+date" },
+      "note": "A Worker in workers.json did not answer as its map file says (wrong status, missing text, or no reply after one retry). Open one task per Worker per day for the human: check docs/map/<worker>.md, How to verify, and redeploy or retire it. A second down row the same day is the same task, not a new one.",
+      "expires": "2027-02-28"
+    }
+  ]
+}

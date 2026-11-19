@@ -8,7 +8,7 @@ Decisions: `docs/adr/`, one file per decision. When the human decides how someth
 ## Commands
 
 - Run: none — each lesson folder has its own commands.
-- Test: `node --test "lib/wake/test/*.test.ts"` (the shared wake module); `node --test ".claude/hooks/test/*.test.mjs"` (hooks); `node --test "mega-s04e01/starter/host-desk/roles/reviewer/test/*.test.mjs"` (the Host Desk reviewer's http tool); lesson folders have their own.
+- Test: `node --test "lib/wake/test/*.test.ts"` (the shared wake module); `node --test ".claude/hooks/test/*.test.mjs"` (hooks); `node --test "mega-s04e01/starter/host-desk/roles/reviewer/test/*.test.mjs"` (the Host Desk reviewer's http tool); `node --test "agents/heartbeat/test/*.test.mjs"` (the heartbeat watcher: hooks.json → tasks.jsonl); lesson folders have their own.
 - Typecheck or lint: none at the root; `lib/wake/WAKE.md` § Tests gives the strict `tsc` line.
 
 ## How work moves here
