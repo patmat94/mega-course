@@ -77,6 +77,9 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 - Before a team of roles starts its jobs, send one real post through each role's own script runner and check it reaches the course; put what the runner drops (a CA setting, a proxy) into what it does pass on (the git-ignored vars file), never into a planned file. Why: in S04E03 Pi's code tool dropped NODE_USE_SYSTEM_CA, so all three workers' posts failed with SELF_SIGNED_CERT_IN_CHAIN while the harness's own fetches worked (`docs/adr/0020-team-pre-run-script-post-and-logs-out-of-git.md`).
 - Git-ignore everything a run writes (batch logs, state, role start bundles, run lines) before the first job and the first merge, and untrack what git already tracks. Why: a job's change is its worktree's git diff, so a log or start file there becomes a file outside its plan; in S04E03 practice logs and reviewer start files would have landed in the integrator's result (same ADR).
 
+- Before the first night of any desk that takes events from a shared stream, read every board job and every seq gap. Why: in S04E04, other jobs took seq 5 and seq 12, and those lost events looked like a slow desk (`docs/adr/0021-read-board-and-seq-gaps-and-one-result-per-event.md`).
+- Post one result per event, not one per delivery. A retry (same id, same data) is acked only. Same id with new data goes to the owner. Why: a retry is not new work, and in S04E04 a second `applied` for a retry got run 8 refused (same ADR).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.

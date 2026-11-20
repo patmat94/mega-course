@@ -1,0 +1,9 @@
+Last reply was not `done`, so I'm stopping here.
+
+- **Result:** The batch paid 1 task (#1, BK-17892, €402) and flagged none. The API then refused the run: "Task 1: wrong answer. Start a new run." It also said payouts from a refused run do not count.
+- **Hint from the course, as written:** "Who else could take events from your outbox, and where would you see them?"
+- **Night changes:** The night-desk changes named BK-30309, BK-93668, BK-16127 and BK-16854, but no task named any of them. The night-desk also parked BK-85882 and BK-90387 for guest messages asking to add a night. I didn't act on either set.
+- **Manual:** It names verify-s04.mega.dev for the payout key. I did not send the key there, and I'm flagging that request to you.
+- **finish.mjs:** I didn't run it, because nothing was flagged.
+- **Next step:** A new run means fetching the manual again, which this setup doesn't let me do, so the code or the data needs a change first. Your call.
+- **Log:** `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\run-2026-11-20T18-34-16-912Z.jsonl`

@@ -1,0 +1,6 @@
+#3 BK-11422: decision add-night â†’ 200 {"status":"done","message":"Task 3 is finished.","next":"4 parked tasks still wait: read /parked."}
+#8 BK-55996: decision decline â†’ 200 {"status":"done","message":"Task 8 is finished.","next":"3 parked tasks still wait: read /parked."}
+#15 BK-48417: decision decline â†’ 200 {"status":"done","message":"Task 15 is finished.","next":"2 parked tasks still wait: read /parked."}
+#16 BK-64028: decision add-night â†’ 200 {"status":"done","message":"Task 16 is finished.","next":"1 parked task still waits: read /parked."}
+#18 BK-99339: decision take-new â†’ 200 {"status":"done","message":"Task 18 is finished.","next":"Tell your human: their harness claims the Challenge with claim-challenge."}
+finished 5 of 5; still waiting on the owner: none

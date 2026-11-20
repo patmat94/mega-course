@@ -102,3 +102,9 @@ mega-s04e01/starter/host-desk-*/
 mega-s04e03/receipts.json
 mega-s04e03/manual.jsonl
 mega-s04e03/dl/
+
+# S04E04: manual replies and night archives hold the attempt (a bearer token); batch logs hold task tokens
+mega-s04e04/manual.jsonl
+mega-s04e04/night-*/
+mega-s04e04/dl/
+mega-s04e04/receipts.json

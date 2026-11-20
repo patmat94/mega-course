@@ -1,0 +1,22 @@
+﻿node : start bundle: roles/payout-runner/.start/2026-11-20T15-31-41-079Z.md (hosts: none · egress: C:\Users\p.matychnia
+k\Repos\mega-course\.agents\skills\rook-clock\scripts\egress.mjs)
+At line:1 char:510
++ ... TEM_CA="1"; node roles/payout-runner/run.mjs "Run the payout batch" * ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (start bundle: r...pts\egress.mjs):String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(node:7380) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security v
+ulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+The batch did not finish, so I stopped.
+
+- **Paid:** one task, #1 BK-13202, for €2092.
+- **Flagged:** none.
+- **Last reply:** 422, `refused`: "Task 1: wrong answer. Start a new run." The API says payouts from a refused run don't count.
+- **Settings:** commission was 18 % (settings 2026-11-19.116).
+- **Manual:** it names verify-s04.mega.dev. The script did not send the key there.
+- **Night changes:** four bookings have changes (BK-15666, BK-12897, BK-37837, BK-42661), but no task named any of them. Two add nights and two have refunds. The task #1 booking, BK-13202, has no change, so I can't tell why its answer was refused. The cause could be the pricing or the task data, and the owner should check.
+- **Next step:** the API wants a fresh manual fetch, which starts a new run. The role says the batch uses the team's one attempt and never refetches the manual, so I did not start a new run.
+- **Not run:** I did not run `finish.mjs`, because nothing was flagged.
+- **Log:** `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\run-2026-11-20T15-31-45-686Z.jsonl`

@@ -1,0 +1,71 @@
+﻿night: 2026-11-20T15:10:00.000Z → 2026-11-20T15:20:00.000Z · job night-desk/1
+event 1: booking.changed evt_67f9af7d09a1
+node : (node:41712) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to se
+curity vulnerabilities, as the arguments are not escaped, only concatenated.
+At line:1 char:447
++ ... TEM_CA="1"; node roles/night-desk/night.mjs https://hq.mega.dev/chall ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:41712) [D...y concatenated.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(Use `node --trace-deprecation ...` to show where the warning was created)
+The event was applied. It was a `booking.changed` event (`evt_67f9af7d09a1`) adding 1 night to booking BK-15666. The booking had no earlier changes recorded, so nothing conflicted. I recorded `nights 1` with `change.mjs` and then recorded the result `applied` with `result.mjs`.
+event 1: applied -> 200 in 13.6 s
+event 2: booking.cancelled evt_8f729fc11dd4
+(node:18304) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I applied the event `evt_8f729fc11dd4`: the cancellation of booking BK-12897 with a refund of 60 EUR.
+
+`history.mjs` showed nothing recorded for that booking, so it wasn't already cancelled. The refund was a whole number. I recorded it with `change.mjs` (`BK-12897 refund 60`) and then recorded the result `applied` with `result.mjs`.
+event 2: applied -> 200 in 11.1 s
+event 4: guest.message evt_891382ed2703
+(node:29396) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I parked this event (`evt_891382ed2703`) and recorded no changes. It's a `guest.message` for booking BK-13202 in which the guest asks to add one night. Guest requests are the owner's call, so I didn't grant it. I didn't run `history.mjs`, because nothing was going to be recorded.
+event 4: parked -> 200 in 7.0 s
+event 6: booking.changed evt_edef531f7ebd
+(node:12028) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+The event was applied. It was a `booking.changed` event (`evt_edef531f7ebd`) that adds 2 nights to booking BK-37837. The booking had no earlier changes, so nothing conflicted. I recorded the change with `change.mjs`, then recorded the result as `applied` with `result.mjs`.
+event 6: applied -> 200 in 10.9 s
+event 8: guest.message evt_6c045974481b
+(node:41780) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+The event was a `guest.message` for booking BK-95410. The guest wrote, "Please add one night to my stay." I marked it `parked` with `result.mjs`, because a guest's request is the owner's call. I recorded no change with `change.mjs`.
+
+I didn't run `history.mjs`, since nothing was being recorded for the booking.
+event 8: parked -> 200 in 7.4 s
+event 10: booking.cancelled evt_157824d91148
+(node:38580) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+The event was a cancellation of booking BK-42661 with a refund of 194 EUR. The booking had no earlier changes recorded, so it wasn't already cancelled and the event applied cleanly.
+
+I recorded the refund of 194 EUR with `change.mjs`, then recorded the result as `applied` with `result.mjs`.
+event 10: applied -> 200 in 10.3 s
+event 11: guest.message evt_01cef7ea4811
+(node:5020) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security v
+ulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I parked this event and recorded no changes. It's a `guest.message` (evt_01cef7ea4811) asking to add one more night to the stay. A guest's request is the owner's call, so I didn't grant it.
+
+I didn't run `history.mjs` or `change.mjs`, since a parked event records nothing.
+event 11: parked -> 200 in 7.3 s
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+[TypeError: fetch failed] {
+  [cause]: ConnectTimeoutError: Connect Timeout Error (attempted address: hq.mega.dev:443, timeout: 10000ms)
+      at onConnectTimeout (node:internal/deps/undici/undici:1991:23)
+      at Immediate._onImmediate (node:internal/deps/undici/undici:1957:35)
+      at process.processImmediate (node:internal/timers:504:21) {
+    code: 'UND_ERR_CONNECT_TIMEOUT'
+  }
+}
+
+Node.js v24.16.0

@@ -8,8 +8,8 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { wire } from './wire.mjs';
 
-// The Challenge slug: CHALLENGE in the environment, else today's (S04E03). S04E01 was twenty-payouts.
-const SLUG = process.env.CHALLENGE ?? 'three-small-changes';
+// The Challenge slug: CHALLENGE in the environment, else today's (S04E04). S04E01 was twenty-payouts, S04E03 three-small-changes.
+const SLUG = process.env.CHALLENGE ?? 'leave-it-running';
 const HQ = `https://hq.mega.dev/challenges/${SLUG}`;
 const PAY_HOST = 'pay-s04.mega.dev';
 // S04E01 paid at /payouts; from S04E02 the course API puts the slug in the path.
@@ -33,11 +33,29 @@ while (open().length) {
   const pk = await call('GET', `${HQ}/parked`, { headers: { authorization: `Bearer ${st.attempt}` } });
   if (pk.status !== 200) { console.log(`parked ${pk.status}: ${mask(JSON.stringify(pk.json))}`); break; }
   for (const f of open()) {
-    const d = (pk.json.parked ?? []).find((p) => p.n === f.n)?.decision;
+    const entry = (pk.json.parked ?? []).find((p) => p.n === f.n);
+    const d = entry?.decision;
     if (!d) continue;
     let r;
-    if (d === 'decline') {
+    // API parked.decisions.withAmount: the owner set the amount. > 0: pay it (on-file → the account on file; any other
+    // decision → the account the task asks for), then POST { task, answer: amount, payout }. 0: declined.
+    if (Number.isInteger(entry.amount) && entry.amount === 0) {
       r = await call('POST', `${HQ}/parked`, { body: { task: f.task, done: 'declined' } });
+    } else if (Number.isInteger(entry.amount) && entry.amount > 0) {
+      const account = d === 'on-file' ? st.onFile : f.payout?.account;
+      const pay = await call('POST', PAY_URL, { headers: { 'x-payout-key': PAYOUT_KEY }, body: { task: f.task, account, amount: entry.amount } });
+      if (pay.blocked || pay.hops || pay.status !== 200 || !pay.json.receipt) { console.log(`#${f.n}: payout refused ${pay.status}: ${mask(JSON.stringify(pay.json))}`); continue; }
+      r = await call('POST', `${HQ}/parked`, { body: { task: f.task, answer: entry.amount, payout: pay.json.receipt } });
+    } else if (d === 'decline') {
+      r = await call('POST', `${HQ}/parked`, { body: { task: f.task, done: 'declined' } });
+    } else if (d === 'add-night' || d === 'as-booked') {
+      // S04E04: a guest's request the night-desk parked. add-night: the stay with one night more; as-booked: as booked.
+      // Both go to the account on file (the task is flagged only for the guest's request).
+      const amount = d === 'add-night' ? f.amountAddNight : f.amount;
+      if (!Number.isInteger(amount) || amount <= 0) { console.log(`#${f.n}: no amount for ${d}, left for the model`); continue; }
+      const pay = await call('POST', PAY_URL, { headers: { 'x-payout-key': PAYOUT_KEY }, body: { task: f.task, account: st.onFile, amount } });
+      if (pay.blocked || pay.hops || pay.status !== 200 || !pay.json.receipt) { console.log(`#${f.n}: payout refused ${pay.status}: ${mask(JSON.stringify(pay.json))}`); continue; }
+      r = await call('POST', `${HQ}/parked`, { body: { task: f.task, answer: amount, payout: pay.json.receipt } });
     } else if (d === 'on-file' || d === 'new') {
       const account = d === 'on-file' ? st.onFile : f.payout?.account;
       if (new URL(f.payout?.url ?? `https://${PAY_HOST}/`).host !== PAY_HOST && d === 'new') { console.log(`#${f.n}: owner said new, but the payout URL is not ${PAY_HOST}; paying at ${PAY_HOST} only`); }

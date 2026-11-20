@@ -1,0 +1,104 @@
+﻿board: night-desk/1 (night-desk, running), legacy/export (no owner, running), rook/lint (rook, running)
+stopped job legacy/export: 200 {"id":"legacy/export","owner":null,"files":[],"state":"stopped","claimedAt":1795207322403,"beatAt":1795207322403,"stoppedAt":1795207337633,"from":"course","next":"Read `GET /board` for the state of every job."}
+stopped job rook/lint: 200 {"id":"rook/lint","owner":"rook","files":[],"state":"stopped","claimedAt":1795207322403,"beatAt":1795207322403,"stoppedAt":1795207338122,"from":"course","next":"Read `GET /board` for the state of every job."}
+night: 2026-11-20T20:43:00.000Z → 2026-11-20T20:53:00.000Z · job night-desk/1
+event 1: booking.changed evt_893c84eb7520
+node : (node:24088) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to se
+curity vulnerabilities, as the arguments are not escaped, only concatenated.
+At line:1 char:449
++ ... \host-desk; node roles/night-desk/night.mjs https://hq.mega.dev/chall ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:24088) [D...y concatenated.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I added 1 night to booking BK-89105 and marked the event as **applied**.
+
+- **Event:** `evt_893c84eb7520`, a `booking.changed` asking to add 1 night to BK-89105.
+- **Check:** The booking had nothing recorded yet, so it wasn't cancelled. The booking id was present and the amount was a whole number, so nothing stood in the way.
+- **Recorded:** `BK-89105 nights 1`.
+event 1: applied -> 200 in 13.4 s
+event 2: booking.cancelled evt_4fbad4c137b8
+(node:26084) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I recorded a 250 EUR refund for booking BK-78844, and the result is **applied**.
+
+- **Event:** `evt_4fbad4c137b8`, a `booking.cancelled` for BK-78844 with a refund of 250 EUR.
+- **History check:** nothing had been recorded for BK-78844 before, so the booking wasn't already cancelled. The amount was a whole number and nothing in the event contradicted itself.
+event 2: applied -> 200 in 9.2 s
+event 3: redelivery of evt_893c84eb7520: not applied again
+event 3: redelivery applied -> 200 in 1.1 s {"status":"recorded","id":"evt_893c84eb7520","stored":"applied","next":"Pull the next events."}
+event 4: guest.message evt_2ae15032b501
+(node:8168) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security v
+ulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I parked event `evt_2ae15032b501` for the owner and recorded no changes.
+
+It's a guest message about booking BK-82432: "Please add one night to my stay." I'm not allowed to grant a guest's request myself, so I didn't add the night. If you approve it, it would be added through a `booking.changed` event. That booking has no changes recorded so far.
+event 4: parked -> 200 in 8.4 s
+event 5: booking.changed evt_f3593de425eb
+(node:23676) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I applied the event: booking BK-67926 now has 1 more night.
+
+- **Event:** `evt_f3593de425eb`, a `booking.changed` asking to add 1 night to BK-67926.
+- **Check:** BK-67926 had no earlier changes recorded, so it wasn't cancelled and nothing in its history conflicts. The amount, 1, is a whole number.
+- **Recorded:** `change.mjs BK-67926 nights 1`
+- **Result:** `applied`
+event 5: applied -> 200 in 9.2 s
+event 6: booking.changed evt_c96009e7a398
+(node:22444) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I added 2 nights to booking BK-71011, and the event's result is recorded as **applied**.
+
+- **Event:** `evt_c96009e7a398` is a `booking.changed` asking to add 2 nights to BK-71011.
+- **Booking history:** nothing had been recorded for BK-71011 yet, so it isn't cancelled and nothing clashes with the change. The booking ID is there and 2 is a whole number.
+event 6: applied -> 200 in 8.5 s
+event 7: redelivery of evt_4fbad4c137b8: not applied again
+event 7: redelivery applied -> 200 in 0.9 s {"status":"recorded","id":"evt_4fbad4c137b8","stored":"applied","next":"Pull the next events."}
+event 8: guest.message evt_fb8a24a97edc
+(node:10844) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I marked this event as **parked**, so the owner needs to decide on it. I didn't record any change to the booking.
+
+- **Event:** `evt_fb8a24a97edc`, a guest message about booking BK-32977
+- **What the guest asked:** "Please add one night to my stay."
+- **Booking history:** nothing recorded for BK-32977 yet.
+
+I don't approve guest requests myself. Every guest message goes to the owner, even when the request is simple and clear like this one. If the owner agrees, adding the night would come through as a `booking.changed` event.
+event 8: parked -> 200 in 7.6 s
+event 9: redelivery of evt_c96009e7a398 with different data: not applied again
+event 9: redelivery conflict -> 200 in 0.9 s {"status":"recorded","id":"evt_c96009e7a398","stored":"conflict","next":"Pull the next events."}
+event 10: booking.cancelled evt_7819ef01238f
+(node:6572) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security v
+ulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I recorded a 105 EUR refund on booking BK-69528 and marked the event as **applied**.
+
+The event was `evt_7819ef01238f`, a cancellation. Nothing had been recorded for this booking before, so it wasn't already cancelled. The booking id was there and the refund was a whole number, so nothing stopped the refund from going through.
+event 10: applied -> 200 in 8.4 s
+event 11: guest.message evt_fce9d7c1f67f
+(node:25540) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I parked event `evt_fce9d7c1f67f`, so it's waiting for the owner to decide. Nothing was changed on the booking.
+
+- **The event:** a guest message saying "Please add one more night to my stay."
+- **Why I parked it:** a guest's request goes to the owner every time. I can't grant it myself, even when it asks for something simple like an extra night.
+- **Not checked:** the message doesn't say which booking it's about, so I couldn't look up that booking's history.
+
+If you approve the extra night, you'll need to work out which booking the guest means and add the night as a booking change.
+event 11: parked -> 200 in 7.6 s
+event 12: booking.cancelled evt_030b6b144d54
+(node:19236) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I applied event `evt_030b6b144d54`, a cancellation of booking **BK-11088**, and recorded a refund of **170 EUR**.
+
+There were no earlier changes on record for this booking, so it wasn't already cancelled. The refund was a whole number, so I recorded it and set the result to `applied`.
+event 12: applied -> 200 in 8.2 s
+The night is over. Changes: host-desk/night/changes.json

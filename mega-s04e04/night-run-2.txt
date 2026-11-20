@@ -1,0 +1,66 @@
+﻿night: 2026-11-20T17:50:30.000Z → 2026-11-20T18:00:30.000Z · job night-desk/1
+event 1: booking.changed evt_c18c9401a277
+node : (node:38832) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to se
+curity vulnerabilities, as the arguments are not escaped, only concatenated.
+At line:1 char:447
++ ... TEM_CA="1"; node roles/night-desk/night.mjs https://hq.mega.dev/chall ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ((node:38832) [D...y concatenated.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I applied the event. It was a `booking.changed` for BK-42119 that added 1 night. The booking had no earlier changes recorded, so nothing contradicted it.
+
+I recorded the change with `change.mjs` (`BK-42119 nights 1`) and then recorded the result `applied` with `result.mjs`.
+GET /events?after=1&job=night-desk%2F1: UND_ERR_CONNECT_TIMEOUT (try 1 of 3)
+event 1: applied -> 200 in 16.8 s
+event 2: booking.cancelled evt_36af8aaa1641
+(node:42780) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+The result is `applied`. Event `evt_36af8aaa1641` cancelled booking BK-48050 with a refund of 90 EUR. The booking had no earlier changes, so it wasn't already cancelled. I recorded the refund with `change.mjs` and then recorded the result.
+event 2: applied -> 200 in 11.2 s
+event 3: redelivery of evt_c18c9401a277: not applied again
+event 4: guest.message evt_901474d82128
+(node:42304) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I parked this event and recorded no change. It's a `guest.message` (evt_901474d82128) on booking BK-67441, where the guest wrote "Please add one night to my stay." A guest's request is the owner's call, so I didn't add the night.
+
+I didn't run `history.mjs`, because nothing was going to be recorded for this booking. I ran `result.mjs` with `parked`, and it returned `result: parked`.
+event 4: parked -> 200 in 20.7 s
+GET /events?after=5&job=night-desk%2F1: UND_ERR_CONNECT_TIMEOUT (try 1 of 3)
+event 6: booking.changed evt_da8ff2abe2c4
+(node:37016) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I added 2 nights to booking BK-62243 and recorded the result as `applied`. The event (`evt_da8ff2abe2c4`) was a `booking.changed`. The booking had no earlier changes recorded, so nothing conflicted with it.
+event 6: applied -> 200 in 27.1 s
+event 7: redelivery of evt_36af8aaa1641: not applied again
+event 8: guest.message evt_6d3535b7986f
+(node:8196) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security v
+ulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I parked this event and recorded no change. It's a `guest.message` on booking BK-93187, where the guest asks for one more night. A guest's request is the owner's call, so I didn't add the night.
+event 8: parked -> 200 in 7.7 s
+GET /events?after=8&job=night-desk%2F1: UND_ERR_CONNECT_TIMEOUT (try 1 of 3)
+event 9: redelivery of evt_da8ff2abe2c4 with different data: not applied again
+GET /events?after=9&job=night-desk%2F1: UND_ERR_CONNECT_TIMEOUT (try 1 of 3)
+event 10: booking.cancelled evt_8ef6adf2aaf7
+(node:13624) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+POST /board/heartbeats: UND_ERR_CONNECT_TIMEOUT (try 1 of 3)
+GET /events?after=10&job=night-desk%2F1: UND_ERR_CONNECT_TIMEOUT (try 1 of 3)
+event 11: guest.message evt_6f47338e5de1
+(node:30280) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security 
+vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+I parked this event (`evt_6f47338e5de1`) and recorded no booking change. It's a `guest.message` asking to add one more night to the stay. Guest requests are the owner's call, so I didn't grant it. I didn't run `history.mjs` because nothing was being applied.
+GET /events?after=11&job=night-desk%2F1: UND_ERR_CONNECT_TIMEOUT (try 1 of 3)
+POST /events/results: UND_ERR_CONNECT_TIMEOUT (try 1 of 3)
+event 11: parked -> 200 in 19.0 s
+Request timed out.
+event 10 (evt_8ef6adf2aaf7): no result posted: the night-desk stopped with exit code 1.
+GET /events?after=12&job=night-desk%2F1: UND_ERR_CONNECT_TIMEOUT (try 1 of 3)
+The night is over. Changes: host-desk/night/changes.json

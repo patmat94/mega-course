@@ -12,8 +12,8 @@ import { fileURLToPath } from 'node:url';
 import { wire } from './wire.mjs';
 import { hostPayout as price } from './pricing.mjs';
 
-// The Challenge slug: CHALLENGE in the environment, else today's (S04E03). S04E01 was twenty-payouts.
-const SLUG = process.env.CHALLENGE ?? 'three-small-changes';
+// The Challenge slug: CHALLENGE in the environment, else today's (S04E04). S04E01 was twenty-payouts, S04E03 three-small-changes.
+const SLUG = process.env.CHALLENGE ?? 'leave-it-running';
 const HQ = `https://hq.mega.dev/challenges/${SLUG}`;
 const PAY_HOST = 'pay-s04.mega.dev';
 // S04E01 paid at /payouts; from S04E02 the course API puts the slug in the path.
@@ -72,6 +72,40 @@ const hostPayout = (p) => price({ ...p, commissionPct });
 await fetch(`https://${PAY_HOST}/`, { method: 'HEAD', redirect: 'manual' }).catch(() => {});
 
 const nights = (a, b) => Math.round((Date.parse(`${b}T00:00:00Z`) - Date.parse(`${a}T00:00:00Z`)) / 86_400_000);
+
+// From S04E04 the night-desk records each booking event's change in host-desk/night/changes.json (git-ignored):
+// { booking, nights | refund, event, at }. The manual: pay each booking as it is after the night's events — nights an
+// event adds are part of the stay; a cancel's refund comes off the host's payout. One row per (event, booking, kind):
+// a role that ran twice for one event must not add its nights or refund twice, so the last row of each wins.
+const NIGHT = join(STATE, '..', 'night', 'changes.json');
+const night = new Map(); // booking → { nights, refund, events: [] }
+try {
+  const rows = JSON.parse(readFileSync(NIGHT, 'utf8'));
+  const last = new Map();
+  for (const r of rows) for (const kind of ['nights', 'refund']) if (Number.isInteger(r[kind])) last.set(`${r.event}|${r.booking}|${kind}`, { booking: r.booking, kind, n: r[kind], event: r.event });
+  for (const { booking, kind, n, event } of last.values()) {
+    const c = night.get(booking) ?? { nights: 0, refund: 0, events: [] };
+    c[kind] += n; c.events.push(`${event} ${kind} ${n}`);
+    night.set(booking, c);
+  }
+  console.log(`night changes: ${night.size} booking(s) from ${NIGHT}${[...night].map(([b, c]) => `\n  ${b}: +${c.nights} night(s), refund ${c.refund} (${c.events.join('; ')})`).join('')}`);
+} catch (e) {
+  console.log(e.code === 'ENOENT' ? `night changes: none (${NIGHT} missing)` : `night changes unreadable: ${e.message}; no run on bookings the night may have changed`);
+  if (e.code !== 'ENOENT') process.exit(1);
+}
+log({ night: Object.fromEntries(night) });
+const usedNight = new Set();
+// A booking the night-desk parked (a guest's request) waits on the owner's call, so its payout is the owner's too:
+// flag it needs-owner, never pay it as booked (S04E04 run 1: BK-13202 paid as booked while its guest's "add one night"
+// was parked → "Task 1: wrong answer"). Read from night/events.jsonl, the poller's own per-event log.
+const parkedFor = new Map(); // booking → what the guest asked
+try {
+  const lines = readFileSync(join(STATE, '..', 'night', 'events.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
+  const byId = new Map(lines.filter((l) => l.event).map((l) => [l.id, l.event]));
+  const byFirst = new Map(); for (const l of lines) if (l.event && !byFirst.has(l.id)) byFirst.set(l.id, l.event);
+  for (const l of lines) if (l.status === 'parked') { const e = byId.get(l.id); if (e?.data?.booking) parkedFor.set(e.data.booking, l.redelivery ? `${e.type} ${l.id} came back (delivery ${l.redelivery}) with new data ${JSON.stringify(e.data)}, first delivery ${JSON.stringify(byFirst.get(l.id)?.data)}` : `${e.type} ${l.id}: "${e.data.text ?? ''}"`); }
+} catch (e) { if (e.code !== 'ENOENT') { console.log(`night events unreadable: ${e.message}`); process.exit(1); } }
+console.log(`parked by the night-desk: ${[...parkedFor].map(([b, w]) => `${b} (${w})`).join('; ') || 'none'}`);
 const KNOWN_BOOKING = new Set(['id', 'checkIn', 'checkOut', 'nightlyRate', 'cleaningFee', 'currency']);
 const seen = new Set();
 
@@ -85,6 +119,7 @@ function notRoutine(task, amount) {
   if (![b.nightlyRate, b.cleaningFee].every((x) => Number.isFinite(x) && x >= 0)) return 'rate or cleaning fee missing or negative';
   if (!(Number.isInteger(amount) && amount > 0)) return `stay total ${amount} is not a positive whole number of euros (check-in ${b.checkIn}, check-out ${b.checkOut})`;
   if (seen.has(b.id)) return `booking ${b.id} already paid in this run`;
+  if (parkedFor.has(b.id)) return `the night-desk parked a request for ${b.id} for the owner (${parkedFor.get(b.id)}); its payout waits on the owner's call`;
   const odd = Object.keys(b).filter((k) => !KNOWN_BOOKING.has(k));
   if (odd.length || extra.length) return `task carries fields the manual does not cover: ${[...odd, ...extra].join(', ')}`;
   return null;
@@ -96,12 +131,16 @@ const flagged = [], paid = [];
 while (r.status === 200 && r.json.status === 'task') {
   const task = r.json, b = task.booking ?? {};
   const d = task.day ?? {};
-  const n = nights(b.checkIn, b.checkOut);
+  const ch = night.get(b.id) ?? { nights: 0, refund: 0 };
+  if (night.has(b.id)) usedNight.add(b.id);
+  const n = nights(b.checkIn, b.checkOut) + ch.nights;
   const stayTotal = n * b.nightlyRate + b.cleaningFee;
-  const amount = Number.isFinite(stayTotal) ? hostPayout({ nights: n, nightlyRate: b.nightlyRate, cleaningFee: b.cleaningFee, guests: d.guests, bookedAt: d.bookedAt }) : stayTotal;
+  const amount = Number.isFinite(stayTotal) ? hostPayout({ nights: n, nightlyRate: b.nightlyRate, cleaningFee: b.cleaningFee, guests: d.guests, bookedAt: d.bookedAt }) - ch.refund : stayTotal;
   const why = notRoutine(task, amount);
   if (why) {
-    flagged.push({ n: task.n, task: task.task, booking: b, payout: task.payout, amount, reason: why });
+    // A parked guest request is decided add-night or as-booked (API "decisions"): keep both amounts for finish.mjs.
+    const amountAddNight = parkedFor.has(b.id) && Number.isFinite(stayTotal) ? hostPayout({ nights: n + 1, nightlyRate: b.nightlyRate, cleaningFee: b.cleaningFee, guests: d.guests, bookedAt: d.bookedAt }) - ch.refund : undefined;
+    flagged.push({ n: task.n, task: task.task, booking: b, payout: task.payout, amount, amountAddNight, reason: why });
     r = await call('POST', `${HQ}/${mode}`, { body: { task: task.task, flag: 'needs-owner', reason: why } });
     continue;
   }
@@ -123,6 +162,8 @@ while (r.status === 200 && r.json.status === 'task') {
 }
 writeFileSync(join(STATE, `last-${mode}.json`), JSON.stringify({ attempt, onFile, log: LOG, flagged, paid }, null, 2));
 
-console.log(`paid ${paid.length}: ${paid.map((p) => `#${p.n} ${p.id} â‚¬${p.amount}`).join(', ')}`);
+const unused = [...night.keys()].filter((id) => !usedNight.has(id));
+if (unused.length) console.log(`night changes for bookings no task named: ${unused.join(', ')}`);
+console.log(`paid ${paid.length}:${paid.map((p) => `#${p.n} ${p.id} â‚¬${p.amount}`).join(', ')}`);
 console.log(`flagged ${flagged.length}: ${flagged.map((f) => `#${f.n} ${f.booking.id}: ${f.reason}`).join(' | ') || 'none'}`);
 console.log(`last reply ${r.status}: ${JSON.stringify(r.json)}`);

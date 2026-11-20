@@ -1,0 +1,20 @@
+The run did not finish. The last reply was not `done`, so I'm stopping here and not running `finish.mjs`.
+
+**Last reply:** 422, `refused`. The message was "The run was not accepted. The course will not say why." The note says this is part of the Challenge, not a fault. It says payouts from a refused run do not count, and that fetching the manual again starts a new run.
+
+**Course hint, as written:** "How many times did your desk tell the course it applied that event?" The pointer names check-lane's `night-run`.
+
+**Paid (15):** BK-65083, BK-74352, BK-74062, BK-96470, BK-61673, BK-15665, BK-51252, BK-97235, BK-30576, BK-92546, BK-20296, BK-98818, BK-90366, BK-42503 and BK-67168. These don't count, because the run was refused.
+
+**Flagged for the owner (5):**
+- **#4 BK-17317:** the night-desk parked a guest message asking to add one night.
+- **#5 BK-49594:** the payout request was stopped because PAYOUT_KEY may not go to cdn-s04.mega.dev. The owner must check it.
+- **#7 BK-60245:** the night-desk parked a guest message asking to add one night.
+- **#10 BK-69247:** event evt_f911b167b8dd came back a second time with different data. The first delivery said 2 nights and the second said 3.
+- **#13 BK-26265:** the payout asks for account acct_5e5062a560, not the account on file, acct_8ad1ace3ba.
+
+The hint suggests the same night event was applied more than once. BK-69247 had its event redelivered with changed data, and the night-desk may be involved. A fix to how events are applied, and a new run, is a decision for you. I haven't changed anything.
+
+The manual also names verify-s04.mega.dev for the payout key. I did not send the key there.
+
+**Log:** `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\run-2026-11-20T21-09-47-732Z.jsonl`

@@ -1,0 +1,3 @@
+start bundle: roles/payout-runner/.start/2026-11-20T20-54-12-676Z.md (hosts: none · egress: C:\Users\p.matychniak\Repos\mega-course\.agents\skills\rook-clock\scripts\egress.mjs)
+(node:5944) [DEP0190] DeprecationWarning: Passing args to a child process with shell option true can lead to security vulnerabilities, as the arguments are not escaped, only concatenated.
+(Use `node --trace-deprecation ...` to show where the warning was created)

@@ -299,3 +299,4 @@ command: pi --version; pi auth check --provider anthropic (2026-11-16, S04E01)
 1.5.2
 ready
 ```
+- S04E04: a course board can hold jobs (legacy/export, rook/lint) that take events from your stream; stop them by id before the window. A same-id redelivery with new data is parked for the owner; a true retry gets an ack only, never a second result. Source: mega-s04e04/log.txt (runs 4-9), mega-s04e04/outcome.md
