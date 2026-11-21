@@ -67,6 +67,8 @@ found: pi at ~\AppData\Local\Programs\nodejs\pi.cmd
 - Pi's code tool in the Host Desk roles passes scripts only its BASICS env plus vars.json, so NODE_USE_SYSTEM_CA (this PC's corporate CA) is dropped and posts fail with SELF_SIGNED_CERT_IN_CHAIN; NODE_USE_SYSTEM_CA "1" in vars.json fixes it · source: mega-s04e03/log.txt:30 · how: ran
 
 - a git hook passes GIT_DIR and GIT_INDEX_FILE to everything it starts; .claude/hooks/test/config-stamp.test.mjs (git init + commit in a temp folder), run from a post-commit hook in a test worktree on 2026-11-21, set core.bare = true in this repo's .git/config and committed an orphan "init" onto that worktree's HEAD (main untouched, core.bare set back by hand); .githooks/run-suites.mjs now strips GIT_* for every child · source: .githooks/run-suites.mjs:30 · how: ran
+- rook-cut 4140e1f87171 is installed in .agents/skills/rook-cut (junction .claude/skills/rook-cut); its scripts run only when started by their real path: through the junction, reach.mjs and cut.mjs (self-test and --job alike) print nothing and exit 0, because each runs main() only when its real path equals the path it was started by; start them as node .agents/skills/rook-cut/scripts/<script>.mjs · source: .agents/skills/rook-cut/scripts/cut.mjs:483 · how: ran
+- rook-cut's cut.mjs uses rook-clock's egress.mjs only from a home skills folder (~/.claude/skills, ~/.codex/skills, ~/.pi/agent/skills, ~/.agents/skills), never from inside the project; on 2026-11-21 none of those held rook-clock, so a url: stop with {{NAME}} is refused until it is installed there · source: .agents/skills/rook-cut/scripts/cut.mjs:103 · how: read
 
 ## Friction
 
@@ -286,6 +288,30 @@ fatal: this operation must be run in a work tree
 command: git log --oneline -5 --stat | head -40 (in worktree hookcheck-wt, first line)
 ```
 6f3dcd8 init
+```
+
+command: node .claude/skills/rook-cut/scripts/{reach,cut}.mjs --self-test; node .claude/skills/rook-cut/scripts/cut.mjs --job not-on-the-list (through the junction, 2026-11-21)
+```
+== reach
+exit=0
+== cut
+exit=0
+== refusal
+exit=0
+```
+
+command: the same three through .agents/skills/rook-cut/scripts/ (2026-11-21)
+```
+== reach
+self-test ok
+exit=0
+== cut
+self-test ok
+exit=0
+== refusal
+not on the list: not-on-the-list (or already stopped); add it with reach.mjs seen first
+usage: node cut.mjs --job <id> | --orphans [--roles a,b] | --lane [--yes]   [--dry-run] [--wait 10] [--hosts hosts.json] [--vars vars.json] [--egress <path>]
+exit=2
 ```
 
 ## Archive
