@@ -76,6 +76,7 @@ found: pi at ~\AppData\Local\Programs\nodejs\pi.cmd
 - in S04E05 the course's run used other refund settings (28/3/30 %) than practice (14/7/50 %) on the same attempt · source: mega-s04e05/log.txt:57 · how: ran
 - the Host Desk repo's remote is the private GitHub repo patmat94/mega-host-desk, created 2026-11-21 on the human's yes; git push from this PC works · source: mega-s04e01/starter/host-desk/.git/config:9 · how: ran
 - the built-in browser is signed in to GitHub as patmat94 (the human signed in there on 2026-11-21) · source: human · how: told
+- in this clone, git runs .githooks (core.hooksPath) and hooks.judge is true since 2026-11-21, so a commit or merge that touches the reviewer, why/ or agents/judge also runs the 3 sealed Cases on Sonnet (about 25 s, the human's key); both live in .git/config, so a fresh clone starts with neither · source: .git/config:44 · how: ran
 
 ## Friction
 
@@ -354,6 +355,19 @@ command: git remote add origin https://github.com/patmat94/mega-host-desk.git &&
 branch 'master' set up to track 'origin/master'.
 To https://github.com/patmat94/mega-host-desk.git
  * [new branch]      master -> master
+```
+
+command: git config hooks.judge true && node .githooks/run-suites.mjs all (2026-11-21)
+```
+suites: wake … pass (36 tests)
+suites: hooks … pass (14 tests)
+suites: reviewer … pass (5 tests)
+suites: heartbeat … pass (7 tests)
+suites: judge:reviewer (sealed cases, starts a model) … pass (3 cases)
+pass 01-pinned-commission rev 0b4142b8bbbf
+pass 02-commission-matches-live rev 0b4142b8bbbf
+pass 03-rounding-and-commission-12 rev 0b4142b8bbbf
+exit=0
 ```
 
 ## Archive
