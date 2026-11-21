@@ -1,0 +1,17 @@
+The last reply isn't `done`, so I'm stopping here.
+
+- **Last reply (422):** `{"status":"refused","message":"Practice was not accepted. The course will not say why.","note":"This is part of the Challenge, not a fault.","next":"Fix your factory, make the role again, then run practice again with this attempt.","pointer":"check-lane has a need for this: refund-run ..."}`
+- **Paid 5:**
+  - #1 BK-61595, €577
+  - #2 BK-19815, €245
+  - #3 BK-74616, €580
+  - #7 BK-39280, €347
+  - #8 BK-76573, €340
+- **Answered 0.**
+- **Flagged 3 for the owner to decide on the hq page:**
+  - #4 BK-79770: the guest gave a reason (a flight cancelled by the airline) for cancelling 5 days before check-in, which is inside the no-refund window. The policy is 14/7/50 %, and the manual makes this the owner's call.
+  - #5 BK-19815: this is a repeat of refund rf-a21ba0da, which was already paid in #2 (€245). I did not pay it twice.
+  - #6 BK-41427: refund rf-ff3b8ca0 is for booking "none", not this task's BK-41427. The manual only pays a refund for its own booking.
+- **`finish.mjs`:** I did not run it, because the course did not return `done`.
+- **Verify URL:** the manual names verify-s04.mega.dev. I sent no secret there and did not call it.
+- **Log:** `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\practice-refund-runner-2026-11-21T08-49-46-695Z.jsonl`

@@ -10,3 +10,4 @@ state/run-*.jsonl
 state/last-*.json
 roles/*/.start/
 roles/*/runs.jsonl
+state/survey-*

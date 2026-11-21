@@ -1,0 +1,20 @@
+Run `finish.mjs` once. It finished all 6 decided tasks, and no tasks are still waiting on the owner.
+
+The course's last reply, on task 14, was: "Task 14 is finished. Tell your human: their harness claims the Challenge with claim-challenge."
+
+The six tasks and the owner's decision on each:
+
+| Task | Booking | Decision | Amount (EUR) |
+|---|---|---|---|
+| 6 | BK-37816 | no-refund | 0 |
+| 7 | BK-70183 | decline | 0 |
+| 8 | BK-70259 | pay-as-usual | 64 |
+| 12 | BK-38013 | decline | 0 |
+| 13 | BK-26508 | no-refund | 0 |
+| 14 | BK-26964 | take-new | 354 |
+
+- **Paid and answered:** I didn't run `tasks.mjs` for `finish`, so I have no paid or answered counts from this session. This session finished tasks 8 and 14 with payouts (64 and 354 EUR). The other four were closed with no payout.
+- **Not finished:** nothing. The owner has decided every flagged task.
+- **Log path:** `finish.mjs` didn't print one, so I can't give it.
+
+Your harness now needs to claim the Challenge with `claim-challenge`.

@@ -1,0 +1,17 @@
+The last reply isn't `done`, so I'm stopping here.
+
+Last reply (422): `{"status":"refused","message":"No payout matching this task and this answer reached the payout API.","next":"Fix your factory, make the role again, then run practice again with this attempt."}`
+
+- **Paid 3:**
+  - #1 BK-61595, €577
+  - #2 BK-19815, €245
+  - #3 BK-74616, €580
+- **Answered 0.**
+- **Repeat:** #5 is the same booking as #2 (rf-a21ba0da), so it wasn't paid again.
+- **Flagged for the owner:** #4 BK-79770. The guest gave a reason (the airline cancelled their flight), but cancelled 5 days before check-in, inside the no-refund window. The policy is 14/7/50 %, settings 2026-11-20.1. The manual makes this the owner's call, so the owner decides on the hq page.
+- **Not run:** I didn't run `finish.mjs`, because the course reply wasn't `done`.
+- **Not covered:** the output printed only 5 of the 8 tasks, so I can't say what happened to tasks 6–8.
+- **Other note:** the manual names verify-s04.mega.dev. I sent no secret there.
+- **Log:** `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\practice-refund-runner-2026-11-21T08-50-58-112Z.jsonl`
+
+The course says to fix the factory and make the role again before running practice again on this attempt. That change is for you to make.

@@ -1,0 +1,13 @@
+The last reply wasn't `done`, so I'm stopping here.
+
+Last reply (422): `{"status":"refused","message":"Practice was not accepted. The course will not say why.","note":"This is part of the Challenge, not a fault.","next":"Fix your factory, make the role again, then run practice again with this attempt."}`
+
+- **Paid:** 0.
+- **Answered 0 (no refund owed):** 0.
+- **Flagged:** all 8 tasks (#1 BK-61595, #2 BK-19815, #3 BK-74616, #4 BK-79770, #5 BK-19815, #6 BK-41427, #7 BK-39280, #8 BK-76573). Each has the same reason: the task carries fields the manual doesn't cover (`id`, `booking`, `note`).
+- **Possible double booking:** BK-19815 appears twice, as #2 and #5.
+- **Not run:** I didn't run `finish.mjs`, because the practice wasn't accepted and no owner decisions exist yet.
+- **Manual:** it names `verify-s04.mega.dev`. I sent no secret there and didn't call it.
+- **Log:** `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\practice-refund-runner-2026-11-21T08-47-47-703Z.jsonl`
+
+The role needs fixing before another practice run. `scripts/job.mjs` probably needs to handle those task fields.

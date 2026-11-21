@@ -1,0 +1,6 @@
+{
+  "role": "refund-runner",
+  "line": "Make refund-runner: pay the refunds owed after the S04E04 night, following the host’s refund policy.",
+  "api": "https://hq.mega.dev/challenges/make-me-another/api",
+  "made": "2026-11-21T09:15:44.118Z"
+}

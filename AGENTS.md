@@ -81,6 +81,9 @@ Shared skills live in `.agents/skills/`, one folder each, with a `SKILL.md` insi
 - Before the first night of any desk that takes events from a shared stream, read every board job and every seq gap. Why: in S04E04, other jobs took seq 5 and seq 12, and those lost events looked like a slow desk (`docs/adr/0021-read-board-and-seq-gaps-and-one-result-per-event.md`).
 - Post one result per event, not one per delivery. A retry (same id, same data) is acked only. Same id with new data goes to the owner. Why: a retry is not new work, and in S04E04 a second `applied` for a retry got run 8 refused (same ADR).
 
+- A new job for a factory-made role starts with one survey: a practice that pays nothing, flags every task and saves the task shape (`node roles/<role>/run.mjs survey` → `state/survey-<role>.json`). Write the job's rule from that file. Why: in S04E05 six practice tries went to learning fields and repeated refunds, which one survey shows (`docs/adr/0023-survey-first-and-refusal-causes-in-the-checklist.md`).
+- Before the next try, write each refused try's cause under "Refusals" in the factory's `CHECKLIST.md`, then fix the factory, never the made role. Why: practices 3 and 6 of S04E05 were refused for the same cause (same ADR).
+
 ## Rules
 
 - Never commit `.env`, tokens or keys.

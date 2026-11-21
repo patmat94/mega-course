@@ -1,0 +1,15 @@
+Survey finished. It paid nothing and flagged all tasks, as intended.
+
+- **Tasks:** 8 tasks, 22 field paths. Two ids came up twice. Free text was sometimes filled in `day.refund.booking`, `day.refund.reason` and `day.refund.note`.
+- **Account on file:** acct_da59ed0926, paid at pay-s04.mega.dev.
+- **Settings seen:** version 2026-11-20.1. Full refund from 14 days, part refund from 7 days at 50%.
+- **Manual:** it names verify-s04.mega.dev. I sent no secret there, and I didn't call it.
+- **Shape file:** `state/survey-refund-runner.json`, under `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\`.
+- **Log:** `state\survey-refund-runner-2026-11-21T09-15-58-295Z.jsonl`, under the same folder.
+
+The last reply was not `done`. It was a 422:
+> {"status":"refused","message":"Practice was not accepted. The course will not say why.","note":"This is part of the Challenge, not a fault.","next":"Fix your factory, make the role again, then run practice again with this attempt.","pointer":"check-lane has a need for this: refund-run (check-lane is a tool on the course's MCP server).","hint":"Which of the refunds you parked could the policy decide alone? Fix the factory, then make the role again."}
+
+The course's hint is: "Which of the refunds you parked could the policy decide alone? Fix the factory, then make the role again."
+
+I'm stopping here, as survey requires. The next step is to write the job rule in `jobs/refund-runner.mjs` from the shape file, then run `practice`.

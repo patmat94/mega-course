@@ -108,3 +108,8 @@ mega-s04e04/manual.jsonl
 mega-s04e04/night-*/
 mega-s04e04/dl/
 mega-s04e04/receipts.json
+
+# S04E05: receipts hold the ticket; manual.jsonl holds the attempt (a bearer token); dl is the course zip
+mega-s04e05/receipts.json
+mega-s04e05/manual.jsonl
+mega-s04e05/dl/

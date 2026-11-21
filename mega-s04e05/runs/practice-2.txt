@@ -1,0 +1,13 @@
+The practice run stopped early. The course's last reply wasn't `done`, so I haven't run `finish.mjs`.
+
+The last reply was a 400:
+`{"status":"refused","message":"Send { \"task\": \"<task token>\", \"answer\": <whole euros>, \"payout\": \"<payout receipt>\" }, or { \"task\": \"<task token>\", \"flag\": \"needs-owner\", \"reason\": \"<why>\" }.","next":"Pay this refund at the payout API, then send its answer and the payout receipt here."}`
+
+What the script printed before that:
+- **Paid 3:** #1 BK-61595 €577, #2 BK-19815 €245, #3 BK-74616 €580. All went to the account on file, acct_da59ed0926.
+- **Answered 0:** #5 BK-19815 repeats the data of task #2, which was already paid at €245. It was not paid a second time. The script reported it as "answered 0 1", and I don't know whether the course counted it as answered. It may be what the course refused.
+- **Flagged 1:** #4 BK-79770 needs the owner. The guest gave a reason (a flight cancelled by the airline) inside the no-refund window. The cancellation came 5 days before check-in, under the 14/7/50 % policy (settings 2026-11-20.1). The manual makes this the owner's call. The owner decides it on the hq page.
+- **Verify URL:** the manual names verify-s04.mega.dev. I sent no secret there and did not call it.
+
+Log: `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\practice-refund-runner-2026-11-21T08-49-11-199Z.jsonl`
+State: `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\last-refund-runner-practice.json`

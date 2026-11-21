@@ -1,0 +1,14 @@
+The last reply isn't `done`, so I'm stopping here.
+
+**Report (practice)**
+- Last reply from the course (422): `{"status":"refused","message":"Practice was not accepted. The course will not say why.","note":"This is part of the Challenge, not a fault.","next":"Fix your factory, make the role again, then run practice again with this attempt.","pointer":"check-lane has a need for this: refund-run ..."}`
+- Paid 6: #1 BK-61595 €577, #2 BK-19815 €245, #3 BK-74616 €580, #6 BK-41427 €575, #7 BK-39280 €347, #8 BK-76573 €340.
+- Answered 0.
+- Flagged 2, both for the owner to decide on the hq page:
+  - #4 BK-79770: the guest gave a reason (flight cancelled by the airline) for cancelling 5 days before check-in, which is inside the no-refund window. The policy is 14/7/50 %, so the manual makes it the owner's call.
+  - #5 BK-19815: a repeat of #2 (rf-a21ba0da). It was already paid once, so I did not pay it again.
+- I did not run `finish.mjs`, because the last reply wasn't `done`.
+- The manual names verify-s04.mega.dev. I did not send any secret there and did not call it.
+- Log: `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\practice-refund-runner-2026-11-21T08-52-41-936Z.jsonl`
+
+The course refused the practice and gave no reason. It says the factory needs a fix, and it points to the check-lane `refund-run` tool, which I don't have. You'll need to look at the role's scripts and rules.

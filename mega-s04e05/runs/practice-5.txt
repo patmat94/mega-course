@@ -1,0 +1,14 @@
+The last reply isn't `done`, so I'm stopping here.
+
+- **Last reply (422):** `{"status":"refused","message":"Task 5: wrong answer. Start practice again.","next":"Fix your factory, make the role again, then run practice again with this attempt."}`
+- **Paid 3:**
+  - #1 BK-61595, €577
+  - #2 BK-19815, €245
+  - #3 BK-74616, €580
+- **Answered 0:** none.
+- **Task 5:** it repeats booking rf-a21ba0da, which was already paid once in task #2 (€245). The script answered 0 because nothing more is owed. The course called that a wrong answer.
+- **Flagged 1:** #4 BK-79770. The guest cancelled 5 days before check-in and gave a reason inside the no-refund window ("Our flight was cancelled by the airline, so we could not come."). The policy is 14/7/50 % (settings 2026-11-20.1). The manual makes this the owner's call, so the owner decides it on the hq page.
+- **`finish.mjs`:** not run, because the course refused the attempt.
+- **Log:** `C:\Users\p.matychniak\Repos\mega-course\mega-s04e01\starter\host-desk\state\practice-refund-runner-2026-11-21T08-51-47-541Z.jsonl`
+
+The course says to fix the factory (the repeat-booking rule in `job.mjs`), make the role again, and then run practice again.
