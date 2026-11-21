@@ -66,6 +66,8 @@ found: pi at ~\AppData\Local\Programs\nodejs\pi.cmd
 - a terminal `claude -p` in this repo without CLAUDE_CODE_GIT_BASH_PATH cannot run the project's hooks (they need Git Bash), so a Read that a PreToolUse hook matches is blocked; with the variable set, the domain-wake hook ran and its note reached the session · source: agents/wake/README.md:12 · how: ran
 - Pi's code tool in the Host Desk roles passes scripts only its BASICS env plus vars.json, so NODE_USE_SYSTEM_CA (this PC's corporate CA) is dropped and posts fail with SELF_SIGNED_CERT_IN_CHAIN; NODE_USE_SYSTEM_CA "1" in vars.json fixes it · source: mega-s04e03/log.txt:30 · how: ran
 
+- a git hook passes GIT_DIR and GIT_INDEX_FILE to everything it starts; .claude/hooks/test/config-stamp.test.mjs (git init + commit in a temp folder), run from a post-commit hook in a test worktree on 2026-11-21, set core.bare = true in this repo's .git/config and committed an orphan "init" onto that worktree's HEAD (main untouched, core.bare set back by hand); .githooks/run-suites.mjs now strips GIT_* for every child · source: .githooks/run-suites.mjs:30 · how: ran
+
 ## Friction
 
 Each time the repo or the machine gets in the way: one line, what was blocked, what it cost, and the way round if one was found. Same line shape as Findings.
@@ -271,6 +273,19 @@ NONE
 
 The Read of `lib/wake/ingress.ts` did not complete. A PreToolUse hook (`.claude/hooks/domain-wake.mjs`) failed because Git Bash isn't installed, so the call was blocked. I did not change the hook.
 exit=0 secs=13
+```
+
+command: git log --oneline -3 main && git status --short (main repo, after the first hook test in worktree hookcheck-wt, 2026-11-21)
+```
+9469670 S04E04 solved: night desk runs the night alone, payout batch passes; ADR 0021
+4ed8330 Heartbeat watcher: a DOWN row becomes one task per Worker per day
+04f2c82 S04E03 solved: Host Desk team (planner, critics, workers, integrator); ADR 0020
+fatal: this operation must be run in a work tree
+```
+
+command: git log --oneline -5 --stat | head -40 (in worktree hookcheck-wt, first line)
+```
+6f3dcd8 init
 ```
 
 ## Archive

@@ -1,4 +1,11 @@
 {
+  "permissions": {
+    "deny": [
+      "Read(//c/Users/p.matychniak/mega-sealed/**)",
+      "Edit(//c/Users/p.matychniak/mega-sealed/**)",
+      "Write(//c/Users/p.matychniak/mega-sealed/**)"
+    ]
+  },
   "hooks": {
     "PreToolUse": [
       {

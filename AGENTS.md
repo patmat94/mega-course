@@ -8,7 +8,8 @@ Decisions: `docs/adr/`, one file per decision. When the human decides how someth
 ## Commands
 
 - Run: none — each lesson folder has its own commands.
-- Test: `node --test "lib/wake/test/*.test.ts"` (the shared wake module); `node --test ".claude/hooks/test/*.test.mjs"` (hooks); `node --test "mega-s04e01/starter/host-desk/roles/reviewer/test/*.test.mjs"` (the Host Desk reviewer's http tool); `node --test "agents/heartbeat/test/*.test.mjs"` (the heartbeat watcher: hooks.json → tasks.jsonl); lesson folders have their own.
+- Test: `node --test "lib/wake/test/*.test.ts"` (the shared wake module); `node --test ".claude/hooks/test/*.test.mjs"` (hooks); `node --test "mega-s04e01/starter/host-desk/roles/reviewer/test/*.test.mjs"` (the Host Desk reviewer's http tool); `node --test "agents/heartbeat/test/*.test.mjs"` (the heartbeat watcher: hooks.json → tasks.jsonl); lesson folders have their own. These four run on their own after each commit or merge that touches their folder (`.githooks/`, `git config core.hooksPath .githooks` once per clone); `node .githooks/run-suites.mjs all` runs all four by hand.
+- Judge: `node agents/judge/judge-reviewer.mjs` replays the sealed reviewer Cases (outside the repo, `~/mega-sealed/reviewer`; agents are denied that folder) and prints one pass/fail line per case; `--fake-pi expect|flip` checks the harness without a model (`agents/judge/README.md`).
 - Typecheck or lint: none at the root; `lib/wake/WAKE.md` § Tests gives the strict `tsc` line.
 
 ## How work moves here

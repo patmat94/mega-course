@@ -1,0 +1,14 @@
+#!/bin/sh
+# post-commit: runs the test suites whose folders this commit touched (.githooks/run-suites.mjs). Never blocks.
+# Installed with: git config core.hooksPath .githooks
+cd "$(git rev-parse --show-toplevel)" || exit 0
+if ! command -v node >/dev/null 2>&1; then
+  echo "" >&2
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2
+  echo "!! post-commit: node is not on PATH, so NO test suite ran for this commit." >&2
+  echo "!! Run them by hand: node .githooks/run-suites.mjs all" >&2
+  echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2
+  exit 0
+fi
+node .githooks/run-suites.mjs commit
+exit 0
