@@ -69,6 +69,13 @@ found: pi at ~\AppData\Local\Programs\nodejs\pi.cmd
 - a git hook passes GIT_DIR and GIT_INDEX_FILE to everything it starts; .claude/hooks/test/config-stamp.test.mjs (git init + commit in a temp folder), run from a post-commit hook in a test worktree on 2026-11-21, set core.bare = true in this repo's .git/config and committed an orphan "init" onto that worktree's HEAD (main untouched, core.bare set back by hand); .githooks/run-suites.mjs now strips GIT_* for every child · source: .githooks/run-suites.mjs:30 · how: ran
 - rook-cut 4140e1f87171 is installed in .agents/skills/rook-cut (junction .claude/skills/rook-cut); its scripts run only when started by their real path: through the junction, reach.mjs and cut.mjs (self-test and --job alike) print nothing and exit 0, because each runs main() only when its real path equals the path it was started by; start them as node .agents/skills/rook-cut/scripts/<script>.mjs · source: .agents/skills/rook-cut/scripts/cut.mjs:483 · how: ran
 - rook-cut's cut.mjs uses rook-clock's egress.mjs only from a home skills folder (~/.claude/skills, ~/.codex/skills, ~/.pi/agent/skills, ~/.agents/skills), never from inside the project; on 2026-11-21 none of those held rook-clock, so a url: stop with {{NAME}} is refused until it is installed there · source: .agents/skills/rook-cut/scripts/cut.mjs:103 · how: read
+- the reviewer Judge (agents/judge/judge-reviewer.mjs, sealed Cases in ~/mega-sealed/reviewer) passed the current Host Desk reviewer on all 3 Cases and failed the given S04E02 reviewer on case 01 (h-bf3) and case 03 (h-99c), on sonnet-5-5, 2026-11-21 · source: agents/judge/README.md:24 · how: ran
+- in S04E05 the course names a wrong paid answer at once ("Task n: wrong answer"); a refusal only after the last task ("Practice was not accepted. The course will not say why.") meant a flag was wrong or missing · source: mega-s04e05/log.txt:46 · how: ran
+- in S04E05 an answer is taken only with a payout made for that task: the first task's receipt reused for a repeated refund was refused · source: mega-s04e05/log.txt:42 · how: ran
+- check-lane's hint need takes the status code a refusal carries; S04E05's refusals carry none, so {code: "422"} came back unknown-code · source: mega-s04e05/log.txt:43 · how: ran
+- in S04E05 the course's run used other refund settings (28/3/30 %) than practice (14/7/50 %) on the same attempt · source: mega-s04e05/log.txt:57 · how: ran
+- the Host Desk repo's remote is the private GitHub repo patmat94/mega-host-desk, created 2026-11-21 on the human's yes; git push from this PC works · source: mega-s04e01/starter/host-desk/.git/config:9 · how: ran
+- the built-in browser is signed in to GitHub as patmat94 (the human signed in there on 2026-11-21) · source: human · how: told
 
 ## Friction
 
@@ -312,6 +319,41 @@ exit=0
 not on the list: not-on-the-list (or already stopped); add it with reach.mjs seen first
 usage: node cut.mjs --job <id> | --orphans [--roles a,b] | --lane [--yes]   [--dry-run] [--wait 10] [--hosts hosts.json] [--vars vars.json] [--egress <path>]
 exit=2
+```
+
+command: node agents/judge/judge-reviewer.mjs --desk <scratchpad>/baseline-desk (the given S04E02 reviewer, 2026-11-21)
+```
+fail 01-pinned-commission rev 6949238ffebf h-bf3 expected flag got pass
+pass 02-commission-matches-live rev 6949238ffebf
+fail 03-rounding-and-commission-12 rev 6949238ffebf h-99c expected pass got flag
+```
+
+command: MODEL=anthropic/claude-sonnet-5-5 node roles/refund-runner/run.mjs practice (S04E05 practice 5, the role's report)
+```
+- **Last reply (422):** `{"status":"refused","message":"Task 5: wrong answer. Start practice again.","next":"Fix your factory, make the role again, then run practice again with this attempt."}`
+```
+
+command: MODEL=anthropic/claude-sonnet-5-5 node roles/refund-runner/run.mjs practice (S04E05 practice 4, the role's report)
+```
+Last reply (422): `{"status":"refused","message":"No payout matching this task and this answer reached the payout API.","next":"Fix your factory, make the role again, then run practice again with this attempt."}`
+```
+
+from: mega-challenge check-lane, need hint, probe {code: "422", tries: 2} (2026-11-21)
+```
+  "verdict": "unknown-code",
+  "message": "No hint for that code. Send the code exactly as the course sent it. If the refusal ends with a pointer to a check-lane need, ask that need.",
+```
+
+command: node -e (settings rows of state/run-refund-runner-2026-11-21T08-55-48-240Z.jsonl, S04E05 run)
+```
+settings seen: 2026-11-20.596 {"fullFromDays":28,"partFromDays":3,"partPct":30}
+```
+
+command: git remote add origin https://github.com/patmat94/mega-host-desk.git && git push -u origin master (in mega-s04e01/starter/host-desk, 2026-11-21)
+```
+branch 'master' set up to track 'origin/master'.
+To https://github.com/patmat94/mega-host-desk.git
+ * [new branch]      master -> master
 ```
 
 ## Archive
